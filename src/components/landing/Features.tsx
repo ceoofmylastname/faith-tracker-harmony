@@ -9,7 +9,7 @@ const cards = [
   {
     title: "Instagram",
     description: "Follow our journey through inspiring images and stories",
-    image: "/lovable-uploads/8ef7bec8-b319-48a5-9a9c-7bae2add49b7.png",
+    image: "https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/6774809bd515b1ec1c9d314c.png",
   },
   {
     title: "Slack",
