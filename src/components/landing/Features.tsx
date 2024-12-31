@@ -4,7 +4,7 @@ const cards = [
   {
     title: "Website",
     description: "Explore our digital presence and discover more about our mission",
-    image: "/lovable-uploads/8ef7bec8-b319-48a5-9a9c-7bae2add49b7.png",
+    image: "https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/67747ff4c7fbee58633e3eb3.png",
   },
   {
     title: "Instagram",
