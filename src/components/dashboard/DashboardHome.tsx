@@ -11,16 +11,16 @@ export default function DashboardHome() {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 [perspective:1000px]">
-        <div className="transform-gpu transition-all duration-300 hover:translate-z-4 hover:-translate-y-2 hover:shadow-2xl">
+        <div className="transform-gpu transition-all duration-300 hover:translate-z-4 hover:-translate-y-2 hover:shadow-xl">
           <PrayerCard />
         </div>
-        <div className="transform-gpu transition-all duration-300 hover:translate-z-4 hover:-translate-y-2 hover:shadow-2xl">
+        <div className="transform-gpu transition-all duration-300 hover:translate-z-4 hover:-translate-y-2 hover:shadow-xl">
           <BibleCard />
         </div>
-        <div className="transform-gpu transition-all duration-300 hover:translate-z-4 hover:-translate-y-2 hover:shadow-2xl">
+        <div className="transform-gpu transition-all duration-300 hover:translate-z-4 hover:-translate-y-2 hover:shadow-xl">
           <FastingCard />
         </div>
-        <div className="transform-gpu transition-all duration-300 hover:translate-z-4 hover:-translate-y-2 hover:shadow-2xl">
+        <div className="transform-gpu transition-all duration-300 hover:translate-z-4 hover:-translate-y-2 hover:shadow-xl">
           <GivingCard />
         </div>
       </div>
