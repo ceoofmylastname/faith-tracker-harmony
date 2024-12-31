@@ -14,12 +14,18 @@ export const Ministry = () => {
           </p>
           <p className="text-lg text-white/90">- Matthew 6:33</p>
         </div>
-        <Button
-          size="lg"
-          className="bg-accent hover:bg-accent-dark text-primary font-semibold"
+        <a 
+          href="https://www.ftthlv.com/contact-us" 
+          target="_blank" 
+          rel="noopener noreferrer"
         >
-          Join Our Community
-        </Button>
+          <Button
+            size="lg"
+            className="bg-accent hover:bg-accent-dark text-primary font-semibold"
+          >
+            Join Our Community
+          </Button>
+        </a>
       </div>
     </section>
   );
