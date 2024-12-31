@@ -16,7 +16,7 @@ export const Hero = () => {
         </h1>
         
         <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
-          Deepen your walk in faith. Track your spiritual journey with our comprehensive Faith Tracker. Join a community of believers dedicated to growing closer to God.
+          Strengthen your faith and track your spiritual journey with our all-in-one Faith Tracker. Connect with a community of believers committed to growing closer to Yahowah.
         </p>
 
         <div className="max-w-xl mx-auto space-y-6">
