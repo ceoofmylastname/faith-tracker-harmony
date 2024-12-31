@@ -12,7 +12,7 @@ export const Hero = () => {
         </p>
         
         <h1 className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-text bg-clip-text text-transparent">
-          Discover the Real You, the Real Purpose, the Real Truth
+          Faith isn't just a belief—it's a bold lifestyle. Take the first step into the Kingdom today.
         </h1>
         
         <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
