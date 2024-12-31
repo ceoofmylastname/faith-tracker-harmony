@@ -16,15 +16,15 @@ const chartConfig = {
   tithes: {
     label: "Tithes",
     theme: {
-      light: "#1A1F2C", // Updated to darker purple
-      dark: "#6E59A5", // Updated to match new theme
+      light: "#800000", // Maroon
+      dark: "#555555", // Gray
     },
   },
   offerings: {
     label: "Offerings",
     theme: {
-      light: "#1E40AF",
-      dark: "#3B82F6",
+      light: "#A52A2A", // Lighter maroon
+      dark: "#888888", // Lighter gray
     },
   },
 };

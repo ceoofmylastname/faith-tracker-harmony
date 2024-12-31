@@ -25,15 +25,15 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#1A1F2C", // Updated to darker purple
-          light: "#6E59A5", // Updated to match new theme
-          dark: "#0F131A", // Darker shade for contrast
+          DEFAULT: "#800000", // Maroon
+          light: "#A52A2A", // Lighter maroon
+          dark: "#4A0404", // Darker maroon
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "#1E40AF",
-          light: "#3B82F6",
-          dark: "#1E3A8A",
+          DEFAULT: "#555555", // Gray
+          light: "#888888", // Light gray
+          dark: "#333333", // Dark gray
           foreground: "hsl(var(--secondary-foreground))",
         },
         accent: {
@@ -61,6 +61,7 @@ export default {
       },
       backgroundImage: {
         'gradient-text': 'linear-gradient(90deg, #2DFFF5 0%, #7C89FF 50%, #FF72E7 100%)',
+        'maroon-gray': 'linear-gradient(135deg, #800000 0%, #555555 100%)',
       },
       borderRadius: {
         lg: "var(--radius)",
