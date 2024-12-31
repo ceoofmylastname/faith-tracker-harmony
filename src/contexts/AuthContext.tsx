@@ -39,17 +39,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email,
         password,
       })
-      if (error) throw error
+      
+      if (error) {
+        // Check if the error is due to existing user
+        if (error.message.includes('User already registered')) {
+          toast({
+            variant: "destructive",
+            title: "Account Already Exists",
+            description: "This email is already registered. Please sign in instead.",
+          })
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: error.message,
+          })
+        }
+        throw error
+      }
+      
       toast({
         title: "Success!",
         description: "Please check your email for verification link",
       })
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      })
       throw error
     }
   }
@@ -60,17 +73,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email,
         password,
       })
-      if (error) throw error
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message,
+        })
+        throw error
+      }
       toast({
         title: "Welcome back!",
         description: "Successfully signed in",
       })
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      })
       throw error
     }
   }
@@ -78,17 +93,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut()
-      if (error) throw error
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message,
+        })
+        throw error
+      }
       toast({
         title: "Goodbye!",
         description: "Successfully signed out",
       })
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      })
       throw error
     }
   }
