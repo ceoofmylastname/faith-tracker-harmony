@@ -67,7 +67,8 @@ export function FastingCard() {
 
   if (!activeFast) {
     return (
-      <Card className="transform hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30">
+      <Card className="relative overflow-hidden transform-gpu transition-all duration-300 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm hover:shadow-[0_8px_30px_rgba(59,130,246,0.12)] hover:border-blue-600/20">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
         <CardHeader className="pb-2">
           <CardTitle className="text-lg font-medium flex items-center gap-2">
             <Timer className="h-5 w-5 text-blue-600" />
@@ -89,7 +90,8 @@ export function FastingCard() {
   );
 
   return (
-    <Card className="transform hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30">
+    <Card className="relative overflow-hidden transform-gpu transition-all duration-300 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm hover:shadow-[0_8px_30px_rgba(59,130,246,0.12)] hover:border-blue-600/20">
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-medium flex items-center gap-2">
           <Timer className="h-5 w-5 text-blue-600" />
@@ -104,7 +106,7 @@ export function FastingCard() {
           </span>
           <span>{daysRemaining} days remaining</span>
         </div>
-        <Progress value={progress} className="h-2" />
+        <Progress value={progress} className="h-2 bg-gray-200/50 dark:bg-gray-700/50" />
         <p className="text-sm text-center text-muted-foreground">
           {progress === 100 ? "Fast completed! 🎉" : "Stay strong! 💪"}
         </p>

@@ -74,7 +74,8 @@ export function BibleCard() {
   const progressPercentage = Math.min((dailyProgress / goalMinutes) * 100, 100);
 
   return (
-    <Card className="transform hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30">
+    <Card className="relative overflow-hidden transform-gpu transition-all duration-300 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm hover:shadow-[0_8px_30px_rgba(34,197,94,0.12)] hover:border-green-600/20">
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-medium flex items-center gap-2">
           <BookOpen className="h-5 w-5 text-green-600" />
@@ -89,7 +90,7 @@ export function BibleCard() {
             {streak} day streak
           </span>
         </div>
-        <Progress value={progressPercentage} className="h-2" />
+        <Progress value={progressPercentage} className="h-2 bg-gray-200/50 dark:bg-gray-700/50" />
         <div className="text-sm text-center">
           {currentBook && currentChapter ? (
             <span>Currently reading: {currentBook} {currentChapter}</span>

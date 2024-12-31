@@ -94,7 +94,8 @@ export function GivingCard() {
   const totalProgress = Math.min((totalGiving / goalAmount) * 100, 100);
 
   return (
-    <Card className="transform hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30">
+    <Card className="relative overflow-hidden transform-gpu transition-all duration-300 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm hover:shadow-[0_8px_30px_rgba(249,115,22,0.12)] hover:border-orange-600/20">
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-medium flex items-center gap-2">
           <Wallet className="h-5 w-5 text-orange-600" />
@@ -106,7 +107,7 @@ export function GivingCard() {
           <span>${totalGiving.toFixed(2)} / ${goalAmount.toFixed(2)}</span>
           <span>{Math.round(totalProgress)}% of goal</span>
         </div>
-        <Progress value={totalProgress} className="h-2" />
+        <Progress value={totalProgress} className="h-2 bg-gray-200/50 dark:bg-gray-700/50" />
         <div className="space-y-2">
           {categories.map((cat) => (
             <div key={cat.category} className="space-y-1">
@@ -116,7 +117,7 @@ export function GivingCard() {
               </div>
               <Progress 
                 value={(cat.amount / cat.goal) * 100} 
-                className="h-1"
+                className="h-1 bg-gray-200/50 dark:bg-gray-700/50"
               />
             </div>
           ))}
