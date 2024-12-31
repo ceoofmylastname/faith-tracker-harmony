@@ -19,6 +19,10 @@ export default function PrayerTab() {
     reference: "1 Thessalonians 5:17",
   };
 
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex">
       {/* Sidebar */}
@@ -34,7 +38,7 @@ export default function PrayerTab() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => handleNavigation('/dashboard')}
           >
             <Home className="mr-2 h-5 w-5" />
             Home
@@ -42,7 +46,7 @@ export default function PrayerTab() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => navigate('/dashboard/prayer')}
+            onClick={() => handleNavigation('/dashboard/prayer')}
           >
             <Heart className="mr-2 h-5 w-5" />
             Prayer
@@ -50,6 +54,7 @@ export default function PrayerTab() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+            onClick={() => handleNavigation('/dashboard/bible')}
           >
             <BookOpen className="mr-2 h-5 w-5" />
             Bible
@@ -57,6 +62,7 @@ export default function PrayerTab() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+            onClick={() => handleNavigation('/dashboard/schedule')}
           >
             <Calendar className="mr-2 h-5 w-5" />
             Schedule
@@ -64,6 +70,7 @@ export default function PrayerTab() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+            onClick={() => handleNavigation('/dashboard/settings')}
           >
             <Settings className="mr-2 h-5 w-5" />
             Settings
