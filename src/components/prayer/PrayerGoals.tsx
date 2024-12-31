@@ -5,12 +5,23 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const PrayerGoals = () => {
   const [targetMinutes, setTargetMinutes] = useState("");
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleSetGoal = async () => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to set a goal",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const currentDate = new Date();
       const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -19,7 +30,8 @@ export const PrayerGoals = () => {
         .from('prayer_goals')
         .upsert({
           target_minutes: parseInt(targetMinutes),
-          month: firstDayOfMonth.toISOString()
+          month: firstDayOfMonth.toISOString(),
+          user_id: user.id
         });
 
       if (error) throw error;
