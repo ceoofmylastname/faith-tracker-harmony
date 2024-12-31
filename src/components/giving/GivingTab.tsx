@@ -6,6 +6,13 @@ import GivingForm from "./GivingForm";
 import GivingGoals from "./GivingGoals";
 import { useGivingAnalytics } from "@/hooks/useGivingAnalytics";
 import { Progress } from "@/components/ui/progress";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function GivingTab() {
   const { data: analytics, isLoading } = useGivingAnalytics();
@@ -14,9 +21,19 @@ export default function GivingTab() {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Tithes & Giving</h1>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" /> Record Giving
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" /> Record Giving
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Record Giving</DialogTitle>
+            </DialogHeader>
+            <GivingForm />
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
