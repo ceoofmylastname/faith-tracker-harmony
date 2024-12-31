@@ -92,7 +92,7 @@ export function FastingDashboard() {
 
   return (
     <div className="grid gap-6 md:grid-cols-3">
-      <Card className="transform hover:scale-[1.02] transition-all duration-300 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+      <Card className="transform hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-gray-100/50 to-gray-300/50 dark:from-gray-800/50 dark:to-gray-700/50 backdrop-blur-sm">
         <CardHeader>
           <CardTitle>Start Date</CardTitle>
         </CardHeader>
@@ -103,7 +103,7 @@ export function FastingDashboard() {
         </CardContent>
       </Card>
 
-      <Card className="transform hover:scale-[1.02] transition-all duration-300 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+      <Card className="transform hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-gray-100/50 to-gray-300/50 dark:from-gray-800/50 dark:to-gray-700/50 backdrop-blur-sm">
         <CardHeader>
           <CardTitle>Type of Fast</CardTitle>
         </CardHeader>
@@ -112,7 +112,7 @@ export function FastingDashboard() {
         </CardContent>
       </Card>
 
-      <Card className="transform hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-purple-500/50 to-blue-500/50 text-white backdrop-blur-sm">
+      <Card className="transform hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-[#800020]/50 to-gray-500/50 dark:from-[#800020]/50 dark:to-gray-600/50 text-white backdrop-blur-sm">
         <CardHeader>
           <CardTitle>Days Remaining</CardTitle>
         </CardHeader>
@@ -128,7 +128,7 @@ export function FastingDashboard() {
       </Card>
 
       {activeFast.notes && (
-        <Card className="md:col-span-3 transform hover:scale-[1.02] transition-all duration-300 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+        <Card className="md:col-span-3 transform hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-gray-100/50 to-gray-300/50 dark:from-gray-800/50 dark:to-gray-700/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Notes</CardTitle>
           </CardHeader>
