@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Home, Heart, BookOpen, Calendar, Settings } from "lucide-react";
+import { Home, Heart, BookOpen, Timer, Settings } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import PrayerTab from "@/components/prayer/PrayerTab";
 import BibleTab from "@/components/bible/BibleTab";
-import ScheduleTab from "@/components/schedule/ScheduleTab";
+import FastingTab from "@/components/fasting/FastingTab";
 import DashboardHome from "@/components/dashboard/DashboardHome";
 
 export default function Dashboard() {
@@ -59,10 +59,10 @@ export default function Dashboard() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => navigate('/dashboard/schedule')}
+            onClick={() => navigate('/dashboard/fasting')}
           >
-            <Calendar className="mr-2 h-5 w-5" />
-            Schedule
+            <Timer className="mr-2 h-5 w-5" />
+            Fasting
           </Button>
           <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1">
             <Settings className="mr-2 h-5 w-5" />
@@ -76,7 +76,7 @@ export default function Dashboard() {
           <Route index element={<DashboardHome />} />
           <Route path="prayer" element={<PrayerTab />} />
           <Route path="bible" element={<BibleTab />} />
-          <Route path="schedule" element={<ScheduleTab />} />
+          <Route path="fasting" element={<FastingTab />} />
         </Routes>
       </div>
     </div>
