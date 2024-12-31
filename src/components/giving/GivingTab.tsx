@@ -4,8 +4,12 @@ import { Plus } from "lucide-react";
 import GivingCharts from "./GivingCharts";
 import GivingForm from "./GivingForm";
 import GivingGoals from "./GivingGoals";
+import { useGivingAnalytics } from "@/hooks/useGivingAnalytics";
+import { Progress } from "@/components/ui/progress";
 
 export default function GivingTab() {
+  const { data: analytics, isLoading } = useGivingAnalytics();
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -23,8 +27,10 @@ export default function GivingTab() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$12,450</div>
-            <p className="text-xs text-muted-foreground">+20.1% from last year</p>
+            <div className="text-2xl font-bold">
+              ${isLoading ? "..." : analytics?.totalGivingYTD.toFixed(2)}
+            </div>
+            <p className="text-xs text-muted-foreground">Track your total giving for the year</p>
           </CardContent>
         </Card>
         <Card>
@@ -34,8 +40,12 @@ export default function GivingTab() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$8,320</div>
-            <p className="text-xs text-muted-foreground">66.8% of total giving</p>
+            <div className="text-2xl font-bold">
+              ${isLoading ? "..." : analytics?.tithesYTD.toFixed(2)}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {isLoading ? "..." : ((analytics?.tithesYTD || 0) / (analytics?.totalGivingYTD || 1) * 100).toFixed(1)}% of total giving
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -45,7 +55,9 @@ export default function GivingTab() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$1,037.50</div>
+            <div className="text-2xl font-bold">
+              ${isLoading ? "..." : analytics?.monthlyAverage.toFixed(2)}
+            </div>
             <p className="text-xs text-muted-foreground">Last 12 months</p>
           </CardContent>
         </Card>
@@ -55,9 +67,11 @@ export default function GivingTab() {
               Goal Progress
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">85%</div>
-            <p className="text-xs text-muted-foreground">Annual goal: $15,000</p>
+          <CardContent className="space-y-2">
+            <div className="text-2xl font-bold">
+              {isLoading ? "..." : analytics?.goalProgress.toFixed(0)}%
+            </div>
+            <Progress value={analytics?.goalProgress} />
           </CardContent>
         </Card>
       </div>

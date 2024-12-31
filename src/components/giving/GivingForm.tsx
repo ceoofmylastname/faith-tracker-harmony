@@ -7,10 +7,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function GivingForm() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
@@ -43,6 +45,9 @@ export default function GivingForm() {
         title: "Success",
         description: "Your giving record has been saved",
       });
+
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ["giving-analytics"] });
 
       // Reset form
       setAmount("");

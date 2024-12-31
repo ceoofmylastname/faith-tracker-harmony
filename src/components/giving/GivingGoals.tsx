@@ -7,10 +7,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { format, addMonths } from "date-fns";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function GivingGoals() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [targetAmount, setTargetAmount] = useState("");
   const [category, setCategory] = useState("");
   const [endDate, setEndDate] = useState(format(addMonths(new Date(), 1), "yyyy-MM-dd"));
@@ -42,6 +44,9 @@ export default function GivingGoals() {
         title: "Success",
         description: "Your giving goal has been set",
       });
+
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ["giving-analytics"] });
 
       // Reset form
       setTargetAmount("");
