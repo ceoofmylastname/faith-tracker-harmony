@@ -57,11 +57,19 @@ export default function Dashboard() {
           <h1 className="text-2xl font-bold">Faith Tracker</h1>
         </div>
         <nav className="space-y-4">
-          <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1">
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+            onClick={() => navigate('/dashboard')}
+          >
             <Home className="mr-2 h-5 w-5" />
             Home
           </Button>
-          <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1">
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+            onClick={() => navigate('/dashboard/prayer')}
+          >
             <Heart className="mr-2 h-5 w-5" />
             Prayer
           </Button>
