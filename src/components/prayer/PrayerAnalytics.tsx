@@ -17,15 +17,15 @@ export const PrayerAnalytics = () => {
 
     const fetchPrayerData = async () => {
       const currentDate = new Date();
-      const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+      const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0)).toISOString();
+      const endOfDay = new Date(currentDate.setHours(23, 59, 59, 999)).toISOString();
 
       // Fetch current month's goal
       const { data: goalData, error: goalError } = await supabase
         .from('prayer_goals')
         .select('target_minutes')
         .eq('user_id', user.id)
-        .eq('month', firstDayOfMonth.toISOString())
+        .eq('month', new Date().toISOString().slice(0, 7) + '-01')
         .maybeSingle();
 
       if (goalError) {
@@ -33,13 +33,13 @@ export const PrayerAnalytics = () => {
         return;
       }
 
-      // Fetch prayer sessions for the current month
+      // Fetch prayer sessions for today
       const { data: sessionsData, error: sessionsError } = await supabase
         .from('prayer_sessions')
         .select('duration_seconds')
         .eq('user_id', user.id)
-        .gte('started_at', firstDayOfMonth.toISOString())
-        .lte('started_at', lastDayOfMonth.toISOString());
+        .gte('started_at', startOfDay)
+        .lte('started_at', endOfDay);
 
       if (sessionsError) {
         console.error('Error fetching prayer sessions:', sessionsError);
@@ -58,7 +58,7 @@ export const PrayerAnalytics = () => {
     fetchPrayerData();
 
     // Subscribe to real-time updates for prayer sessions
-    const sessionsChannel = supabase
+    const channel = supabase
       .channel('prayer-analytics')
       .on(
         'postgres_changes',
@@ -74,26 +74,8 @@ export const PrayerAnalytics = () => {
       )
       .subscribe();
 
-    // Subscribe to real-time updates for prayer goals
-    const goalsChannel = supabase
-      .channel('prayer-goals')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'prayer_goals',
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => {
-          fetchPrayerData();
-        }
-      )
-      .subscribe();
-
     return () => {
-      supabase.removeChannel(sessionsChannel);
-      supabase.removeChannel(goalsChannel);
+      supabase.removeChannel(channel);
     };
   }, [user]);
 
@@ -136,7 +118,9 @@ export const PrayerAnalytics = () => {
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="text-right text-sm mt-1 text-gray-600 dark:text-gray-400">{Math.round(progress)}%</p>
+          <p className="text-right text-sm mt-1 text-gray-600 dark:text-gray-400">
+            {Math.round(progress)}% ({totalMinutes} / {goalMinutes} minutes)
+          </p>
         </div>
       </CardContent>
     </Card>

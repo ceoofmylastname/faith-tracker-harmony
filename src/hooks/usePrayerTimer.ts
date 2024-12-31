@@ -69,6 +69,12 @@ export const usePrayerTimer = () => {
           title: "Prayer session saved",
           description: `You prayed for ${Math.floor(time / 60)} minutes and ${time % 60} seconds`,
         });
+
+        // Reset timer after saving
+        setTime(0);
+        setStartTime(null);
+        
+        return true;
       } catch (error: any) {
         console.error('Error saving prayer session:', error);
         toast({
@@ -76,11 +82,9 @@ export const usePrayerTimer = () => {
           description: "Please try again later",
           variant: "destructive",
         });
+        return false;
       }
     }
-
-    setTime(0);
-    setStartTime(null);
   };
 
   return {
