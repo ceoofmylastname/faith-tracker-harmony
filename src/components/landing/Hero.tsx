@@ -7,10 +7,10 @@ import { useToast } from "@/components/ui/use-toast";
 export const Hero = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const { signUp } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!email) {
       toast({
         variant: "destructive",
@@ -20,14 +20,7 @@ export const Hero = () => {
       return;
     }
 
-    try {
-      // Generate a random password for the user
-      const password = Math.random().toString(36).slice(-8);
-      await signUp(email, password);
-      navigate("/signup");
-    } catch (error) {
-      // Error is handled by AuthContext
-    }
+    navigate("/signup");
   };
 
   return (
@@ -46,21 +39,33 @@ export const Hero = () => {
         </p>
 
         <div className="max-w-xl mx-auto space-y-6">
-          <input
-            type="email"
-            placeholder="Enter Your Best Email"
-            className="w-full px-6 py-4 rounded-full bg-white text-gray-900 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          
-          <Button
-            size="lg"
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl py-6 rounded-full"
-            onClick={handleSubmit}
-          >
-            Tell Me More
-          </Button>
+          {user ? (
+            <Button
+              size="lg"
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl py-6 rounded-full"
+              onClick={() => navigate("/dashboard")}
+            >
+              Go to Dashboard
+            </Button>
+          ) : (
+            <>
+              <input
+                type="email"
+                placeholder="Enter Your Best Email"
+                className="w-full px-6 py-4 rounded-full bg-white text-gray-900 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              
+              <Button
+                size="lg"
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl py-6 rounded-full"
+                onClick={handleSubmit}
+              >
+                Tell Me More
+              </Button>
+            </>
+          )}
           
           <p className="text-sm text-gray-400">
             We respect your privacy. Your email address will never be shared or sold
