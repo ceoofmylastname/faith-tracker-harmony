@@ -4,14 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Home, Heart, BookOpen, Calendar, Settings } from "lucide-react";
+import { Home, Heart, BookOpen, Calendar, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { PrayerTimer } from "./PrayerTimer";
 import { PrayerGoals } from "./PrayerGoals";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function PrayerTab() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
   const [reflection, setReflection] = useState("");
 
   const verseOfTheDay = {
@@ -21,6 +23,23 @@ export default function PrayerTab() {
 
   const handleNavigation = (path: string) => {
     navigate(path);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate("/");
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error signing out",
+        description: error.message,
+      });
+    }
   };
 
   return (
@@ -34,46 +53,57 @@ export default function PrayerTab() {
           </Avatar>
           <h1 className="text-2xl font-bold">Faith Tracker</h1>
         </div>
-        <nav className="space-y-4">
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => handleNavigation('/dashboard')}
+        <nav className="flex flex-col h-[calc(100%-160px)] justify-between">
+          <div className="space-y-4">
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+              onClick={() => handleNavigation('/dashboard')}
+            >
+              <Home className="mr-2 h-5 w-5" />
+              Home
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+              onClick={() => handleNavigation('/dashboard/prayer')}
+            >
+              <Heart className="mr-2 h-5 w-5" />
+              Prayer
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+              onClick={() => handleNavigation('/dashboard/bible')}
+            >
+              <BookOpen className="mr-2 h-5 w-5" />
+              Bible
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+              onClick={() => handleNavigation('/dashboard/schedule')}
+            >
+              <Calendar className="mr-2 h-5 w-5" />
+              Schedule
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+              onClick={() => handleNavigation('/dashboard/settings')}
+            >
+              <Settings className="mr-2 h-5 w-5" />
+              Settings
+            </Button>
+          </div>
+          
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1 mt-auto"
+            onClick={handleSignOut}
           >
-            <Home className="mr-2 h-5 w-5" />
-            Home
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => handleNavigation('/dashboard/prayer')}
-          >
-            <Heart className="mr-2 h-5 w-5" />
-            Prayer
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => handleNavigation('/dashboard/bible')}
-          >
-            <BookOpen className="mr-2 h-5 w-5" />
-            Bible
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => handleNavigation('/dashboard/schedule')}
-          >
-            <Calendar className="mr-2 h-5 w-5" />
-            Schedule
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => handleNavigation('/dashboard/settings')}
-          >
-            <Settings className="mr-2 h-5 w-5" />
-            Settings
+            <LogOut className="mr-2 h-5 w-5" />
+            Sign Out
           </Button>
         </nav>
       </div>
