@@ -1,4 +1,7 @@
-import { PrayerAnalytics } from "@/components/prayer/PrayerAnalytics";
+import { PrayerCard } from "./cards/PrayerCard";
+import { BibleCard } from "./cards/BibleCard";
+import { FastingCard } from "./cards/FastingCard";
+import { GivingCard } from "./cards/GivingCard";
 
 export default function DashboardHome() {
   return (
@@ -7,9 +10,11 @@ export default function DashboardHome() {
         Welcome to Your Faith Journey
       </h1>
 
-      {/* Prayer Analytics */}
-      <div className="grid grid-cols-1 gap-6">
-        <PrayerAnalytics />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <PrayerCard />
+        <BibleCard />
+        <FastingCard />
+        <GivingCard />
       </div>
     </div>
   );
