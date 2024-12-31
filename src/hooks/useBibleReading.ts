@@ -19,13 +19,28 @@ export const useBibleReading = () => {
     const fetchData = async () => {
       try {
         // Fetch reading goal
-        const { data: goalData } = await supabase
+        const { data: goalData, error: goalError } = await supabase
           .from("bible_reading_goals")
           .select("daily_minutes")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
 
-        if (goalData) {
+        if (goalError) throw goalError;
+
+        // If no goal exists, create a default one
+        if (!goalData) {
+          const { data: newGoal, error: createError } = await supabase
+            .from("bible_reading_goals")
+            .insert({
+              user_id: user.id,
+              daily_minutes: 30,
+            })
+            .select("daily_minutes")
+            .single();
+
+          if (createError) throw createError;
+          setReadingGoal(newGoal.daily_minutes);
+        } else {
           setReadingGoal(goalData.daily_minutes);
         }
 
