@@ -4,22 +4,22 @@ const cards = [
   {
     title: "Website",
     description: "Explore our digital presence and discover more about our mission",
-    image: "/placeholder.svg",
+    image: "/lovable-uploads/8ef7bec8-b319-48a5-9a9c-7bae2add49b7.png",
   },
   {
     title: "Instagram",
     description: "Follow our journey through inspiring images and stories",
-    image: "/placeholder.svg",
+    image: "/lovable-uploads/8ef7bec8-b319-48a5-9a9c-7bae2add49b7.png",
   },
   {
     title: "Slack",
     description: "Join our community and connect with fellow believers",
-    image: "/placeholder.svg",
+    image: "/lovable-uploads/8ef7bec8-b319-48a5-9a9c-7bae2add49b7.png",
   },
   {
     title: "YouTube",
     description: "Watch our sermons, testimonies, and spiritual content",
-    image: "/placeholder.svg",
+    image: "/lovable-uploads/8ef7bec8-b319-48a5-9a9c-7bae2add49b7.png",
   },
 ];
 
