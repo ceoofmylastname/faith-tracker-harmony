@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -11,7 +9,6 @@ export const PrayerAnalytics = () => {
   const [progress, setProgress] = useState(0);
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [goalMinutes, setGoalMinutes] = useState(0);
-  const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -100,6 +97,10 @@ export const PrayerAnalytics = () => {
     };
   }, [user]);
 
+  const handleCardClick = () => {
+    navigate('/dashboard/prayer');
+  };
+
   const getProgressColor = () => {
     if (progress <= 30) return "bg-red-500";
     if (progress <= 70) return "bg-yellow-500";
@@ -111,10 +112,6 @@ export const PrayerAnalytics = () => {
     if (progress <= 70) return "You're on track! Keep up the great work.";
     if (progress <= 90) return "Almost there—stay consistent!";
     return "Amazing progress! You've crushed your goal!";
-  };
-
-  const handleCardClick = () => {
-    navigate('/dashboard/prayer');
   };
 
   return (
@@ -133,12 +130,12 @@ export const PrayerAnalytics = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          <Progress value={progress} className="h-2">
+          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div 
               className={`h-full rounded-full transition-all duration-500 ${getProgressColor()}`}
               style={{ width: `${progress}%` }}
             />
-          </Progress>
+          </div>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             {getProgressMessage()}
           </p>
