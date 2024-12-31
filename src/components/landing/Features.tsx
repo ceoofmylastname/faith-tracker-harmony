@@ -27,7 +27,7 @@ export const Features = () => {
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-6">
-        <h2 className="text-3xl font-bold text-center text-[#5D4037] mb-16 font-raleway">
+        <h2 className="text-3xl font-bold text-center text-primary mb-16 font-raleway">
           Get In Touch
         </h2>
         <div className="flex flex-wrap justify-center items-center gap-8">
