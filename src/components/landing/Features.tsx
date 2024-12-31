@@ -1,8 +1,8 @@
-import { BookOpen, Calendar, PrayingHands, Timer } from "lucide-react";
+import { BookOpen, Calendar, Heart, Timer } from "lucide-react";
 
 const features = [
   {
-    icon: PrayingHands,
+    icon: Heart,
     title: "Prayer Tracking",
     description: "Track your daily prayers and build consistent prayer habits",
   },
