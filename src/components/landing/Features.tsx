@@ -1,45 +1,43 @@
-import { BookOpen, Calendar, Heart, Timer } from "lucide-react";
+import { InteractiveCard } from "./InteractiveCard";
 
-const features = [
+const cards = [
   {
-    icon: Heart,
-    title: "Prayer Tracking",
-    description: "Track your daily prayers and build consistent prayer habits",
+    title: "Website",
+    description: "Explore our digital presence and discover more about our mission",
+    image: "/placeholder.svg",
   },
   {
-    icon: BookOpen,
-    title: "Bible Reading",
-    description: "Set and achieve your Bible reading goals with progress tracking",
+    title: "Instagram",
+    description: "Follow our journey through inspiring images and stories",
+    image: "/placeholder.svg",
   },
   {
-    icon: Timer,
-    title: "Fasting Tracker",
-    description: "Monitor your fasting journey and spiritual growth",
+    title: "Slack",
+    description: "Join our community and connect with fellow believers",
+    image: "/placeholder.svg",
   },
   {
-    icon: Calendar,
-    title: "Calendar Integration",
-    description: "Organize all your spiritual activities in one place",
+    title: "YouTube",
+    description: "Watch our sermons, testimonies, and spiritual content",
+    image: "/placeholder.svg",
   },
 ];
 
 export const Features = () => {
   return (
-    <section className="py-20 bg-[#1A1A1A]">
+    <section className="py-20 bg-[#BCAAA4]">
       <div className="container mx-auto px-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-center bg-gradient-text bg-clip-text text-transparent mb-16">
-          Features to Enhance Your Spiritual Journey
+        <h2 className="text-3xl font-bold text-center text-[#5D4037] mb-16 font-raleway">
+          Hover over the cards
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature) => (
-            <div
-              key={feature.title}
-              className="flex flex-col items-center text-center p-6 rounded-lg bg-gray-900 hover:bg-gray-800 transition-colors"
-            >
-              <feature.icon className="w-12 h-12 text-purple-500 mb-4" />
-              <h3 className="text-xl font-semibold mb-2 text-white">{feature.title}</h3>
-              <p className="text-gray-400">{feature.description}</p>
-            </div>
+        <div className="flex flex-wrap justify-center items-center gap-8">
+          {cards.map((card) => (
+            <InteractiveCard
+              key={card.title}
+              title={card.title}
+              description={card.description}
+              image={card.image}
+            />
           ))}
         </div>
       </div>

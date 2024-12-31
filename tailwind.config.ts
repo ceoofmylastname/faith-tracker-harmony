@@ -86,7 +86,36 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         fadeIn: "fadeIn 0.5s ease-out",
       },
+      fontFamily: {
+        'raleway': ['Raleway', 'sans-serif'],
+        'playfair': ['"Playfair Display"', 'serif'],
+      },
+      transitionTimingFunction: {
+        'hover-ease': 'cubic-bezier(0.23, 1, 0.32, 1)',
+        'return-ease': 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
+      },
+      textShadow: {
+        'sm': '0 1px 2px rgba(0, 0, 0, 0.5)',
+        'md': '0 2px 3px rgba(0, 0, 0, 1)',
+        'lg': '0 10px 10px rgba(0, 0, 0, 0.5)',
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    function({ addUtilities }: { addUtilities: Function }) {
+      const newUtilities = {
+        '.text-shadow-sm': {
+          textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
+        },
+        '.text-shadow-md': {
+          textShadow: '0 2px 3px rgba(0, 0, 0, 1)',
+        },
+        '.text-shadow-lg': {
+          textShadow: '0 10px 10px rgba(0, 0, 0, 0.5)',
+        },
+      };
+      addUtilities(newUtilities);
+    },
+  ],
 } satisfies Config;
