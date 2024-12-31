@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Bible, BookOpen, Calendar, Home, PrayingHands, Settings, Wallet } from "lucide-react";
+import { BookOpen, Calendar, Home, Settings, Wallet, Heart, ScrollText } from "lucide-react";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export default function Dashboard() {
   if (!user) return null;
 
   const popularActivities = [
-    { title: "Prayer", icon: PrayingHands, bg: "bg-purple-100" },
+    { title: "Prayer", icon: Heart, bg: "bg-purple-100" },
     { title: "Bible Reading", icon: BookOpen, bg: "bg-blue-100" },
     { title: "Fasting", icon: Calendar, bg: "bg-green-100" },
     { title: "Giving", icon: Wallet, bg: "bg-yellow-100" },
@@ -43,11 +43,11 @@ export default function Dashboard() {
             Home
           </Button>
           <Button variant="ghost" className="w-full justify-start text-white">
-            <PrayingHands className="mr-2 h-5 w-5" />
+            <Heart className="mr-2 h-5 w-5" />
             Prayer
           </Button>
           <Button variant="ghost" className="w-full justify-start text-white">
-            <Bible className="mr-2 h-5 w-5" />
+            <ScrollText className="mr-2 h-5 w-5" />
             Bible
           </Button>
           <Button variant="ghost" className="w-full justify-start text-white">
