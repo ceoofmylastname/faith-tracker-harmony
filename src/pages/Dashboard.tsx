@@ -2,13 +2,14 @@ import { useEffect } from "react";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Home, Heart, BookOpen, Timer, Settings, LogOut } from "lucide-react";
+import { Home, Heart, BookOpen, Timer, Wallet, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
 import PrayerTab from "@/components/prayer/PrayerTab";
 import BibleTab from "@/components/bible/BibleTab";
 import FastingTab from "@/components/fasting/FastingTab";
 import DashboardHome from "@/components/dashboard/DashboardHome";
+import GivingTab from "@/components/giving/GivingTab";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -84,9 +85,13 @@ export default function Dashboard() {
               <Timer className="mr-2 h-5 w-5" />
               Fasting
             </Button>
-            <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1">
-              <Settings className="mr-2 h-5 w-5" />
-              Settings
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+              onClick={() => navigate('/dashboard/giving')}
+            >
+              <Wallet className="mr-2 h-5 w-5" />
+              Tithes & Giving
             </Button>
           </div>
           
@@ -107,6 +112,7 @@ export default function Dashboard() {
           <Route path="prayer" element={<PrayerTab />} />
           <Route path="bible" element={<BibleTab />} />
           <Route path="fasting" element={<FastingTab />} />
+          <Route path="giving" element={<GivingTab />} />
         </Routes>
       </div>
     </div>
