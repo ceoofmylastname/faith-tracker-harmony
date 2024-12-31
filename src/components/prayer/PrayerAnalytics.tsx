@@ -124,21 +124,19 @@ export const PrayerAnalytics = () => {
           <Heart className="h-4 w-4 inline-block mr-2 text-red-500" />
           Daily Prayer
         </CardTitle>
-        <span className="text-sm text-gray-500">
-          {totalMinutes} / {goalMinutes} mins
-        </span>
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {getProgressMessage()}
+          </p>
           <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div 
               className={`h-full rounded-full transition-all duration-500 ${getProgressColor()}`}
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {getProgressMessage()}
-          </p>
+          <p className="text-right text-sm mt-1 text-gray-600 dark:text-gray-400">{Math.round(progress)}%</p>
         </div>
       </CardContent>
     </Card>
