@@ -1,17 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Heart, BookOpen, Calendar, Wallet } from "lucide-react";
+import { BookOpen, Calendar, Wallet } from "lucide-react";
+import { PrayerAnalytics } from "@/components/prayer/PrayerAnalytics";
 
 export default function DashboardHome() {
-  const popularActivities = [
-    { 
-      title: "Daily Prayer", 
-      icon: Heart, 
-      bg: "bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/30 dark:to-red-800/30",
-      progress: 75,
-      description: "Track your daily prayers and reflections" 
-    },
+  const otherActivities = [
     { 
       title: "Bible Reading", 
       icon: BookOpen, 
@@ -50,7 +43,8 @@ export default function DashboardHome() {
 
       {/* Popular Activities Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {popularActivities.map((activity) => (
+        <PrayerAnalytics />
+        {otherActivities.map((activity) => (
           <Card key={activity.title} className="transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-xl">
             <CardHeader className={`${activity.bg} rounded-t-lg p-4`}>
               <div className="flex items-center gap-2">
@@ -60,12 +54,12 @@ export default function DashboardHome() {
             </CardHeader>
             <CardContent className="p-4">
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{activity.description}</p>
-              <Progress value={activity.progress} className="h-2">
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-red-700 to-red-500 rounded-full" 
+                  className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500" 
                   style={{ width: `${activity.progress}%` }} 
                 />
-              </Progress>
+              </div>
               <p className="text-right text-sm mt-1 text-gray-600 dark:text-gray-400">{activity.progress}%</p>
             </CardContent>
           </Card>
