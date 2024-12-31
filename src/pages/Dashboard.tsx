@@ -4,9 +4,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Calendar, Home, Settings, Wallet, Heart, ScrollText } from "lucide-react";
+import { BookOpen, Calendar, Home, Heart, Settings, Wallet, ScrollText } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import PrayerTab from "@/components/prayer/PrayerTab";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -80,110 +81,8 @@ export default function Dashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="ml-64 p-8">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg transform hover:scale-[1.01] transition-all duration-300">
-          <div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-red-700 to-red-900 bg-clip-text text-transparent">
-              Welcome back, {user.email}!
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400">Keep growing closer to Yahowah</p>
-          </div>
-          <Button onClick={() => signOut()} variant="outline" className="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shadow-md">
-            Sign Out
-          </Button>
-        </div>
-
-        {/* Popular Activities Grid */}
-        <div className="mb-8">
-          <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Spiritual Activities</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <TooltipProvider>
-              {popularActivities.map((activity) => (
-                <Tooltip key={activity.title}>
-                  <TooltipTrigger>
-                    <Card className={`${activity.bg} border-none hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1`}>
-                      <CardContent className="p-6 flex items-center space-x-4">
-                        <activity.icon className="h-8 w-8 text-red-900" />
-                        <span className="font-medium text-lg">{activity.title}</span>
-                      </CardContent>
-                    </Card>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{activity.tooltip}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </TooltipProvider>
-          </div>
-        </div>
-
-        {/* Progress Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <Card className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-none shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-            <CardHeader>
-              <CardTitle>Daily Progress</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-700 dark:text-gray-300">Prayer Time</span>
-                    <span className="text-red-700 dark:text-red-400">85%</span>
-                  </div>
-                  <Progress value={85} className="h-2 bg-red-100 dark:bg-red-900">
-                    <div className="h-full bg-gradient-to-r from-red-700 to-red-500" style={{ width: "85%" }} />
-                  </Progress>
-                </div>
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-700 dark:text-gray-300">Bible Reading</span>
-                    <span className="text-red-700 dark:text-red-400">60%</span>
-                  </div>
-                  <Progress value={60} className="h-2 bg-red-100 dark:bg-red-900">
-                    <div className="h-full bg-gradient-to-r from-red-700 to-red-500" style={{ width: "60%" }} />
-                  </Progress>
-                </div>
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-700 dark:text-gray-300">Fasting Goal</span>
-                    <span className="text-red-700 dark:text-red-400">40%</span>
-                  </div>
-                  <Progress value={40} className="h-2 bg-red-100 dark:bg-red-900">
-                    <div className="h-full bg-gradient-to-r from-red-700 to-red-500" style={{ width: "40%" }} />
-                  </Progress>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-none shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-            <CardHeader>
-              <CardTitle>Weekly Schedule</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {weeklySchedule.map((item) => (
-                  <div
-                    key={item.day}
-                    className="flex items-center justify-between p-3 bg-white dark:bg-gray-700 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <span className="font-bold text-red-900 dark:text-red-400">{item.day}</span>
-                      <div>
-                        <p className={`font-medium ${getActivityColor(item.type)}`}>{item.activity}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{item.time}</p>
-                      </div>
-                    </div>
-                    <Button variant="outline" size="sm" className="hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors shadow-sm hover:shadow-md">
-                      Join
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+      <div className="ml-64 min-h-screen">
+        <PrayerTab />
       </div>
     </div>
   );
