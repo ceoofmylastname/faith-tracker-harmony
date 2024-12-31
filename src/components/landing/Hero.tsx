@@ -48,23 +48,42 @@ export const Hero = () => {
               Go to Dashboard
             </Button>
           ) : (
-            <>
-              <input
-                type="email"
-                placeholder="Enter Your Best Email"
-                className="w-full px-6 py-4 rounded-full bg-white text-gray-900 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+            <div className="space-y-4">
+              <div className="flex gap-4 justify-center">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl py-6 px-8 rounded-full"
+                  onClick={() => navigate("/login")}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl py-6 px-8 rounded-full"
+                  onClick={() => navigate("/signup")}
+                >
+                  Sign Up
+                </Button>
+              </div>
               
-              <Button
-                size="lg"
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl py-6 rounded-full"
-                onClick={handleSubmit}
-              >
-                Tell Me More
-              </Button>
-            </>
+              <div className="space-y-4">
+                <input
+                  type="email"
+                  placeholder="Enter Your Best Email"
+                  className="w-full px-6 py-4 rounded-full bg-white text-gray-900 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                
+                <Button
+                  size="lg"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl py-6 rounded-full"
+                  onClick={handleSubmit}
+                >
+                  Tell Me More
+                </Button>
+              </div>
+            </div>
           )}
           
           <p className="text-sm text-gray-400">
