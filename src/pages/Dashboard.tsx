@@ -1,13 +1,11 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Routes, Route } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Calendar, Home, Heart, Settings, Wallet, ScrollText } from "lucide-react";
+import { Home, Heart, Calendar, Settings, ScrollText } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import PrayerTab from "@/components/prayer/PrayerTab";
+import DashboardHome from "@/components/dashboard/DashboardHome";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -21,34 +19,10 @@ export default function Dashboard() {
 
   if (!user) return null;
 
-  const popularActivities = [
-    { title: "Prayer", icon: Heart, bg: "bg-gradient-to-br from-purple-100 to-purple-200", tooltip: "Track your daily prayers" },
-    { title: "Bible Reading", icon: BookOpen, bg: "bg-gradient-to-br from-blue-100 to-blue-200", tooltip: "Monitor your Bible study progress" },
-    { title: "Fasting", icon: Calendar, bg: "bg-gradient-to-br from-green-100 to-green-200", tooltip: "Log your fasting journey" },
-    { title: "Giving", icon: Wallet, bg: "bg-gradient-to-br from-yellow-100 to-yellow-200", tooltip: "Manage your tithes and offerings" },
-  ];
-
-  const weeklySchedule = [
-    { day: "MON", activity: "Morning Prayer", time: "6:00 AM", participants: 3, type: "prayer" },
-    { day: "WED", activity: "Bible Study", time: "7:00 PM", participants: 5, type: "bible" },
-    { day: "FRI", activity: "Fasting", time: "All Day", participants: 2, type: "fasting" },
-    { day: "SUN", activity: "Church Service", time: "10:00 AM", participants: 12, type: "service" },
-  ];
-
-  const getActivityColor = (type) => {
-    const colors = {
-      prayer: "text-purple-600",
-      bible: "text-blue-600",
-      fasting: "text-green-600",
-      service: "text-yellow-600",
-    };
-    return colors[type] || "text-gray-600";
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Sidebar with maroon gradient */}
-      <div className="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-red-900 via-red-800 to-red-900 text-white p-6 shadow-2xl transition-all duration-300 ease-in-out">
+      <div className="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-red-900 via-red-800 to-red-900 text-white p-6 shadow-2xl transition-all duration-300 ease-in-out z-50">
         <div className="flex items-center gap-3 mb-8">
           <Avatar className="h-10 w-10 ring-2 ring-white/20">
             <AvatarImage src={user.user_metadata?.avatar_url} />
@@ -90,7 +64,10 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <div className="ml-64 min-h-screen">
-        <PrayerTab />
+        <Routes>
+          <Route index element={<DashboardHome />} />
+          <Route path="prayer" element={<PrayerTab />} />
+        </Routes>
       </div>
     </div>
   );
