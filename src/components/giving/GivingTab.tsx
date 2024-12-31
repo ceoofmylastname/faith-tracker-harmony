@@ -89,6 +89,9 @@ export default function GivingTab() {
               {isLoading ? "..." : analytics?.goalProgress.toFixed(0)}%
             </div>
             <Progress value={analytics?.goalProgress} />
+            <p className="text-xs text-muted-foreground">
+              ${isLoading ? "..." : analytics?.currentGoalAmount?.toFixed(2) || "0.00"} goal
+            </p>
           </CardContent>
         </Card>
       </div>

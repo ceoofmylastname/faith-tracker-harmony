@@ -7,6 +7,7 @@ interface GivingAnalytics {
   tithesYTD: number;
   monthlyAverage: number;
   goalProgress: number;
+  currentGoalAmount: number | null;
 }
 
 export function useGivingAnalytics() {
@@ -57,6 +58,7 @@ export function useGivingAnalytics() {
         tithesYTD,
         monthlyAverage,
         goalProgress: Math.min(goalProgress, 100),
+        currentGoalAmount: goalData ? Number(goalData.target_amount) : null,
       };
     },
     enabled: !!user,
