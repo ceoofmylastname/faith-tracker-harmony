@@ -14,7 +14,7 @@ const cards = [
   {
     title: "Slack",
     description: "Join our community and connect with fellow believers",
-    image: "https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/677480f904db6df33fef80aa.png",
+    image: "https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/677481a904db6d535eef8104.png",
   },
   {
     title: "YouTube",
