@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { BookOpen, Calendar, Wallet } from "lucide-react";
 import { PrayerAnalytics } from "@/components/prayer/PrayerAnalytics";
 
@@ -26,13 +25,6 @@ export default function DashboardHome() {
       progress: 45,
       description: "Track your tithes and offerings" 
     },
-  ];
-
-  const weeklySchedule = [
-    { day: "MON", activity: "Morning Prayer", time: "6:00 AM", participants: 3 },
-    { day: "WED", activity: "Bible Study", time: "7:00 PM", participants: 5 },
-    { day: "FRI", activity: "Fasting", time: "All Day", participants: 2 },
-    { day: "SUN", activity: "Church Service", time: "10:00 AM", participants: 12 },
   ];
 
   return (
@@ -65,36 +57,6 @@ export default function DashboardHome() {
           </Card>
         ))}
       </div>
-
-      {/* Weekly Schedule */}
-      <Card className="mt-6 transform hover:scale-[1.01] transition-all duration-300 shadow-lg hover:shadow-xl">
-        <CardHeader>
-          <CardTitle>Weekly Schedule</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {weeklySchedule.map((item) => (
-              <div 
-                key={item.day}
-                className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800/50 dark:to-gray-700/50 rounded-lg hover:shadow-md transition-all duration-300"
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-lg font-semibold text-red-600 dark:text-red-400 w-16">
-                    {item.day}
-                  </span>
-                  <div>
-                    <p className="font-medium">{item.activity}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{item.time}</p>
-                  </div>
-                </div>
-                <Button variant="outline" className="hover:bg-red-50 dark:hover:bg-red-900/20">
-                  Join
-                </Button>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
