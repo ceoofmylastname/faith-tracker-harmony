@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,11 +10,79 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { BookOpen, Clock, Save } from "lucide-react";
+import { BIBLE_BOOKS } from "@/lib/bible-data";
+import { useBibleReading } from "@/hooks/useBibleReading";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function BibleReader() {
+  const { toast } = useToast();
+  const {
+    readingGoal,
+    todayProgress,
+    startReadingSession,
+    endReadingSession,
+  } = useBibleReading();
+
   const [selectedBook, setSelectedBook] = useState("");
   const [selectedChapter, setSelectedChapter] = useState("");
   const [notes, setNotes] = useState("");
+  const [isReading, setIsReading] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [timer, setTimer] = useState(0);
+  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
+
+  const selectedBookData = BIBLE_BOOKS.find(book => book.name === selectedBook);
+  const chapters = selectedBookData ? Array.from({ length: selectedBookData.chapters }, (_, i) => i + 1) : [];
+
+  const handleStartTimer = async () => {
+    if (!selectedBook || !selectedChapter) {
+      toast({
+        title: "Selection Required",
+        description: "Please select a book and chapter before starting the timer",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const session = await startReadingSession(selectedBook, parseInt(selectedChapter));
+      if (session) {
+        setSessionId(session.id);
+        setIsReading(true);
+        const interval = setInterval(() => {
+          setTimer(prev => prev + 1);
+        }, 1000);
+        setTimerInterval(interval);
+      }
+    } catch (error) {
+      console.error("Error starting session:", error);
+    }
+  };
+
+  const handleStopTimer = async () => {
+    if (sessionId && timerInterval) {
+      clearInterval(timerInterval);
+      setTimerInterval(null);
+      await endReadingSession(sessionId, timer);
+      setIsReading(false);
+      setTimer(0);
+      setSessionId(null);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+    };
+  }, [timerInterval]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -27,37 +95,48 @@ export default function BibleReader() {
                   <SelectValue placeholder="Select Book" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="genesis">Genesis</SelectItem>
-                  <SelectItem value="exodus">Exodus</SelectItem>
-                  <SelectItem value="matthew">Matthew</SelectItem>
-                  {/* Add more books */}
+                  {BIBLE_BOOKS.map((book) => (
+                    <SelectItem key={book.name} value={book.name}>
+                      {book.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-              <Select value={selectedChapter} onValueChange={setSelectedChapter}>
+              <Select 
+                value={selectedChapter} 
+                onValueChange={setSelectedChapter}
+                disabled={!selectedBook}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select Chapter" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">Chapter 1</SelectItem>
-                  <SelectItem value="2">Chapter 2</SelectItem>
-                  <SelectItem value="3">Chapter 3</SelectItem>
-                  {/* Add more chapters */}
+                  {chapters.map((chapter) => (
+                    <SelectItem key={chapter} value={chapter.toString()}>
+                      Chapter {chapter}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
-            <Button variant="outline" className="gap-2">
+            <Button
+              variant={isReading ? "destructive" : "outline"}
+              className="gap-2"
+              onClick={isReading ? handleStopTimer : handleStartTimer}
+            >
               <Clock className="h-4 w-4" />
-              Start Timer
+              {isReading ? `Stop (${formatTime(timer)})` : "Start Timer"}
             </Button>
           </div>
           <div className="prose prose-sm dark:prose-invert max-w-none">
-            <h2 className="text-2xl font-semibold mb-4">Matthew 5</h2>
+            <h2 className="text-2xl font-semibold mb-4">
+              {selectedBook} {selectedChapter}
+            </h2>
             <p className="leading-relaxed">
-              Now when Jesus saw the crowds, he went up on a mountainside and sat down. 
-              His disciples came to him, and he began to teach them. He said: "Blessed 
-              are the poor in spirit, for theirs is the kingdom of heaven..."
+              {selectedBook && selectedChapter
+                ? "Bible content would be displayed here..."
+                : "Select a book and chapter to begin reading"}
             </p>
-            {/* Add more verses */}
           </div>
         </CardContent>
       </Card>

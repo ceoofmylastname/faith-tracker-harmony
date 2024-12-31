@@ -9,6 +9,123 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      bible_reading_goals: {
+        Row: {
+          created_at: string
+          daily_minutes: number
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          daily_minutes?: number
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          daily_minutes?: number
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bible_reading_goals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bible_reading_progress: {
+        Row: {
+          book: string
+          chapter: number
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          book: string
+          chapter: number
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          book?: string
+          chapter?: number
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bible_reading_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bible_reading_sessions: {
+        Row: {
+          book: string
+          chapter: number
+          created_at: string
+          duration_seconds: number
+          ended_at: string
+          id: string
+          started_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          book: string
+          chapter: number
+          created_at?: string
+          duration_seconds: number
+          ended_at: string
+          id?: string
+          started_at: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          book?: string
+          chapter?: number
+          created_at?: string
+          duration_seconds?: number
+          ended_at?: string
+          id?: string
+          started_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bible_reading_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prayer_goals: {
         Row: {
           created_at: string
