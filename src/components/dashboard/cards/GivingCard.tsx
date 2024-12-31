@@ -31,14 +31,14 @@ export function GivingCard() {
         .eq("user_id", user.id)
         .gte("date", startOfYear);
 
-      // Fetch latest goal
+      // Fetch latest goal - using maybeSingle() instead of single()
       const { data: goalData } = await supabase
         .from("giving_goals")
         .select("*")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (givingData) {
         const total = givingData.reduce((sum, record) => sum + Number(record.amount), 0);
@@ -51,6 +51,7 @@ export function GivingCard() {
           return acc;
         }, {} as Record<string, number>);
 
+        // Only set categories if we have a goal
         if (goalData) {
           setGoalAmount(Number(goalData.target_amount));
           setCategories([
@@ -91,7 +92,7 @@ export function GivingCard() {
     };
   }, [user]);
 
-  const totalProgress = Math.min((totalGiving / goalAmount) * 100, 100);
+  const totalProgress = Math.min((totalGiving / (goalAmount || 1)) * 100, 100);
 
   return (
     <Card className="relative overflow-hidden transform-gpu transition-all duration-300 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm hover:shadow-[0_8px_30px_rgba(249,115,22,0.12)] hover:border-orange-600/20">
@@ -104,24 +105,32 @@ export function GivingCard() {
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex justify-between items-center text-sm">
-          <span>${totalGiving.toFixed(2)} / ${goalAmount.toFixed(2)}</span>
-          <span>{Math.round(totalProgress)}% of goal</span>
+          <span>${totalGiving.toFixed(2)} {goalAmount > 0 ? `/ $${goalAmount.toFixed(2)}` : ''}</span>
+          {goalAmount > 0 && <span>{Math.round(totalProgress)}% of goal</span>}
         </div>
-        <Progress value={totalProgress} className="h-2 bg-gray-200/50 dark:bg-gray-700/50" />
-        <div className="space-y-2">
-          {categories.map((cat) => (
-            <div key={cat.category} className="space-y-1">
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{cat.category}</span>
-                <span>${cat.amount.toFixed(2)} / ${cat.goal.toFixed(2)}</span>
-              </div>
-              <Progress 
-                value={(cat.amount / cat.goal) * 100} 
-                className="h-1 bg-gray-200/50 dark:bg-gray-700/50"
-              />
+        {goalAmount > 0 ? (
+          <>
+            <Progress value={totalProgress} className="h-2 bg-gray-200/50 dark:bg-gray-700/50" />
+            <div className="space-y-2">
+              {categories.map((cat) => (
+                <div key={cat.category} className="space-y-1">
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>{cat.category}</span>
+                    <span>${cat.amount.toFixed(2)} / ${cat.goal.toFixed(2)}</span>
+                  </div>
+                  <Progress 
+                    value={(cat.amount / cat.goal) * 100} 
+                    className="h-1 bg-gray-200/50 dark:bg-gray-700/50"
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        ) : (
+          <div className="text-sm text-muted-foreground text-center py-2">
+            No giving goal set
+          </div>
+        )}
       </CardContent>
     </Card>
   );
