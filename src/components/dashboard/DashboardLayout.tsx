@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Bell, Grid, Home, List, MessageCircle, Moon, PieChart, Plus, Search, Settings } from "lucide-react";
+import { Bell, Grid, Home, List, MessageCircle, Moon, PieChart, Plus, Search, Settings, Calendar, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
