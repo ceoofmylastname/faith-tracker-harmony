@@ -100,7 +100,7 @@ export function FastingForm({ onSuccess }: FastingFormProps) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 transform transition-all duration-300 hover:scale-[1.01]"
+        className="space-y-6 transform transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-gray-100/50 to-gray-300/50 dark:from-gray-800/50 dark:to-gray-700/50 backdrop-blur-sm p-8 rounded-xl shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)] dark:shadow-[0_20px_50px_rgba(0,_0,_0,_0.5)]"
       >
         <div className="grid gap-6 md:grid-cols-2">
           <FormField
@@ -215,7 +215,7 @@ export function FastingForm({ onSuccess }: FastingFormProps) {
 
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+          className="w-full bg-gradient-to-r from-[#800020] to-gray-500 hover:from-[#600018] hover:to-gray-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
         >
           Start Fasting Journey
         </Button>
