@@ -19,7 +19,7 @@ const cards = [
   {
     title: "YouTube",
     description: "Watch our sermons, testimonies, and spiritual content",
-    image: "/lovable-uploads/8ef7bec8-b319-48a5-9a9c-7bae2add49b7.png",
+    image: "https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/6774816004db6d7be2ef80db.png",
   },
 ];
 
