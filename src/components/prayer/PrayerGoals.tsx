@@ -26,15 +26,35 @@ export const PrayerGoals = () => {
       const currentDate = new Date();
       const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
       
-      const { error } = await supabase
+      const { data: existingGoal, error: fetchError } = await supabase
         .from('prayer_goals')
-        .upsert({
-          target_minutes: parseInt(targetMinutes),
-          month: firstDayOfMonth.toISOString(),
-          user_id: user.id
-        });
+        .select()
+        .eq('user_id', user.id)
+        .eq('month', firstDayOfMonth.toISOString())
+        .maybeSingle();
 
-      if (error) throw error;
+      if (fetchError) throw fetchError;
+
+      if (existingGoal) {
+        // Update existing goal
+        const { error: updateError } = await supabase
+          .from('prayer_goals')
+          .update({ target_minutes: parseInt(targetMinutes) })
+          .eq('id', existingGoal.id);
+
+        if (updateError) throw updateError;
+      } else {
+        // Insert new goal
+        const { error: insertError } = await supabase
+          .from('prayer_goals')
+          .insert({
+            target_minutes: parseInt(targetMinutes),
+            month: firstDayOfMonth.toISOString(),
+            user_id: user.id
+          });
+
+        if (insertError) throw insertError;
+      }
 
       toast({
         title: "Prayer goal set",
