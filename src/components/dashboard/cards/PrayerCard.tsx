@@ -82,36 +82,30 @@ export function PrayerCard() {
   };
 
   return (
-    <div className="group relative p-[2px] rounded-xl transition-all duration-300 animate-float hover:scale-[1.02]">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary rounded-xl opacity-75 group-hover:opacity-100 animate-borderGlow" />
-      <Card className="relative w-full h-full bg-gradient-to-br from-background/90 to-background rounded-xl backdrop-blur-sm border-0 shadow-xl">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-medium flex items-center gap-2">
-            <Clock className="h-5 w-5 text-primary" />
-            Daily Prayer
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex justify-between items-center text-sm">
-            <span>{Math.round(dailyProgress)} / {goalMinutes} minutes</span>
-            <span className="flex items-center gap-1">
-              <Flame className="h-4 w-4 text-orange-500" />
-              {streak} day streak
-            </span>
-          </div>
-          <Progress 
-            value={progressPercentage} 
-            className="h-2"
-            // Remove indicatorClassName and use the style prop instead
-            style={{
-              ['--progress-background' as string]: getProgressColor()
-            }}
-          />
-          <p className="text-sm text-muted-foreground text-center">
-            {getMessage()}
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+    <Card className="transform hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-maroon-50 to-maroon-100 dark:from-maroon-900/30 dark:to-maroon-800/30">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg font-medium flex items-center gap-2">
+          <Clock className="h-5 w-5 text-primary" />
+          Daily Prayer
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="flex justify-between items-center text-sm">
+          <span>{Math.round(dailyProgress)} / {goalMinutes} minutes</span>
+          <span className="flex items-center gap-1">
+            <Flame className="h-4 w-4 text-orange-500" />
+            {streak} day streak
+          </span>
+        </div>
+        <Progress 
+          value={progressPercentage} 
+          className="h-2"
+          indicatorClassName={getProgressColor()}
+        />
+        <p className="text-sm text-muted-foreground text-center">
+          {getMessage()}
+        </p>
+      </CardContent>
+    </Card>
   );
 }
