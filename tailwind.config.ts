@@ -81,11 +81,17 @@ export default {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        shimmer: {
+          "100%": {
+            transform: "translateX(100%)",
+          },
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         fadeIn: "fadeIn 0.5s ease-out",
+        shimmer: "shimmer 2s infinite",
       },
       fontFamily: {
         'raleway': ['Raleway', 'sans-serif'],
@@ -95,10 +101,8 @@ export default {
         'hover-ease': 'cubic-bezier(0.23, 1, 0.32, 1)',
         'return-ease': 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
       },
-      textShadow: {
-        'sm': '0 1px 2px rgba(0, 0, 0, 0.5)',
-        'md': '0 2px 3px rgba(0, 0, 0, 1)',
-        'lg': '0 10px 10px rgba(0, 0, 0, 0.5)',
+      translate: {
+        'z-4': '4px',
       },
     },
   },
