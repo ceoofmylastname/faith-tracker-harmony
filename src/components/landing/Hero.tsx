@@ -8,7 +8,7 @@ export const Hero = () => {
     <div className="relative min-h-screen flex items-center justify-center bg-[#1A1A1A] overflow-hidden">
       <div className="relative container mx-auto px-6 text-center">
         <p className="text-white text-xl mb-6">
-          This Is The Sub Headline Above The Main Headline
+          Discover: The Real You, The Real Purpose, The Real Truth.
         </p>
         
         <h1 className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-text bg-clip-text text-transparent">
