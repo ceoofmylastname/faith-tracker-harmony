@@ -1,8 +1,34 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
 
 export const Hero = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const { signUp } = useAuth();
+  const { toast } = useToast();
+
+  const handleSubmit = async () => {
+    if (!email) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter your email",
+      });
+      return;
+    }
+
+    try {
+      // Generate a random password for the user
+      const password = Math.random().toString(36).slice(-8);
+      await signUp(email, password);
+      navigate("/signup");
+    } catch (error) {
+      // Error is handled by AuthContext
+    }
+  };
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-[#1A1A1A] overflow-hidden">
@@ -24,12 +50,14 @@ export const Hero = () => {
             type="email"
             placeholder="Enter Your Best Email"
             className="w-full px-6 py-4 rounded-full bg-white text-gray-900 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           
           <Button
             size="lg"
             className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl py-6 rounded-full"
-            onClick={() => navigate("/signup")}
+            onClick={handleSubmit}
           >
             Tell Me More
           </Button>
