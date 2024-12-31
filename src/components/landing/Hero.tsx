@@ -5,31 +5,38 @@ export const Hero = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="relative min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-primary-dark via-primary to-secondary overflow-hidden">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzBoLTJ2Mmgydi0yem0tMjAgMGgydjJoLTJ2LTJ6bTIwLTIwdi0yaDJ2MmgtMnptLTIwIDB2LTJoMnYyaC0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-10"></div>
+    <div className="relative min-h-screen flex items-center justify-center bg-[#1A1A1A] overflow-hidden">
       <div className="relative container mx-auto px-6 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 animate-fadeIn">
+        <p className="text-white text-xl mb-6">
+          This Is The Sub Headline Above The Main Headline
+        </p>
+        
+        <h1 className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-text bg-clip-text text-transparent">
           Discover the Real You, the Real Purpose, the Real Truth
         </h1>
-        <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto animate-fadeIn">
-          Deepen your walk in faith. Seek the Kingdom first.
+        
+        <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
+          Deepen your walk in faith. Track your spiritual journey with our comprehensive Faith Tracker. Join a community of believers dedicated to growing closer to God.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeIn">
+
+        <div className="max-w-xl mx-auto space-y-6">
+          <input
+            type="email"
+            placeholder="Enter Your Best Email"
+            className="w-full px-6 py-4 rounded-full bg-white text-gray-900 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          
           <Button
             size="lg"
-            className="bg-accent hover:bg-accent-dark text-primary font-semibold"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xl py-6 rounded-full"
             onClick={() => navigate("/signup")}
           >
-            Sign Up
+            Tell Me More
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="text-white border-white hover:bg-white/10"
-            onClick={() => navigate("/login")}
-          >
-            Sign In
-          </Button>
+          
+          <p className="text-sm text-gray-400">
+            We respect your privacy. Your email address will never be shared or sold
+          </p>
         </div>
       </div>
     </div>
