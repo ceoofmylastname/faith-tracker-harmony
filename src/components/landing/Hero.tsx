@@ -43,24 +43,24 @@ export const Hero = () => {
         {user ? (
           <Button
             variant="outline"
-            className="text-white border-white hover:bg-white/10"
+            className="border-white hover:bg-white/10 bg-gradient-text bg-clip-text text-transparent"
             onClick={handleSignOut}
           >
-            <LogOut className="mr-2 h-4 w-4" />
+            <LogOut className="mr-2 h-4 w-4 text-white" />
             Sign Out
           </Button>
         ) : (
           <div className="flex gap-4">
             <Button
               variant="outline"
-              className="text-white border-white hover:bg-white/10"
+              className="border-white hover:bg-white/10 bg-gradient-text bg-clip-text text-transparent"
               onClick={() => navigate("/login")}
             >
               Sign In
             </Button>
             <Button
               variant="outline"
-              className="text-white border-white hover:bg-white/10"
+              className="border-white hover:bg-white/10 bg-gradient-text bg-clip-text text-transparent"
               onClick={() => navigate("/signup")}
             >
               Sign Up
