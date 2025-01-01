@@ -8,8 +8,6 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
-import PrayerTab from "@/components/prayer/PrayerTab";
-import BibleTab from "@/components/bible/BibleTab";
 import { useState } from "react";
 
 function App() {
@@ -22,7 +20,7 @@ function App() {
     },
   }));
 
-  // Get the base URL from the current window location
+  // Get the base URL based on the environment
   const baseUrl = window.location.hostname === 'localhost' ? '' : '/';
 
   return (
