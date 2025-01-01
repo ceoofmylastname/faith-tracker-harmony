@@ -19,6 +19,10 @@ export default function BibleStatsCards({
   bestStreak,
   overallProgress,
 }: BibleStatsCardsProps) {
+  // Calculate progress percentage for the daily goal
+  const dailyGoalMinutes = 30;
+  const progressPercentage = Math.min((dailyProgress / dailyGoalMinutes) * 100, 100);
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
       <Card className="transform hover:scale-[1.02] transition-all duration-300">
@@ -29,9 +33,14 @@ export default function BibleStatsCards({
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-3 p-4">
-          <div className="text-lg font-bold mb-2">30 minutes</div>
-          <Progress value={(dailyProgress / 30) * 100} className="h-2" />
-          <p className="text-xs text-gray-500 mt-2">{dailyProgress} minutes completed</p>
+          <div className="text-lg font-bold mb-2">{dailyProgress} / {dailyGoalMinutes} minutes</div>
+          <Progress value={progressPercentage} className="h-2" />
+          <p className="text-xs text-gray-500 mt-2">
+            {dailyProgress >= dailyGoalMinutes 
+              ? "Daily goal completed!" 
+              : `${Math.round(dailyGoalMinutes - dailyProgress)} minutes remaining`
+            }
+          </p>
         </CardContent>
       </Card>
 
