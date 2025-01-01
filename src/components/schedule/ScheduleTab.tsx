@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 import { Event } from "./types";
@@ -13,6 +13,7 @@ export default function ScheduleTab() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['schedule-events', format(selectedDate || new Date(), 'yyyy-MM')],
@@ -47,7 +48,7 @@ export default function ScheduleTab() {
     },
   });
 
-  // Subscribe to real-time updates
+  // Subscribe to real-time updates from Supabase
   useEffect(() => {
     const channel = supabase
       .channel('calendar-changes')
@@ -58,14 +59,13 @@ export default function ScheduleTab() {
           schema: 'public',
           table: 'calendar_events'
         },
-        (payload) => {
-          console.log('Calendar event change received:', payload);
+        () => {
+          // Trigger a refetch of the events when any changes occur
+          queryClient.invalidateQueries({ queryKey: ['schedule-events'] });
           toast({
             title: "Calendar Updated",
-            description: "New event received from Make.com"
+            description: "Calendar events have been updated"
           });
-          // Trigger a refetch of the events
-          window.location.reload();
         }
       )
       .subscribe();
@@ -73,7 +73,7 @@ export default function ScheduleTab() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [toast]);
+  }, [queryClient, toast]);
 
   if (isLoading) {
     return (
