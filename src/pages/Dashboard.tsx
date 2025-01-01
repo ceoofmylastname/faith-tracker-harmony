@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Home, Heart, BookOpen, Timer, Wallet, LogOut, Menu, PenLine } from "lucide-react";
+import { Home, Heart, BookOpen, Timer, Wallet, LogOut, Menu, PenLine, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -12,6 +12,7 @@ import FastingTab from "@/components/fasting/FastingTab";
 import DashboardHome from "@/components/dashboard/DashboardHome";
 import GivingTab from "@/components/giving/GivingTab";
 import NotesTab from "@/components/notes/NotesTab";
+import CommunityTab from "@/components/community/CommunityTab";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -119,6 +120,17 @@ export default function Dashboard() {
             <PenLine className="mr-2 h-5 w-5" />
             Notes
           </Button>
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+            onClick={() => {
+              navigate('/dashboard/community');
+              setIsMobileMenuOpen(false);
+            }}
+          >
+            <Users className="mr-2 h-5 w-5" />
+            Community
+          </Button>
         </div>
         
         <Button
@@ -151,7 +163,7 @@ export default function Dashboard() {
         </Sheet>
       </div>
 
-      {/* Desktop Sidebar - Always visible on md and larger screens */}
+      {/* Desktop Sidebar */}
       <div className="hidden md:block md:fixed md:left-0 md:top-0 md:h-full md:w-64 md:bg-gradient-to-b md:from-red-900 md:via-red-800 md:to-red-900 md:text-white md:p-6 md:shadow-2xl md:transition-all md:duration-300 md:ease-in-out md:z-50">
         <NavigationContent />
       </div>
@@ -165,6 +177,7 @@ export default function Dashboard() {
           <Route path="fasting" element={<FastingTab />} />
           <Route path="giving" element={<GivingTab />} />
           <Route path="notes" element={<NotesTab />} />
+          <Route path="community" element={<CommunityTab />} />
         </Routes>
       </div>
     </div>

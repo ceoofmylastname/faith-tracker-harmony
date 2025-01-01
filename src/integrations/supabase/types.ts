@@ -9,6 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      accountability_partnerships: {
+        Row: {
+          created_at: string
+          id: string
+          status: string | null
+          updated_at: string
+          user_id_1: string | null
+          user_id_2: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          status?: string | null
+          updated_at?: string
+          user_id_1?: string | null
+          user_id_2?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          status?: string | null
+          updated_at?: string
+          user_id_1?: string | null
+          user_id_2?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accountability_partnerships_user_id_1_fkey"
+            columns: ["user_id_1"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accountability_partnerships_user_id_2_fkey"
+            columns: ["user_id_2"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bible_reading_goals: {
         Row: {
           created_at: string
@@ -121,6 +163,44 @@ export type Database = {
             foreignKeyName: "bible_reading_sessions_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_profiles: {
+        Row: {
+          created_at: string
+          id: string
+          share_bible_data: boolean | null
+          share_fasting_data: boolean | null
+          share_giving_data: boolean | null
+          share_prayer_data: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          share_bible_data?: boolean | null
+          share_fasting_data?: boolean | null
+          share_giving_data?: boolean | null
+          share_prayer_data?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          share_bible_data?: boolean | null
+          share_fasting_data?: boolean | null
+          share_giving_data?: boolean | null
+          share_prayer_data?: boolean | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -284,6 +364,54 @@ export type Database = {
           {
             foreignKeyName: "giving_records_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_community_message: boolean | null
+          read: boolean | null
+          recipient_id: string | null
+          sender_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_community_message?: boolean | null
+          read?: boolean | null
+          recipient_id?: string | null
+          sender_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_community_message?: boolean | null
+          read?: boolean | null
+          recipient_id?: string | null
+          sender_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
