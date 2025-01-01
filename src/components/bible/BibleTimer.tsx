@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Clock } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useBibleReading } from "@/hooks/useBibleReading";
+import { TimerDisplay } from "./timer/TimerDisplay";
 
 interface BibleTimerProps {
   selectedBook: string;
@@ -77,20 +76,12 @@ export default function BibleTimer({ selectedBook, selectedChapter, onProgressUp
     };
   }, [timerInterval]);
 
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
-
   return (
-    <Button
-      variant={isReading ? "destructive" : "outline"}
-      className="w-full sm:w-auto gap-2 text-sm"
-      onClick={isReading ? handleStopTimer : handleStartTimer}
-    >
-      <Clock className="h-4 w-4" />
-      {isReading ? `Stop (${formatTime(timer)})` : "Start Timer"}
-    </Button>
+    <TimerDisplay
+      isReading={isReading}
+      timer={timer}
+      onStart={handleStartTimer}
+      onStop={handleStopTimer}
+    />
   );
 }

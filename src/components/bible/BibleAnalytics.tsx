@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Calendar, TrendingUp, Clock } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
+import { StatCard } from "./analytics/StatCard";
+import { WeeklyChart } from "./analytics/WeeklyChart";
 
 export default function BibleAnalytics() {
   const { user } = useAuth();
@@ -117,63 +117,32 @@ export default function BibleAnalytics() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="transform hover:scale-[1.02] transition-all duration-300">
-          <CardHeader className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-t-lg">
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
-              Average Time
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-4">
-            <div className="text-2xl font-bold">{averageTime} min</div>
-            <p className="text-sm text-gray-500">Per reading session</p>
-          </CardContent>
-        </Card>
-
-        <Card className="transform hover:scale-[1.02] transition-all duration-300">
-          <CardHeader className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 rounded-t-lg">
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
-              Most Active
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-4">
-            <div className="text-2xl font-bold">{mostActiveDay}</div>
-            <p className="text-sm text-gray-500">Best reading day</p>
-          </CardContent>
-        </Card>
-
-        <Card className="transform hover:scale-[1.02] transition-all duration-300">
-          <CardHeader className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30 rounded-t-lg">
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              Monthly Trend
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-4">
-            <div className="text-2xl font-bold">{monthlyTrend > 0 ? '+' : ''}{monthlyTrend}%</div>
-            <p className="text-sm text-gray-500">Reading time change</p>
-          </CardContent>
-        </Card>
+        <StatCard
+          title="Average Time"
+          value={`${averageTime} min`}
+          subtitle="Per reading session"
+          icon={Clock}
+          gradientFrom="blue-50"
+          gradientTo="blue-100"
+        />
+        <StatCard
+          title="Most Active"
+          value={mostActiveDay}
+          subtitle="Best reading day"
+          icon={Calendar}
+          gradientFrom="green-50"
+          gradientTo="green-100"
+        />
+        <StatCard
+          title="Monthly Trend"
+          value={`${monthlyTrend > 0 ? '+' : ''}${monthlyTrend}%`}
+          subtitle="Reading time change"
+          icon={TrendingUp}
+          gradientFrom="purple-50"
+          gradientTo="purple-100"
+        />
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Weekly Reading Pattern</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={weeklyData}>
-                <XAxis dataKey="day" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="minutes" fill="#ef4444" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+      <WeeklyChart data={weeklyData} />
     </div>
   );
 }
