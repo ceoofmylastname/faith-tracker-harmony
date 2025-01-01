@@ -98,14 +98,14 @@ export function GivingCard() {
     <Card className="relative overflow-hidden transform-gpu transition-all duration-300 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm hover:shadow-[0_8px_30px_rgba(249,115,22,0.12)] hover:border-orange-600/20">
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-medium flex items-center gap-2">
-          <Wallet className="h-5 w-5 text-orange-600" />
+        <CardTitle className="text-base sm:text-lg font-medium flex items-center gap-2">
+          <Wallet className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
           Tithes & Giving
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="flex justify-between items-center text-sm">
-          <span>${totalGiving.toFixed(2)} {goalAmount > 0 ? `/ $${goalAmount.toFixed(2)}` : ''}</span>
+        <div className="flex justify-between items-center text-xs sm:text-sm">
+          <span className="font-medium">${totalGiving.toFixed(2)} {goalAmount > 0 ? `/ $${goalAmount.toFixed(2)}` : ''}</span>
           {goalAmount > 0 && <span>{Math.round(totalProgress)}% of goal</span>}
         </div>
         {goalAmount > 0 ? (
@@ -116,7 +116,7 @@ export function GivingCard() {
                 <div key={cat.category} className="space-y-1">
                   <div className="flex justify-between text-xs text-muted-foreground">
                     <span>{cat.category}</span>
-                    <span>${cat.amount.toFixed(2)} / ${cat.goal.toFixed(2)}</span>
+                    <span className="font-mono">${cat.amount.toFixed(2)} / ${cat.goal.toFixed(2)}</span>
                   </div>
                   <Progress 
                     value={(cat.amount / cat.goal) * 100} 
@@ -127,7 +127,7 @@ export function GivingCard() {
             </div>
           </>
         ) : (
-          <div className="text-sm text-muted-foreground text-center py-2">
+          <div className="text-xs sm:text-sm text-muted-foreground text-center py-2">
             No giving goal set
           </div>
         )}
