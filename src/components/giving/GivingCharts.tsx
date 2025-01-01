@@ -25,14 +25,26 @@ const chartConfig = {
 
 export default function GivingCharts() {
   const [chartType, setChartType] = useState<'area' | 'bar'>('area');
-  const { data: analytics } = useGivingAnalytics();
+  const { data: analytics, isLoading } = useGivingAnalytics();
 
-  const transformedData = analytics?.monthlyData?.map((item) => ({
+  if (isLoading) {
+    return <div className="h-[300px] flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!analytics?.monthlyData?.length) {
+    return (
+      <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+        No giving data available
+      </div>
+    );
+  }
+
+  const transformedData = analytics.monthlyData.map((item) => ({
     month: format(parseISO(item.month + "-01"), "MMM"),
     fullDate: item.month,
     tithes: Number(item.tithes) || 0,
     offerings: Number(item.offerings) || 0,
-  })) || [];
+  }));
 
   return (
     <div className="space-y-4">
