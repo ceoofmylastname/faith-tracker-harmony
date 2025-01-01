@@ -81,7 +81,7 @@ export default function BibleTimer({ selectedBook, selectedChapter, onProgressUp
   return (
     <Button
       variant={isReading ? "destructive" : "outline"}
-      className="gap-2"
+      className="w-full sm:w-auto gap-2 text-sm"
       onClick={isReading ? handleStopTimer : handleStartTimer}
     >
       <Clock className="h-4 w-4" />

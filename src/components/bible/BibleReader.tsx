@@ -78,7 +78,6 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
     }
   };
 
-  // Load existing notes when book and chapter are selected
   useEffect(() => {
     const loadNotes = async () => {
       if (!user || !selectedBook || !selectedChapter) return;
@@ -114,10 +113,10 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <Card className="lg:col-span-2">
         <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-3 mb-4">
-            <div className="flex-1 min-w-[120px]">
+          <div className="flex flex-col gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Select value={selectedBook} onValueChange={setSelectedBook}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Book" />
                 </SelectTrigger>
                 <SelectContent>
@@ -128,14 +127,12 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-            <div className="flex-1 min-w-[120px]">
               <Select 
                 value={selectedChapter} 
                 onValueChange={setSelectedChapter}
                 disabled={!selectedBook}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Chapter" />
                 </SelectTrigger>
                 <SelectContent>
@@ -147,7 +144,7 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex-none">
+            <div className="w-full sm:w-auto">
               <BibleTimer
                 selectedBook={selectedBook}
                 selectedChapter={selectedChapter}
@@ -156,7 +153,7 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
             </div>
           </div>
           <div className="prose prose-sm dark:prose-invert max-w-none">
-            <h2 className="text-xl font-semibold mb-3">
+            <h2 className="text-lg font-semibold mb-3">
               {selectedBook} {selectedChapter}
             </h2>
             <p className="text-sm leading-relaxed">
