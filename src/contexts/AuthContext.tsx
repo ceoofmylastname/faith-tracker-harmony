@@ -5,7 +5,7 @@ import { useToast } from '@/components/ui/use-toast'
 
 interface AuthContextType {
   user: User | null
-  signUp: (email: string, password: string) => Promise<void>
+  signUp: (email: string, password: string, name?: string) => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
   loading: boolean
@@ -19,13 +19,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast()
 
   useEffect(() => {
-    // Check active sessions and sets the user
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       setLoading(false)
     })
 
-    // Listen for changes on auth state
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
     })
@@ -33,15 +31,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, name?: string) => {
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data: { user }, error } = await supabase.auth.signUp({
         email,
         password,
       })
       
       if (error) {
-        // Check if the error is due to existing user
         if (error.message.includes('User already registered')) {
           toast({
             variant: "destructive",
@@ -56,6 +53,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           })
         }
         throw error
+      }
+
+      // If signup was successful and we have a name, update the profile
+      if (user && name) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ name })
+          .eq('id', user.id)
+
+        if (profileError) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Failed to save profile information",
+          })
+          throw profileError
+        }
       }
       
       toast({
