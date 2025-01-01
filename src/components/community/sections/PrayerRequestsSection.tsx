@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { PrayingHands, Heart } from "lucide-react";
+import { HandsPraying, Heart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
@@ -33,19 +33,41 @@ export default function PrayerRequestsSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Implementation for submitting prayer requests
-    toast({
-      title: "Prayer Request Submitted",
-      description: "Your prayer request has been shared with the community.",
-    });
-    setTitle("");
-    setDescription("");
+    if (!title.trim() || !description.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Please fill in all fields",
+        description: "Both title and description are required.",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("prayer_reflections")
+        .insert([{ user_id: user?.id, content: `${title}\n\n${description}` }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Prayer Request Submitted",
+        description: "Your prayer request has been shared with the community.",
+      });
+      setTitle("");
+      setDescription("");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error submitting prayer request",
+        description: error.message,
+      });
+    }
   };
 
   return (
     <div className="space-y-6">
       {/* Prayer Request Form */}
-      <Card className="p-6 bg-white/60 backdrop-blur-sm">
+      <Card className="p-6 bg-white/60 backdrop-blur-sm animate-fade-in">
         <h3 className="text-xl font-semibold mb-4">Share Prayer Request</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
@@ -60,7 +82,7 @@ export default function PrayerRequestsSection() {
             className="min-h-[100px]"
           />
           <Button type="submit" className="w-full">
-            <PrayingHands className="mr-2 h-4 w-4" />
+            <HandsPraying className="mr-2 h-4 w-4" />
             Share Prayer Request
           </Button>
         </form>
@@ -69,7 +91,7 @@ export default function PrayerRequestsSection() {
       {/* Prayer Requests List */}
       <div className="space-y-4">
         {prayerRequests?.map((request) => (
-          <Card key={request.id} className="p-4 bg-white/60 backdrop-blur-sm">
+          <Card key={request.id} className="p-4 bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-all">
             <div className="flex items-start space-x-4">
               <Avatar>
                 <AvatarImage src={request.profiles?.profile_image_url} />
