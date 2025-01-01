@@ -1,20 +1,10 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { Users, User, Send, Clock } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar } from "@/components/ui/avatar";
+import { MessageInput } from "./message/MessageInput";
+import { RecipientSelector } from "./message/RecipientSelector";
+import { MessageList } from "./message/MessageList";
 
 export default function MessagingSection() {
   const { user } = useAuth();
@@ -127,83 +117,25 @@ export default function MessagingSection() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] space-y-4">
-      <Card className="p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="space-y-4">
-          <div className="flex gap-4">
-            <Select value={recipient} onValueChange={setRecipient}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Select recipient" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="community">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    <span>Everyone</span>
-                  </div>
-                </SelectItem>
-                {users.map((user) => (
-                  <SelectItem key={user.id} value={user.id}>
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      <span>{user.name || 'Anonymous'}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button 
-              onClick={sendMessage}
-              className="flex items-center gap-2 bg-primary hover:bg-primary-dark"
-            >
-              <Send className="h-4 w-4" />
-              Send
-            </Button>
-          </div>
-          <Textarea
-            placeholder="Type your message..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="min-h-[100px] resize-none"
+    <div className="flex flex-col h-[calc(100vh-12rem)] space-y-4 max-w-5xl mx-auto">
+      <div className="flex flex-col space-y-4 bg-white/60 backdrop-blur-sm p-6 rounded-lg border shadow-sm">
+        <div className="flex items-center gap-4">
+          <RecipientSelector 
+            recipient={recipient}
+            setRecipient={setRecipient}
+            users={users}
           />
         </div>
-      </Card>
-
-      <ScrollArea className="flex-1 rounded-lg border bg-card text-card-foreground shadow-sm">
-        <div className="space-y-4 p-4">
-          {messages.map((msg) => (
-            <Card 
-              key={msg.id} 
-              className={`p-4 transition-all hover:shadow-md ${
-                msg.sender?.email === user?.email 
-                  ? 'ml-12 bg-primary/10' 
-                  : 'mr-12'
-              }`}
-            >
-              <div className="flex justify-between items-start gap-4">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-8 w-8">
-                    <div className="bg-primary text-primary-foreground rounded-full h-full w-full flex items-center justify-center text-sm font-semibold">
-                      {msg.sender?.name?.[0]?.toUpperCase() || msg.sender?.email?.[0]?.toUpperCase() || '?'}
-                    </div>
-                  </Avatar>
-                  <div>
-                    <div className="font-semibold">
-                      {msg.sender?.name || 'Anonymous'}
-                      {msg.is_community_message ? " (to Everyone)" : msg.recipient?.name ? ` to ${msg.recipient.name}` : ""}
-                    </div>
-                    <div className="flex items-center text-xs text-muted-foreground gap-1">
-                      <Clock className="h-3 w-3" />
-                      {new Date(msg.created_at).toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p className="mt-2 whitespace-pre-wrap text-sm">{msg.content}</p>
-            </Card>
-          ))}
-        </div>
-      </ScrollArea>
+        <MessageInput 
+          message={message}
+          setMessage={setMessage}
+          sendMessage={sendMessage}
+        />
+      </div>
+      <MessageList 
+        messages={messages}
+        currentUserEmail={user?.email}
+      />
     </div>
   );
 }
