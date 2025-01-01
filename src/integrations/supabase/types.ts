@@ -544,9 +544,11 @@ export type Database = {
       }
       messages: {
         Row: {
+          challenge_id: string | null
           content: string
           created_at: string
           id: string
+          is_challenge_message: boolean | null
           is_community_message: boolean | null
           read: boolean | null
           recipient_id: string | null
@@ -554,9 +556,11 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          challenge_id?: string | null
           content: string
           created_at?: string
           id?: string
+          is_challenge_message?: boolean | null
           is_community_message?: boolean | null
           read?: boolean | null
           recipient_id?: string | null
@@ -564,9 +568,11 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          challenge_id?: string | null
           content?: string
           created_at?: string
           id?: string
+          is_challenge_message?: boolean | null
           is_community_message?: boolean | null
           read?: boolean | null
           recipient_id?: string | null
@@ -574,6 +580,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "messages_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "community_challenges"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "messages_recipient_id_fkey"
             columns: ["recipient_id"]
