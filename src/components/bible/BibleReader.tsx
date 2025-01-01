@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -9,12 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BookOpen, Clock, Save } from "lucide-react";
+import { Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { BIBLE_BOOKS } from "@/lib/bible-data";
-import { useBibleReading } from "@/hooks/useBibleReading";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import BibleTimer from "./BibleTimer";
 
 interface BibleReaderProps {
   onBookChange: (book: string) => void;
@@ -25,20 +25,10 @@ interface BibleReaderProps {
 export default function BibleReader({ onBookChange, onChapterChange, onProgressUpdate }: BibleReaderProps) {
   const { toast } = useToast();
   const { user } = useAuth();
-  const {
-    readingGoal,
-    todayProgress,
-    startReadingSession,
-    endReadingSession,
-  } = useBibleReading();
 
   const [selectedBook, setSelectedBook] = useState("");
   const [selectedChapter, setSelectedChapter] = useState("");
   const [notes, setNotes] = useState("");
-  const [isReading, setIsReading] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [timer, setTimer] = useState(0);
-  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
 
   const selectedBookData = BIBLE_BOOKS.find(book => book.name === selectedBook);
   const chapters = selectedBookData ? Array.from({ length: selectedBookData.chapters }, (_, i) => i + 1) : [];
@@ -54,51 +44,6 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
       onChapterChange(parseInt(selectedChapter));
     }
   }, [selectedChapter, onChapterChange]);
-
-  const handleStartTimer = async () => {
-    if (!selectedBook || !selectedChapter) {
-      toast({
-        title: "Selection Required",
-        description: "Please select a book and chapter before starting the timer",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const session = await startReadingSession(selectedBook, parseInt(selectedChapter));
-      if (session) {
-        setSessionId(session.id);
-        setIsReading(true);
-        const interval = setInterval(() => {
-          setTimer(prev => {
-            const newValue = prev + 1;
-            onProgressUpdate(Math.floor(newValue / 60));
-            return newValue;
-          });
-        }, 1000);
-        setTimerInterval(interval);
-      }
-    } catch (error) {
-      console.error("Error starting session:", error);
-      toast({
-        title: "Error",
-        description: "Failed to start reading session",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleStopTimer = async () => {
-    if (sessionId && timerInterval) {
-      clearInterval(timerInterval);
-      setTimerInterval(null);
-      await endReadingSession(sessionId, timer);
-      setIsReading(false);
-      setTimer(0);
-      setSessionId(null);
-    }
-  };
 
   const handleSaveNotes = async () => {
     if (!user || !selectedBook || !selectedChapter || !notes.trim()) return;
@@ -131,20 +76,6 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
         variant: "destructive",
       });
     }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-      }
-    };
-  }, [timerInterval]);
-
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   // Load existing notes when book and chapter are selected
@@ -214,14 +145,11 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
                 </SelectContent>
               </Select>
             </div>
-            <Button
-              variant={isReading ? "destructive" : "outline"}
-              className="gap-2"
-              onClick={isReading ? handleStopTimer : handleStartTimer}
-            >
-              <Clock className="h-4 w-4" />
-              {isReading ? `Stop (${formatTime(timer)})` : "Start Timer"}
-            </Button>
+            <BibleTimer
+              selectedBook={selectedBook}
+              selectedChapter={selectedChapter}
+              onProgressUpdate={onProgressUpdate}
+            />
           </div>
           <div className="prose prose-sm dark:prose-invert max-w-none">
             <h2 className="text-2xl font-semibold mb-4">
