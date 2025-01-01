@@ -1,31 +1,35 @@
-import { MessageSquare, UserPlus } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DataSharingPreferences from "./DataSharingPreferences";
+import UserProfiles from "./UserProfiles";
 import MessagingSection from "./MessagingSection";
 import PartnershipsSection from "./PartnershipsSection";
-import DataSharingPreferences from "./DataSharingPreferences";
 
 export default function CommunityTab() {
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      <h1 className="text-3xl font-bold mb-6">Community</h1>
+    <div className="container mx-auto p-4 space-y-8">
+      <h2 className="text-2xl font-bold mb-6">Community</h2>
       
-      <DataSharingPreferences />
-
-      <Tabs defaultValue="messages" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="messages" className="flex items-center gap-2">
-            <MessageSquare className="h-4 w-4" />
-            Messages
-          </TabsTrigger>
-          <TabsTrigger value="partnerships" className="flex items-center gap-2">
-            <UserPlus className="h-4 w-4" />
-            Partnerships
-          </TabsTrigger>
+      <Tabs defaultValue="profiles" className="w-full">
+        <TabsList className="w-full justify-start">
+          <TabsTrigger value="profiles">Profiles</TabsTrigger>
+          <TabsTrigger value="preferences">Sharing Preferences</TabsTrigger>
+          <TabsTrigger value="messaging">Messages</TabsTrigger>
+          <TabsTrigger value="partnerships">Partnerships</TabsTrigger>
         </TabsList>
-        <TabsContent value="messages">
+        
+        <TabsContent value="profiles" className="mt-6">
+          <UserProfiles />
+        </TabsContent>
+        
+        <TabsContent value="preferences" className="mt-6">
+          <DataSharingPreferences />
+        </TabsContent>
+        
+        <TabsContent value="messaging" className="mt-6">
           <MessagingSection />
         </TabsContent>
-        <TabsContent value="partnerships">
+        
+        <TabsContent value="partnerships" className="mt-6">
           <PartnershipsSection />
         </TabsContent>
       </Tabs>
