@@ -87,7 +87,7 @@ export const Hero = () => {
         )}
         {!userName && (
           <h1 className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-text bg-clip-text text-transparent">
-            Strengthen Your Faith And Track Your Spiritual Journey With Our All-In-One Faith Tracker. Connect With A Community Of Believers Committed To Growing Closer To Yahowah.
+            Faith Isn't Just A Belief—It's A Bold Lifestyle. Take The First Step Into The Kingdom Today.
           </h1>
         )}
         
