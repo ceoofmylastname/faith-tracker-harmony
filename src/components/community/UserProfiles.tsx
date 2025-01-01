@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -8,6 +8,7 @@ interface Profile {
   id: string;
   name: string | null;
   email: string | null;
+  profile_image_url: string | null;
 }
 
 interface CommunityProfile {
@@ -57,9 +58,13 @@ export default function UserProfiles() {
           <Card key={profile.id} className="p-6 space-y-4">
             <div className="flex items-center space-x-4">
               <Avatar className="h-12 w-12">
-                <div className="bg-primary text-primary-foreground rounded-full h-full w-full flex items-center justify-center text-lg font-semibold">
-                  {profile.name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || '?'}
-                </div>
+                {profile.profile_image_url ? (
+                  <AvatarImage src={profile.profile_image_url} alt={profile.name || 'User'} />
+                ) : (
+                  <AvatarFallback className="bg-primary text-primary-foreground">
+                    {profile.name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || '?'}
+                  </AvatarFallback>
+                )}
               </Avatar>
               <div>
                 <h3 className="font-semibold">{profile.name || 'Anonymous'}</h3>

@@ -5,12 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Label } from "@/components/ui/label";
+import ProfileImageUpload from "@/components/profile/ProfileImageUpload";
 
 export default function Signup() {
   const navigate = useNavigate();
   const { user, signUp } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [showImageUpload, setShowImageUpload] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,10 +20,10 @@ export default function Signup() {
   });
 
   useEffect(() => {
-    if (user) {
+    if (user && !showImageUpload) {
       navigate("/dashboard");
     }
-  }, [user, navigate]);
+  }, [user, navigate, showImageUpload]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,6 +31,7 @@ export default function Signup() {
     
     try {
       await signUp(formData.email, formData.password, formData.name);
+      setShowImageUpload(true);
       toast({
         title: "Account created successfully!",
         description: "Please check your email to verify your account.",
@@ -100,6 +103,17 @@ export default function Signup() {
           </Button>
         </form>
       </div>
+
+      {user && (
+        <ProfileImageUpload
+          userId={user.id}
+          open={showImageUpload}
+          onClose={() => {
+            setShowImageUpload(false);
+            navigate("/dashboard");
+          }}
+        />
+      )}
     </div>
   );
 }
