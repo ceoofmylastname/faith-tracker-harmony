@@ -1,19 +1,42 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/lib/supabase";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [savedEmail, setSavedEmail] = useState("");
 
   useEffect(() => {
     if (user) {
       navigate("/dashboard");
     }
+    // Load saved email from localStorage
+    const email = localStorage.getItem("savedEmail");
+    if (email) {
+      setSavedEmail(email);
+    }
   }, [user, navigate]);
+
+  // Custom auth UI override to handle email persistence
+  const authOverrides = {
+    onSubmit: async (e: Event) => {
+      e.preventDefault();
+      const form = e.target as HTMLFormElement;
+      const email = (form.elements.namedItem('email') as HTMLInputElement)?.value;
+      if (email) {
+        localStorage.setItem("savedEmail", email);
+      }
+      // Let the default form submission continue
+      return true;
+    },
+    defaultValues: {
+      email: savedEmail,
+    },
+  };
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
@@ -59,6 +82,7 @@ export default function Login() {
           }}
           theme="default"
           providers={[]}
+          override={authOverrides}
         />
       </div>
     </div>
