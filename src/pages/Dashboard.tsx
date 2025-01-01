@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Routes, Route } from "react-router-dom";
+import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Home, Heart, BookOpen, Timer, Wallet, LogOut, Menu, PenLine, Users } from "lucide-react";
@@ -178,6 +178,7 @@ export default function Dashboard() {
           <Route path="giving" element={<GivingTab />} />
           <Route path="notes" element={<NotesTab />} />
           <Route path="community" element={<CommunityTab />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </div>
     </div>
