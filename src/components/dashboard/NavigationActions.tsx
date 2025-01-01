@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Camera, LogOut } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface NavigationActionsProps {
   onUpdateProfile: () => void;
@@ -10,11 +10,11 @@ interface NavigationActionsProps {
 
 export default function NavigationActions({ onUpdateProfile, onSignOut }: NavigationActionsProps) {
   const { toast } = useToast();
+  const { signOut: authSignOut } = useAuth();
 
   const handleSignOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      await authSignOut();
       onSignOut();
     } catch (error: any) {
       toast({

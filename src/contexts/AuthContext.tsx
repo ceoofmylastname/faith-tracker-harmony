@@ -55,7 +55,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw error
       }
 
-      // If signup was successful and we have a name, update the profile
       if (user && name) {
         const { error: profileError } = await supabase
           .from('profiles')
@@ -110,11 +109,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error) {
         toast({
           variant: "destructive",
-          title: "Error",
+          title: "Error signing out",
           description: error.message,
         })
         throw error
       }
+      setUser(null)
       toast({
         title: "Goodbye!",
         description: "Successfully signed out",
