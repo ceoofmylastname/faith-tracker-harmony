@@ -25,8 +25,6 @@ export default function NavigationActions({ onUpdateProfile, onSignOut }: Naviga
         title: "Error signing out",
         description: "Please try again. If the problem persists, refresh the page.",
       });
-      // Still try to navigate even if there's an error
-      onSignOut();
     }
   };
 

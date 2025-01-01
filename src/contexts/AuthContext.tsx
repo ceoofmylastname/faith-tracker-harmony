@@ -19,13 +19,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast()
 
   useEffect(() => {
+    // Check active session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       setLoading(false)
     })
 
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
+      setLoading(false)
     })
 
     return () => subscription.unsubscribe()
@@ -105,7 +108,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      // First, clear any existing auth errors
+      // First clear any local storage data
+      localStorage.removeItem('supabase.auth.token')
+      
+      // Then sign out from Supabase
       const { error } = await supabase.auth.signOut()
       if (error) {
         console.error('Sign out error:', error)
@@ -117,7 +123,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw error
       }
       
-      // Clear user state immediately after successful sign out
+      // Clear user state
       setUser(null)
       
       // Show success message
@@ -125,6 +131,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         title: "Goodbye!",
         description: "Successfully signed out",
       })
+
+      // Force reload the page to clear any remaining state
+      window.location.reload()
     } catch (error: any) {
       console.error('Sign out error:', error)
       // Even if there's an error, we should try to clear the user state

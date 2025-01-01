@@ -14,10 +14,11 @@ export const Hero = () => {
       await signOut();
       navigate("/");
     } catch (error: any) {
+      console.error('Hero sign out error:', error);
       toast({
         variant: "destructive",
         title: "Error signing out",
-        description: error.message,
+        description: "Please try again. If the problem persists, refresh the page.",
       });
     }
   };
