@@ -10,11 +10,11 @@ export default function CommunityTab() {
       <h2 className="text-2xl font-bold mb-6">Community</h2>
       
       <Tabs defaultValue="profiles" className="w-full">
-        <TabsList className="w-full justify-start">
-          <TabsTrigger value="profiles">Profiles</TabsTrigger>
-          <TabsTrigger value="preferences">Sharing Preferences</TabsTrigger>
-          <TabsTrigger value="messaging">Messages</TabsTrigger>
-          <TabsTrigger value="partnerships">Partnerships</TabsTrigger>
+        <TabsList className="w-full justify-start bg-white/50 backdrop-blur-sm border">
+          <TabsTrigger value="profiles" className="data-[state=active]:bg-primary/10">Profiles</TabsTrigger>
+          <TabsTrigger value="preferences" className="data-[state=active]:bg-primary/10">Sharing Preferences</TabsTrigger>
+          <TabsTrigger value="messaging" className="data-[state=active]:bg-primary/10">Messages</TabsTrigger>
+          <TabsTrigger value="partnerships" className="data-[state=active]:bg-primary/10">Partnerships</TabsTrigger>
         </TabsList>
         
         <TabsContent value="profiles" className="mt-6">
