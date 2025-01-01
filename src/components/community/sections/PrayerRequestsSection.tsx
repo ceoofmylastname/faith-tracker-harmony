@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Prayer, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
@@ -66,7 +66,6 @@ export default function PrayerRequestsSection() {
 
   return (
     <div className="space-y-6">
-      {/* Prayer Request Form */}
       <Card className="p-6 bg-white/60 backdrop-blur-sm animate-fade-in">
         <h3 className="text-xl font-semibold mb-4">Share Prayer Request</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -82,13 +81,12 @@ export default function PrayerRequestsSection() {
             className="min-h-[100px]"
           />
           <Button type="submit" className="w-full">
-            <Prayer className="mr-2 h-4 w-4" />
+            <Heart className="mr-2 h-4 w-4" />
             Share Prayer Request
           </Button>
         </form>
       </Card>
 
-      {/* Prayer Requests List */}
       <div className="space-y-4">
         {prayerRequests?.map((request) => (
           <Card key={request.id} className="p-4 bg-white/60 backdrop-blur-sm hover:bg-white/80 transition-all">
