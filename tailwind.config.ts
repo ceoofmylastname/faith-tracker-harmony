@@ -101,8 +101,16 @@ export default {
         'hover-ease': 'cubic-bezier(0.23, 1, 0.32, 1)',
         'return-ease': 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
       },
+
+      transform: {
+        'perspective-1000': 'perspective(1000px)',
+      },
+      rotate: {
+        'x-1': 'rotateX(1deg)',
+      },
       translate: {
-        'z-4': '4px',
+        'z-4': 'translateZ(4px)',
+        'z-8': 'translateZ(8px)',
       },
     },
   },
@@ -118,6 +126,12 @@ export default {
         },
         '.text-shadow-lg': {
           textShadow: '0 10px 10px rgba(0, 0, 0, 0.5)',
+        },
+        '.perspective-1000': {
+          perspective: '1000px',
+        },
+        '[transform-style:preserve-3d]': {
+          transformStyle: 'preserve-3d',
         },
       };
       addUtilities(newUtilities);
