@@ -101,7 +101,7 @@ export default function DashboardHome() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-4xl font-bold bg-gradient-to-r from-red-700 via-red-600 to-red-500 bg-clip-text text-transparent mb-6">
+      <h1 className="text-4xl font-bold bg-gradient-to-r from-red-700 via-red-600 to-red-500 bg-clip-text text-transparent mb-6 md:mt-0 mt-12 text-center md:text-left">
         Welcome to Your Faith Journey{profile?.name ? `, ${profile.name}` : ''}
       </h1>
 
