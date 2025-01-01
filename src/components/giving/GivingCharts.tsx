@@ -3,20 +3,21 @@ import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { useGivingAnalytics } from "@/hooks/useGivingAnalytics";
+import { format, parseISO } from "date-fns";
 
 const chartConfig = {
   tithes: {
     label: "Tithes",
     theme: {
       light: "#800000",
-      dark: "#555555",
+      dark: "#800000",
     },
   },
   offerings: {
     label: "Offerings",
     theme: {
       light: "#A52A2A",
-      dark: "#888888",
+      dark: "#A52A2A",
     },
   },
 };
@@ -26,14 +27,20 @@ export default function GivingCharts() {
   const { data: analytics } = useGivingAnalytics();
 
   const transformedData = analytics?.monthlyData?.map((item) => ({
-    month: new Date(item.month).toLocaleString('default', { month: 'short' }),
+    month: format(parseISO(item.month + "-01"), "MMM"),
+    fullDate: item.month,
     tithes: Number(item.tithes) || 0,
     offerings: Number(item.offerings) || 0,
   })) || [];
 
   const commonChartProps = {
     data: transformedData,
-    margin: { top: 20, right: 10, left: 10, bottom: 20 },
+    margin: { 
+      top: 10, 
+      right: 5, 
+      left: 0, 
+      bottom: 0 
+    },
     height: 300,
   };
 
@@ -51,34 +58,44 @@ export default function GivingCharts() {
               <stop offset="95%" stopColor="var(--color-offerings)" stopOpacity={0.1}/>
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+          <CartesianGrid strokeDasharray="3 3" className="opacity-20" />
           <XAxis 
             dataKey="month" 
             stroke="currentColor" 
-            fontSize={12}
+            fontSize={10}
             tickLine={false}
             axisLine={false}
             interval="preserveStartEnd"
             tick={{ fontSize: 10 }}
+            padding={{ left: 10, right: 10 }}
           />
           <YAxis 
             stroke="currentColor" 
-            fontSize={12}
+            fontSize={10}
             tickLine={false}
             axisLine={false}
             tickFormatter={(value) => `$${value}`}
             domain={[0, 'auto']}
             tick={{ fontSize: 10 }}
-            width={50}
+            width={45}
           />
           <ChartTooltip 
-            contentStyle={{
-              backgroundColor: 'rgba(255, 255, 255, 0.9)',
-              border: 'none',
-              borderRadius: '8px',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-              padding: '8px',
-              fontSize: '12px',
+            content={({ active, payload }) => {
+              if (active && payload && payload.length) {
+                const data = payload[0].payload;
+                return (
+                  <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+                    <p className="font-medium text-sm mb-1">{format(parseISO(data.fullDate + "-01"), "MMMM yyyy")}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">
+                      Tithes: ${payload[0].value?.toFixed(2)}
+                    </p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">
+                      Offerings: ${payload[1].value?.toFixed(2)}
+                    </p>
+                  </div>
+                );
+              }
+              return null;
             }}
           />
           <Area
@@ -115,47 +132,57 @@ export default function GivingCharts() {
             <stop offset="100%" stopColor="var(--color-offerings)" stopOpacity={0.6}/>
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+        <CartesianGrid strokeDasharray="3 3" className="opacity-20" />
         <XAxis 
           dataKey="month" 
           stroke="currentColor" 
-          fontSize={12}
+          fontSize={10}
           tickLine={false}
           axisLine={false}
           interval="preserveStartEnd"
           tick={{ fontSize: 10 }}
+          padding={{ left: 10, right: 10 }}
         />
         <YAxis 
           stroke="currentColor" 
-          fontSize={12}
+          fontSize={10}
           tickLine={false}
           axisLine={false}
           tickFormatter={(value) => `$${value}`}
           domain={[0, 'auto']}
           tick={{ fontSize: 10 }}
-          width={50}
+          width={45}
         />
         <ChartTooltip 
-          contentStyle={{
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            border: 'none',
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-            padding: '8px',
-            fontSize: '12px',
+          content={({ active, payload }) => {
+            if (active && payload && payload.length) {
+              const data = payload[0].payload;
+              return (
+                <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+                  <p className="font-medium text-sm mb-1">{format(parseISO(data.fullDate + "-01"), "MMMM yyyy")}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-300">
+                    Tithes: ${payload[0].value?.toFixed(2)}
+                  </p>
+                  <p className="text-xs text-gray-600 dark:text-gray-300">
+                    Offerings: ${payload[1].value?.toFixed(2)}
+                  </p>
+                </div>
+              );
+            }
+            return null;
           }}
         />
         <Bar 
           dataKey="tithes" 
           fill="url(#tithesBarGradient)"
           radius={[4, 4, 0, 0]}
-          maxBarSize={30}
+          maxBarSize={25}
         />
         <Bar 
           dataKey="offerings" 
           fill="url(#offeringsBarGradient)"
           radius={[4, 4, 0, 0]}
-          maxBarSize={30}
+          maxBarSize={25}
         />
       </BarChart>
     );

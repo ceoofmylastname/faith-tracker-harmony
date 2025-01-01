@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import { startOfYear, format, eachMonthOfInterval, startOfMonth, endOfMonth } from "date-fns";
 
 interface MonthlyGiving {
   month: string;
@@ -23,15 +24,21 @@ export function useGivingAnalytics() {
   return useQuery({
     queryKey: ["giving-analytics", user?.id],
     queryFn: async (): Promise<GivingAnalytics> => {
-      const currentYear = new Date().getFullYear();
-      const startOfYear = `${currentYear}-01-01`;
+      const now = new Date();
+      const yearStart = startOfYear(now);
+      
+      // Get all months from start of year to current month
+      const months = eachMonthOfInterval({
+        start: yearStart,
+        end: now
+      });
 
       // Fetch giving records for the year
       const { data: givingData, error: givingError } = await supabase
         .from("giving_records")
         .select("amount, category, date")
         .eq("user_id", user?.id)
-        .gte("date", startOfYear)
+        .gte("date", format(yearStart, "yyyy-MM-dd"))
         .order("date", { ascending: true });
 
       if (givingError) throw givingError;
@@ -42,8 +49,9 @@ export function useGivingAnalytics() {
         .filter(record => record.category === "tithe")
         .reduce((sum, record) => sum + Number(record.amount), 0);
 
-      // Calculate monthly average
-      const monthlyAverage = totalGivingYTD / (new Date().getMonth() + 1);
+      // Calculate monthly average (only counting months that have passed)
+      const monthsPassed = months.length;
+      const monthlyAverage = totalGivingYTD / monthsPassed;
 
       // Fetch latest goal for progress calculation
       const { data: goalData, error: goalError } = await supabase
@@ -56,33 +64,37 @@ export function useGivingAnalytics() {
 
       if (goalError && goalError.code !== "PGRST116") throw goalError;
 
-      // Process monthly data
-      const monthlyDataMap = givingData.reduce((acc, record) => {
-        const monthKey = record.date.substring(0, 7); // Get YYYY-MM format
-        if (!acc[monthKey]) {
-          acc[monthKey] = { tithes: 0, offerings: 0 };
-        }
-        if (record.category === "tithe") {
-          acc[monthKey].tithes += Number(record.amount);
-        } else if (record.category === "offering") {
-          acc[monthKey].offerings += Number(record.amount);
-        }
-        return acc;
-      }, {} as Record<string, { tithes: number; offerings: number }>);
-
-      // Convert to array and ensure all months from start of year are included
-      const monthlyData: MonthlyGiving[] = [];
-      const currentMonth = new Date().getMonth();
+      // Process monthly data with proper date handling
+      const monthlyDataMap = new Map<string, { tithes: number; offerings: number }>();
       
-      for (let month = 0; month <= currentMonth; month++) {
-        const date = new Date(currentYear, month, 1);
-        const monthKey = date.toISOString().substring(0, 7);
-        monthlyData.push({
-          month: monthKey,
-          tithes: monthlyDataMap[monthKey]?.tithes || 0,
-          offerings: monthlyDataMap[monthKey]?.offerings || 0,
-        });
-      }
+      // Initialize all months with zero values
+      months.forEach(month => {
+        monthlyDataMap.set(format(month, "yyyy-MM"), { tithes: 0, offerings: 0 });
+      });
+
+      // Fill in actual giving data
+      givingData.forEach(record => {
+        const monthKey = record.date.substring(0, 7); // YYYY-MM format
+        const currentData = monthlyDataMap.get(monthKey) || { tithes: 0, offerings: 0 };
+        
+        if (record.category === "tithe") {
+          currentData.tithes += Number(record.amount);
+        } else if (record.category === "offering") {
+          currentData.offerings += Number(record.amount);
+        }
+        
+        monthlyDataMap.set(monthKey, currentData);
+      });
+
+      // Convert to array and format for display
+      const monthlyData: MonthlyGiving[] = Array.from(monthlyDataMap.entries()).map(([month, data]) => ({
+        month,
+        tithes: data.tithes,
+        offerings: data.offerings
+      }));
+
+      // Sort by date
+      monthlyData.sort((a, b) => a.month.localeCompare(b.month));
 
       // Calculate goal progress
       const goalProgress = goalData 
