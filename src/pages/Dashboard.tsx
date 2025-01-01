@@ -13,6 +13,7 @@ import GivingTab from "@/components/giving/GivingTab";
 import NotesTab from "@/components/notes/NotesTab";
 import CommunityTab from "@/components/community/CommunityTab";
 import ScheduleTab from "@/components/schedule/ScheduleTab";
+import UpdatesTab from "@/components/updates/UpdatesTab";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -73,6 +74,7 @@ export default function Dashboard() {
           <Route path="notes" element={<NotesTab />} />
           <Route path="community" element={<CommunityTab />} />
           <Route path="schedule" element={<ScheduleTab />} />
+          <Route path="updates" element={<UpdatesTab />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </div>

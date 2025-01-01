@@ -679,6 +679,42 @@ export type Database = {
           },
         ]
       }
+      update_access: {
+        Row: {
+          created_at: string
+          granted_by: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_by: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_by?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "update_access_granted_by_fkey"
+            columns: ["granted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "update_access_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
