@@ -21,18 +21,6 @@ export default function Login() {
     }
   }, [user, navigate]);
 
-  // Handle form submission to save email
-  const handleSubmit = (e: Event) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const email = (form.elements.namedItem('email') as HTMLInputElement)?.value;
-    if (email) {
-      localStorage.setItem("savedEmail", email);
-    }
-    // Let the default form submission continue
-    return true;
-  };
-
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
       <img 
@@ -80,11 +68,13 @@ export default function Login() {
           localization={{
             variables: {
               sign_in: {
-                email_input_placeholder: savedEmail,
+                email_label: savedEmail ? undefined : "Email",
+                password_label: "Password",
+                email_input_placeholder: savedEmail || "Enter your email",
+                password_input_placeholder: "Enter your password",
               },
             },
           }}
-          onSubmit={handleSubmit}
         />
       </div>
     </div>
