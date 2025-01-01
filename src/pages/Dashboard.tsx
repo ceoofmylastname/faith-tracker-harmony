@@ -10,7 +10,6 @@ import BibleTab from "@/components/bible/BibleTab";
 import FastingTab from "@/components/fasting/FastingTab";
 import DashboardHome from "@/components/dashboard/DashboardHome";
 import GivingTab from "@/components/giving/GivingTab";
-import { InviteGuestForm } from "@/components/forms/InviteGuestForm";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -114,7 +113,6 @@ export default function Dashboard() {
           <Route path="bible" element={<BibleTab />} />
           <Route path="fasting" element={<FastingTab />} />
           <Route path="giving" element={<GivingTab />} />
-          <Route path="invite" element={<InviteGuestForm />} />
         </Routes>
       </div>
     </div>
