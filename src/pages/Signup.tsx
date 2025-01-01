@@ -35,6 +35,11 @@ export default function Signup() {
       });
     } catch (error) {
       console.error("Signup error:", error);
+      toast({
+        title: "Error creating account",
+        description: "Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
