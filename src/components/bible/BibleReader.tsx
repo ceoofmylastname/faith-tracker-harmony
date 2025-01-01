@@ -111,13 +111,13 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
   }, [user, selectedBook, selectedChapter]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <Card className="lg:col-span-2">
-        <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex gap-4">
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <div className="flex-1 min-w-[120px]">
               <Select value={selectedBook} onValueChange={setSelectedBook}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger>
                   <SelectValue placeholder="Select Book" />
                 </SelectTrigger>
                 <SelectContent>
@@ -128,12 +128,14 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+            <div className="flex-1 min-w-[120px]">
               <Select 
                 value={selectedChapter} 
                 onValueChange={setSelectedChapter}
                 disabled={!selectedBook}
               >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger>
                   <SelectValue placeholder="Select Chapter" />
                 </SelectTrigger>
                 <SelectContent>
@@ -145,17 +147,19 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
                 </SelectContent>
               </Select>
             </div>
-            <BibleTimer
-              selectedBook={selectedBook}
-              selectedChapter={selectedChapter}
-              onProgressUpdate={onProgressUpdate}
-            />
+            <div className="flex-none">
+              <BibleTimer
+                selectedBook={selectedBook}
+                selectedChapter={selectedChapter}
+                onProgressUpdate={onProgressUpdate}
+              />
+            </div>
           </div>
           <div className="prose prose-sm dark:prose-invert max-w-none">
-            <h2 className="text-2xl font-semibold mb-4">
+            <h2 className="text-xl font-semibold mb-3">
               {selectedBook} {selectedChapter}
             </h2>
-            <p className="leading-relaxed">
+            <p className="text-sm leading-relaxed">
               {selectedBook && selectedChapter
                 ? "Bible content would be displayed here..."
                 : "Select a book and chapter to begin reading"}
@@ -165,15 +169,15 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
       </Card>
 
       <Card>
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Study Notes</h3>
+        <CardContent className="p-4">
+          <h3 className="text-base font-semibold mb-3">Study Notes</h3>
           <Textarea
             placeholder="Write your thoughts and reflections here..."
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="min-h-[200px] mb-4"
+            className="min-h-[150px] mb-3 text-sm"
           />
-          <Button className="w-full gap-2" onClick={handleSaveNotes}>
+          <Button className="w-full gap-2 text-sm" onClick={handleSaveNotes}>
             <Save className="h-4 w-4" />
             Save Notes
           </Button>
