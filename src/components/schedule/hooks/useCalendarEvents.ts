@@ -4,17 +4,29 @@ import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
 import { Event } from "../types";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function useCalendarEvents(selectedDate: Date | undefined) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['schedule-events', format(selectedDate || new Date(), 'yyyy-MM')],
     queryFn: async () => {
+      if (!user) throw new Error("User not authenticated");
+
       const startOfMonth = new Date(selectedDate?.getFullYear() || new Date().getFullYear(), selectedDate?.getMonth() || new Date().getMonth(), 1);
       const endOfMonth = new Date(selectedDate?.getFullYear() || new Date().getFullYear(), (selectedDate?.getMonth() || new Date().getMonth()) + 1, 0);
 
+      // First, check if the current user has update access
+      const { data: accessData } = await supabase
+        .from('update_access')
+        .select('user_id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      // Query for events
       const { data, error } = await supabase
         .from('calendar_events')
         .select(`
@@ -34,13 +46,16 @@ export function useCalendarEvents(selectedDate: Date | undefined) {
         return [];
       }
 
+      if (!data) return [];
+
       return data.map((event: any) => ({
         id: event.id,
         type: event.event_type || 'event',
         title: event.title,
         start: new Date(event.start_time),
         end: event.end_time ? new Date(event.end_time) : undefined,
-        content: `${event.description}\nCreated by: ${event.profiles?.name || event.profiles?.email || 'Unknown'}`,
+        content: `${event.description || ''}\nCreated by: ${event.profiles?.name || event.profiles?.email || 'Unknown'}`,
+        completed: event.completed || false,
       }));
     },
   });
