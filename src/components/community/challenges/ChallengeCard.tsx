@@ -3,6 +3,7 @@ import { Trophy, Clock, Target } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { ChallengeChat } from "./ChallengeChat";
 
 interface ChallengeCardProps {
   challenge: any;
@@ -57,12 +58,18 @@ export function ChallengeCard({
       </div>
 
       {isParticipating ? (
-        <Button 
-          onClick={() => onMarkProgress(challenge.id)}
-          className="w-full gap-2"
-        >
-          Mark Today Complete
-        </Button>
+        <div className="space-y-4">
+          <Button 
+            onClick={() => onMarkProgress(challenge.id)}
+            className="w-full gap-2"
+          >
+            Mark Today Complete
+          </Button>
+          <ChallengeChat 
+            challengeId={challenge.id}
+            challengeName={challenge.name}
+          />
+        </div>
       ) : (
         <Button 
           onClick={() => onJoin(challenge.id)}
