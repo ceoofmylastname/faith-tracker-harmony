@@ -1,58 +1,37 @@
 import { supabase } from '@/lib/supabase';
-import { toast } from "@/hooks/use-toast";
+import { AuthToast } from './types';
 
 export const signUpUser = async (
   email: string, 
   password: string, 
-  toast: (props: any) => void,
+  showToast: (props: AuthToast) => void,
   name?: string
 ) => {
   try {
     const { data: { user }, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          name: name || email.split('@')[0],
+        },
+      },
     });
-    
-    if (error) {
-      if (error.message.includes('User already registered')) {
-        toast({
-          variant: "destructive",
-          title: "Account Already Exists",
-          description: "This email is already registered. Please sign in instead.",
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: error.message,
-        });
-      }
-      throw error;
-    }
 
-    if (user && name) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ name })
-        .eq('id', user.id);
+    if (error) throw error;
 
-      if (profileError) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to save profile information",
-        });
-        throw profileError;
-      }
+    if (user) {
+      showToast({
+        title: "Success!",
+        description: "Please check your email to confirm your account.",
+      });
     }
-    
-    toast({
-      title: "Success!",
-      description: "Please check your email for verification link",
-    });
-    
-    return user;
   } catch (error: any) {
+    showToast({
+      variant: "destructive",
+      title: "Error signing up",
+      description: error.message,
+    });
     throw error;
   }
 };
@@ -60,55 +39,45 @@ export const signUpUser = async (
 export const signInUser = async (
   email: string, 
   password: string,
-  toast: (props: any) => void
+  showToast: (props: AuthToast) => void
 ) => {
   try {
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      });
-      throw error;
-    }
-    
-    toast({
+
+    if (error) throw error;
+
+    showToast({
       title: "Welcome back!",
-      description: "Successfully signed in",
+      description: "You have successfully signed in.",
     });
   } catch (error: any) {
+    showToast({
+      variant: "destructive",
+      title: "Error signing in",
+      description: error.message,
+    });
     throw error;
   }
 };
 
-export const signOutUser = async (toast: (props: any) => void) => {
+export const signOutUser = async (showToast: (props: AuthToast) => void) => {
   try {
-    localStorage.removeItem('supabase.auth.token');
-    
     const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Sign out error:', error);
-      toast({
-        variant: "destructive",
-        title: "Error signing out",
-        description: error.message,
-      });
-      throw error;
-    }
-    
-    toast({
-      title: "Goodbye!",
-      description: "Successfully signed out",
-    });
+    if (error) throw error;
 
-    window.location.reload();
+    showToast({
+      title: "Signed out",
+      description: "You have been successfully signed out.",
+    });
   } catch (error: any) {
-    console.error('Sign out error:', error);
+    showToast({
+      variant: "destructive",
+      title: "Error signing out",
+      description: error.message,
+    });
     throw error;
   }
 };
