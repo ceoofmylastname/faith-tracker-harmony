@@ -139,8 +139,8 @@ export default function Dashboard() {
         </Sheet>
       </div>
 
-      {/* Desktop Sidebar */}
-      <div className="hidden md:fixed md:left-0 md:top-0 md:h-full md:w-64 md:bg-gradient-to-b md:from-red-900 md:via-red-800 md:to-red-900 md:text-white md:p-6 md:shadow-2xl md:transition-all md:duration-300 md:ease-in-out md:z-50">
+      {/* Desktop Sidebar - Always visible on md and larger screens */}
+      <div className="hidden md:block md:fixed md:left-0 md:top-0 md:h-full md:w-64 md:bg-gradient-to-b md:from-red-900 md:via-red-800 md:to-red-900 md:text-white md:p-6 md:shadow-2xl md:transition-all md:duration-300 md:ease-in-out md:z-50">
         <NavigationContent />
       </div>
 
