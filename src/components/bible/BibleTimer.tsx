@@ -36,7 +36,10 @@ export default function BibleTimer({ selectedBook, selectedChapter, onProgressUp
         const interval = setInterval(() => {
           setTimer(prev => {
             const newValue = prev + 1;
-            onProgressUpdate(Math.floor(newValue / 60));
+            // Update progress every minute
+            if (newValue % 60 === 0) {
+              onProgressUpdate(newValue / 60);
+            }
             return newValue;
           });
         }, 1000);
@@ -56,6 +59,11 @@ export default function BibleTimer({ selectedBook, selectedChapter, onProgressUp
     if (sessionId && timerInterval) {
       clearInterval(timerInterval);
       setTimerInterval(null);
+      
+      // Calculate final minutes and update progress
+      const finalMinutes = Math.ceil(timer / 60);
+      onProgressUpdate(finalMinutes);
+      
       await endReadingSession(sessionId, timer);
       setIsReading(false);
       setTimer(0);
@@ -63,7 +71,7 @@ export default function BibleTimer({ selectedBook, selectedChapter, onProgressUp
       
       toast({
         title: "Success",
-        description: "Reading session recorded successfully!",
+        description: `Reading session recorded: ${finalMinutes} minutes`,
       });
     }
   };
