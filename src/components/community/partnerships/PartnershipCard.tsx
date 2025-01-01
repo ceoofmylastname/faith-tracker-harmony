@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
 import { Shield, ShieldCheck } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -8,8 +9,16 @@ interface PartnershipCardProps {
   partnership: {
     id: string;
     status: string;
-    user1?: { email: string };
-    user2?: { email: string };
+    user1?: { 
+      email: string;
+      name: string | null;
+      profile_image_url: string | null;
+    };
+    user2?: { 
+      email: string;
+      name: string | null;
+      profile_image_url: string | null;
+    };
   };
   isRequester: boolean;
   partnerEmail: string;
@@ -23,6 +32,7 @@ export default function PartnershipCard({
   onStatusUpdate,
 }: PartnershipCardProps) {
   const { toast } = useToast();
+  const partner = isRequester ? partnership.user2 : partnership.user1;
 
   const updatePartnershipStatus = async (status: string) => {
     try {
@@ -51,10 +61,21 @@ export default function PartnershipCard({
   return (
     <Card className="p-4">
       <div className="flex justify-between items-center">
-        <div>
-          <div className="font-semibold">{partnerEmail}</div>
-          <div className="text-sm text-gray-500">
-            Status: {partnership.status}
+        <div className="flex items-center space-x-3">
+          <Avatar className="h-10 w-10 ring-2 ring-primary/10">
+            {partner?.profile_image_url ? (
+              <AvatarImage src={partner.profile_image_url} alt={partner.name || 'Partner'} />
+            ) : (
+              <AvatarFallback className="bg-primary/5 text-primary font-medium">
+                {partner?.name?.[0]?.toUpperCase() || partner?.email?.[0]?.toUpperCase() || '?'}
+              </AvatarFallback>
+            )}
+          </Avatar>
+          <div>
+            <div className="font-semibold">{partner?.name || 'Anonymous'}</div>
+            <div className="text-sm text-gray-500">
+              Status: {partnership.status}
+            </div>
           </div>
         </div>
         {!isRequester && partnership.status === "pending" && (
