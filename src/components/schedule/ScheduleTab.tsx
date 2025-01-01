@@ -1,21 +1,12 @@
 import { useState } from "react";
-import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, CheckCircle2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-
-type Event = {
-  id: string;
-  type: 'prayer' | 'bible' | 'note' | 'task';
-  title: string;
-  start: Date;
-  end?: Date;
-  content?: string;
-  completed?: boolean;
-};
+import { Loader2 } from "lucide-react";
+import { Event } from "./types";
+import CalendarView from "./CalendarView";
+import EventsList from "./EventsList";
+import EventDialog from "./EventDialog";
 
 export default function ScheduleTab() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -94,25 +85,6 @@ export default function ScheduleTab() {
     );
   };
 
-  const getDayEvents = (date: Date) => {
-    return events.filter(event => 
-      format(event.start, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
-    );
-  };
-
-  const getEventColor = (type: Event['type']) => {
-    switch (type) {
-      case 'prayer':
-        return 'bg-primary text-white';
-      case 'bible':
-        return 'bg-green-600 text-white';
-      case 'note':
-        return 'bg-blue-600 text-white';
-      case 'task':
-        return 'bg-gray-600 text-white';
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -126,89 +98,23 @@ export default function ScheduleTab() {
       <h1 className="text-3xl font-bold">Schedule</h1>
       
       <div className="grid md:grid-cols-[auto,1fr] gap-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={setSelectedDate}
-            className="rounded-md border"
-            modifiers={{
-              hasEvents: (date) => dayHasEvents(date),
-            }}
-            modifiersStyles={{
-              hasEvents: { 
-                fontWeight: 'bold',
-                textDecoration: 'underline' 
-              }
-            }}
-          />
-        </div>
+        <CalendarView
+          selectedDate={selectedDate}
+          onSelect={setSelectedDate}
+          dayHasEvents={dayHasEvents}
+        />
 
-        <div className="space-y-4">
-          {selectedDate && (
-            <>
-              <h2 className="text-xl font-semibold">
-                Events for {format(selectedDate, 'MMMM d, yyyy')}
-              </h2>
-              <div className="space-y-2">
-                {getDayEvents(selectedDate).map((event) => (
-                  <button
-                    key={event.id}
-                    onClick={() => setSelectedEvent(event)}
-                    className={cn(
-                      "w-full text-left p-4 rounded-lg transition-transform hover:scale-[1.02]",
-                      getEventColor(event.type)
-                    )}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium">{event.title}</span>
-                      {event.type === 'task' && event.completed && (
-                        <CheckCircle2 className="h-5 w-5" />
-                      )}
-                    </div>
-                    {event.content && (
-                      <p className="text-sm opacity-90 mt-1">{event.content}</p>
-                    )}
-                  </button>
-                ))}
-                {getDayEvents(selectedDate).length === 0 && (
-                  <p className="text-gray-500 dark:text-gray-400">
-                    No events scheduled for this day
-                  </p>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+        <EventsList
+          selectedDate={selectedDate}
+          events={events}
+          onEventClick={setSelectedEvent}
+        />
       </div>
 
-      <Dialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{selectedEvent?.title}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              {format(selectedEvent?.start || new Date(), 'MMMM d, yyyy h:mm a')}
-            </div>
-            {selectedEvent?.content && (
-              <p className="text-gray-700 dark:text-gray-300">
-                {selectedEvent.content}
-              </p>
-            )}
-            {selectedEvent?.type === 'task' && (
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  Status:
-                </span>
-                <span className={selectedEvent.completed ? 'text-green-600' : 'text-yellow-600'}>
-                  {selectedEvent.completed ? 'Completed' : 'Pending'}
-                </span>
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <EventDialog
+        event={selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+      />
     </div>
   );
 }
