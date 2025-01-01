@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import CalendarView from "@/components/schedule/CalendarView";
 import EventsList from "@/components/schedule/EventsList";
 import EventDialog from "@/components/schedule/EventDialog";
+import EventForm from "./EventForm";
 import { Event } from "@/components/schedule/types";
 
 export default function UpdatesCalendar() {
@@ -41,25 +42,28 @@ export default function UpdatesCalendar() {
   });
 
   return (
-    <div className="grid md:grid-cols-[auto,1fr] gap-8">
-      <CalendarView
-        selectedDate={selectedDate}
-        onSelect={setSelectedDate}
-        dayHasEvents={(date) => events.some(event => 
-          format(event.start, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
-        )}
-      />
+    <div className="space-y-8">
+      <EventForm />
+      <div className="grid md:grid-cols-[auto,1fr] gap-8">
+        <CalendarView
+          selectedDate={selectedDate}
+          onSelect={setSelectedDate}
+          dayHasEvents={(date) => events.some(event => 
+            format(event.start, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
+          )}
+        />
 
-      <EventsList
-        selectedDate={selectedDate}
-        events={events}
-        onEventClick={setSelectedEvent}
-      />
+        <EventsList
+          selectedDate={selectedDate}
+          events={events}
+          onEventClick={setSelectedEvent}
+        />
 
-      <EventDialog
-        event={selectedEvent}
-        onClose={() => setSelectedEvent(null)}
-      />
+        <EventDialog
+          event={selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+        />
+      </div>
     </div>
   );
 }
