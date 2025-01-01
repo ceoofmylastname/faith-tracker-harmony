@@ -21,21 +21,16 @@ export default function Login() {
     }
   }, [user, navigate]);
 
-  // Custom auth UI override to handle email persistence
-  const authOverrides = {
-    onSubmit: async (e: Event) => {
-      e.preventDefault();
-      const form = e.target as HTMLFormElement;
-      const email = (form.elements.namedItem('email') as HTMLInputElement)?.value;
-      if (email) {
-        localStorage.setItem("savedEmail", email);
-      }
-      // Let the default form submission continue
-      return true;
-    },
-    defaultValues: {
-      email: savedEmail,
-    },
+  // Handle form submission to save email
+  const handleSubmit = (e: Event) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const email = (form.elements.namedItem('email') as HTMLInputElement)?.value;
+    if (email) {
+      localStorage.setItem("savedEmail", email);
+    }
+    // Let the default form submission continue
+    return true;
   };
 
   return (
@@ -82,7 +77,14 @@ export default function Login() {
           }}
           theme="default"
           providers={[]}
-          override={authOverrides}
+          localization={{
+            variables: {
+              sign_in: {
+                email_input: savedEmail,
+              },
+            },
+          }}
+          onSubmit={handleSubmit}
         />
       </div>
     </div>
