@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Camera, LogOut } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface NavigationActionsProps {
@@ -14,14 +14,19 @@ export default function NavigationActions({ onUpdateProfile, onSignOut }: Naviga
 
   const handleSignOut = async () => {
     try {
+      // First attempt to sign out
       await authSignOut();
+      // If successful, trigger the navigation
       onSignOut();
     } catch (error: any) {
+      console.error('Navigation sign out error:', error);
       toast({
         variant: "destructive",
         title: "Error signing out",
-        description: error.message,
+        description: "Please try again. If the problem persists, refresh the page.",
       });
+      // Still try to navigate even if there's an error
+      onSignOut();
     }
   };
 

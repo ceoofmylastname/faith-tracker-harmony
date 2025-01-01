@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
-import { useToast } from '@/components/ui/use-toast'
+import { useToast } from '@/hooks/use-toast'
 
 interface AuthContextType {
   user: User | null
@@ -105,8 +105,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
+      // First, clear any existing auth errors
       const { error } = await supabase.auth.signOut()
       if (error) {
+        console.error('Sign out error:', error)
         toast({
           variant: "destructive",
           title: "Error signing out",
@@ -114,12 +116,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         })
         throw error
       }
+      
+      // Clear user state immediately after successful sign out
       setUser(null)
+      
+      // Show success message
       toast({
         title: "Goodbye!",
         description: "Successfully signed out",
       })
     } catch (error: any) {
+      console.error('Sign out error:', error)
+      // Even if there's an error, we should try to clear the user state
+      setUser(null)
       throw error
     }
   }
