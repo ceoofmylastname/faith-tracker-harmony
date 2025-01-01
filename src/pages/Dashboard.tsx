@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Home, Heart, BookOpen, Timer, Wallet, LogOut, Menu } from "lucide-react";
+import { Home, Heart, BookOpen, Timer, Wallet, LogOut, Menu, PenLine } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -11,6 +11,7 @@ import BibleTab from "@/components/bible/BibleTab";
 import FastingTab from "@/components/fasting/FastingTab";
 import DashboardHome from "@/components/dashboard/DashboardHome";
 import GivingTab from "@/components/giving/GivingTab";
+import NotesTab from "@/components/notes/NotesTab";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -107,6 +108,17 @@ export default function Dashboard() {
             <Wallet className="mr-2 h-5 w-5" />
             Tithes & Giving
           </Button>
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+            onClick={() => {
+              navigate('/dashboard/notes');
+              setIsMobileMenuOpen(false);
+            }}
+          >
+            <PenLine className="mr-2 h-5 w-5" />
+            Notes
+          </Button>
         </div>
         
         <Button
@@ -152,6 +164,7 @@ export default function Dashboard() {
           <Route path="bible" element={<BibleTab />} />
           <Route path="fasting" element={<FastingTab />} />
           <Route path="giving" element={<GivingTab />} />
+          <Route path="notes" element={<NotesTab />} />
         </Routes>
       </div>
     </div>
