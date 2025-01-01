@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { HandsPraying, Heart } from "lucide-react";
+import { Prayer, Heart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
@@ -82,7 +82,7 @@ export default function PrayerRequestsSection() {
             className="min-h-[100px]"
           />
           <Button type="submit" className="w-full">
-            <HandsPraying className="mr-2 h-4 w-4" />
+            <Prayer className="mr-2 h-4 w-4" />
             Share Prayer Request
           </Button>
         </form>

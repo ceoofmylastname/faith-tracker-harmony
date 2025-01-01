@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, HandsPraying, Target, Trophy } from "lucide-react";
+import { Users, Prayer, Target, Trophy } from "lucide-react";
 import GroupSection from "./sections/GroupSection";
 import PrayerRequestsSection from "./sections/PrayerRequestsSection";
 import GroupChallengesSection from "./sections/GroupChallengesSection";
@@ -36,7 +36,7 @@ export default function CommunityTab() {
             Groups
           </TabsTrigger>
           <TabsTrigger value="prayers" className="data-[state=active]:bg-primary/10">
-            <HandsPraying className="mr-2 h-4 w-4" />
+            <Prayer className="mr-2 h-4 w-4" />
             Prayer Requests
           </TabsTrigger>
           <TabsTrigger value="challenges" className="data-[state=active]:bg-primary/10">
