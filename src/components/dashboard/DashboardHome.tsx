@@ -2,13 +2,15 @@ import { PrayerCard } from "./cards/PrayerCard";
 import { BibleCard } from "./cards/BibleCard";
 import { FastingCard } from "./cards/FastingCard";
 import { GivingCard } from "./cards/GivingCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import confetti from 'canvas-confetti';
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 
 export default function DashboardHome() {
   const [formData, setFormData] = useState({
@@ -19,6 +21,26 @@ export default function DashboardHome() {
     notes: ""
   });
   const { toast } = useToast();
+  const { user } = useAuth();
+  const [userName, setUserName] = useState<string>("");
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (user) {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('name')
+          .eq('id', user.id)
+          .single();
+
+        if (data?.name) {
+          setUserName(data.name);
+        }
+      }
+    };
+
+    fetchUserName();
+  }, [user]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -29,14 +51,12 @@ export default function DashboardHome() {
   };
 
   const triggerConfetti = () => {
-    // Left side confetti
     confetti({
       particleCount: 100,
       spread: 70,
       origin: { x: 0.2, y: 0.8 }
     });
     
-    // Right side confetti
     confetti({
       particleCount: 100,
       spread: 70,
@@ -84,7 +104,7 @@ export default function DashboardHome() {
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-4xl font-bold bg-gradient-to-r from-red-700 via-red-600 to-red-500 bg-clip-text text-transparent mb-6">
-        Welcome to Your Faith Journey
+        {userName ? `Welcome to Your Faith Journey, ${userName}` : 'Welcome to Your Faith Journey'}
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 [perspective:1000px]">
