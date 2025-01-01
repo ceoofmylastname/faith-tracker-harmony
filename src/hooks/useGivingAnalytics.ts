@@ -2,12 +2,19 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 
+interface MonthlyGiving {
+  month: string;
+  tithes: number;
+  offerings: number;
+}
+
 interface GivingAnalytics {
   totalGivingYTD: number;
   tithesYTD: number;
   monthlyAverage: number;
   goalProgress: number;
   currentGoalAmount: number | null;
+  monthlyData: MonthlyGiving[];
 }
 
 export function useGivingAnalytics() {
@@ -19,12 +26,13 @@ export function useGivingAnalytics() {
       const currentYear = new Date().getFullYear();
       const startOfYear = `${currentYear}-01-01`;
 
-      // Fetch total giving for the year
+      // Fetch giving records for the year
       const { data: givingData, error: givingError } = await supabase
         .from("giving_records")
-        .select("amount, category")
+        .select("amount, category, date")
         .eq("user_id", user?.id)
-        .gte("date", startOfYear);
+        .gte("date", startOfYear)
+        .order("date", { ascending: true });
 
       if (givingError) throw givingError;
 
@@ -44,9 +52,37 @@ export function useGivingAnalytics() {
         .eq("user_id", user?.id)
         .order("created_at", { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (goalError && goalError.code !== "PGRST116") throw goalError;
+
+      // Process monthly data
+      const monthlyDataMap = givingData.reduce((acc, record) => {
+        const monthKey = record.date.substring(0, 7); // Get YYYY-MM format
+        if (!acc[monthKey]) {
+          acc[monthKey] = { tithes: 0, offerings: 0 };
+        }
+        if (record.category === "tithe") {
+          acc[monthKey].tithes += Number(record.amount);
+        } else if (record.category === "offering") {
+          acc[monthKey].offerings += Number(record.amount);
+        }
+        return acc;
+      }, {} as Record<string, { tithes: number; offerings: number }>);
+
+      // Convert to array and ensure all months from start of year are included
+      const monthlyData: MonthlyGiving[] = [];
+      const currentMonth = new Date().getMonth();
+      
+      for (let month = 0; month <= currentMonth; month++) {
+        const date = new Date(currentYear, month, 1);
+        const monthKey = date.toISOString().substring(0, 7);
+        monthlyData.push({
+          month: monthKey,
+          tithes: monthlyDataMap[monthKey]?.tithes || 0,
+          offerings: monthlyDataMap[monthKey]?.offerings || 0,
+        });
+      }
 
       // Calculate goal progress
       const goalProgress = goalData 
@@ -59,6 +95,7 @@ export function useGivingAnalytics() {
         monthlyAverage,
         goalProgress: Math.min(goalProgress, 100),
         currentGoalAmount: goalData ? Number(goalData.target_amount) : null,
+        monthlyData,
       };
     },
     enabled: !!user,
