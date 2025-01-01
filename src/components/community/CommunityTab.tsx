@@ -45,7 +45,14 @@ export default function CommunityTab() {
           .from("community_profiles")
           .insert([{ id: user?.id }]);
 
-        if (insertError) throw insertError;
+        if (insertError) {
+          console.error("Error creating community profile:", insertError);
+          toast({
+            variant: "destructive",
+            title: "Error creating profile",
+            description: insertError.message,
+          });
+        }
       }
     } catch (error: any) {
       console.error("Error loading community settings:", error);
