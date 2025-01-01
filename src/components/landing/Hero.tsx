@@ -87,10 +87,6 @@ export const Hero = () => {
           </h1>
         )}
         
-        <p className="text-white text-xl mb-6">
-          Discover: The Real You, The Real Purpose, The Real Truth.
-        </p>
-        
         <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
           Strengthen your faith and track your spiritual journey with our all-in-one Faith Tracker. Connect with a community of believers committed to growing closer to Yahowah.
         </p>
