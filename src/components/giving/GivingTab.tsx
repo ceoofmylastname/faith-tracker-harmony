@@ -4,7 +4,6 @@ import { Plus } from "lucide-react";
 import GivingCharts from "./GivingCharts";
 import GivingForm from "./GivingForm";
 import GivingGoals from "./GivingGoals";
-import GivingNotes from "./GivingNotes";
 import { useGivingAnalytics } from "@/hooks/useGivingAnalytics";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -15,7 +14,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function GivingTab() {
   const { data: analytics, isLoading } = useGivingAnalytics();
@@ -100,15 +98,9 @@ export default function GivingTab() {
         </Card>
       </div>
 
-      <Tabs defaultValue="history" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="history">History</TabsTrigger>
-          <TabsTrigger value="goals">Goals</TabsTrigger>
-          <TabsTrigger value="notes">Notes</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="history">
-          <Card>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <Card className="h-full">
             <CardHeader>
               <CardTitle>Giving History</CardTitle>
             </CardHeader>
@@ -116,10 +108,9 @@ export default function GivingTab() {
               <GivingCharts />
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="goals">
-          <Card>
+        </div>
+        <div>
+          <Card className="h-full">
             <CardHeader>
               <CardTitle>Goals</CardTitle>
             </CardHeader>
@@ -127,19 +118,8 @@ export default function GivingTab() {
               <GivingGoals />
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="notes">
-          <Card>
-            <CardHeader>
-              <CardTitle>Notes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <GivingNotes />
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
     </div>
   );
 }
