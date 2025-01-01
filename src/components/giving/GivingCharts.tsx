@@ -2,15 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-
-const data = [
-  { month: 'Jan', tithes: 800, offerings: 200 },
-  { month: 'Feb', tithes: 900, offerings: 300 },
-  { month: 'Mar', tithes: 850, offerings: 250 },
-  { month: 'Apr', tithes: 1000, offerings: 400 },
-  { month: 'May', tithes: 950, offerings: 350 },
-  { month: 'Jun', tithes: 1100, offerings: 450 },
-];
+import { useGivingAnalytics } from "@/hooks/useGivingAnalytics";
 
 const chartConfig = {
   tithes: {
@@ -31,6 +23,14 @@ const chartConfig = {
 
 export default function GivingCharts() {
   const [chartType, setChartType] = useState<'area' | 'bar'>('area');
+  const { data: analytics } = useGivingAnalytics();
+
+  // Transform the data to ensure it starts from zero for each month
+  const transformedData = analytics?.monthlyData?.map((item) => ({
+    month: new Date(item.month).toLocaleString('default', { month: 'short' }),
+    tithes: Number(item.tithes) || 0,
+    offerings: Number(item.offerings) || 0,
+  })) || [];
 
   return (
     <div className="space-y-4">
@@ -57,7 +57,7 @@ export default function GivingCharts() {
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
         <ChartContainer config={chartConfig}>
           {chartType === 'area' ? (
-            <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <AreaChart data={transformedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="tithesGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="var(--color-tithes)" stopOpacity={0.8}/>
@@ -82,6 +82,7 @@ export default function GivingCharts() {
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(value) => `$${value}`}
+                domain={[0, 'auto']}
               />
               <ChartTooltip 
                 contentStyle={{
@@ -111,7 +112,7 @@ export default function GivingCharts() {
               />
             </AreaChart>
           ) : (
-            <BarChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <BarChart data={transformedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="tithesBarGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--color-tithes)" stopOpacity={1}/>
@@ -136,6 +137,7 @@ export default function GivingCharts() {
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(value) => `$${value}`}
+                domain={[0, 'auto']}
               />
               <ChartTooltip 
                 contentStyle={{
