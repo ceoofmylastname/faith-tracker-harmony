@@ -1,11 +1,11 @@
 import { supabase } from '@/lib/supabase';
-import { Toast } from '@/components/ui/use-toast';
+import { toast } from "@/hooks/use-toast";
 
 export const signUpUser = async (
   email: string, 
   password: string, 
-  name?: string,
-  toast: (props: Toast) => void
+  toast: (props: any) => void,
+  name?: string
 ) => {
   try {
     const { data: { user }, error } = await supabase.auth.signUp({
@@ -60,7 +60,7 @@ export const signUpUser = async (
 export const signInUser = async (
   email: string, 
   password: string,
-  toast: (props: Toast) => void
+  toast: (props: any) => void
 ) => {
   try {
     const { error } = await supabase.auth.signInWithPassword({
@@ -86,7 +86,7 @@ export const signInUser = async (
   }
 };
 
-export const signOutUser = async (toast: (props: Toast) => void) => {
+export const signOutUser = async (toast: (props: any) => void) => {
   try {
     localStorage.removeItem('supabase.auth.token');
     
