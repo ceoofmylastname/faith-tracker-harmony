@@ -12,7 +12,7 @@ export default function EventDialog({ event, onClose }: EventDialogProps) {
 
   return (
     <Dialog open={!!event} onOpenChange={() => onClose()}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{event.title}</DialogTitle>
         </DialogHeader>

@@ -10,7 +10,7 @@ interface CalendarViewProps {
 
 export default function CalendarView({ selectedDate, onSelect, dayHasEvents }: CalendarViewProps) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 transition-all duration-300 hover:shadow-xl">
       <Calendar
         mode="single"
         selected={selectedDate}

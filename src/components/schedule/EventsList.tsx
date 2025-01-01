@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Event } from "./types";
 
