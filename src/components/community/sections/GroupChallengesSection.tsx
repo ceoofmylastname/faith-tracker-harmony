@@ -87,6 +87,7 @@ export default function GroupChallengesSection() {
                     <SelectItem value="bible">Bible Reading</SelectItem>
                     <SelectItem value="fasting">Fasting</SelectItem>
                     <SelectItem value="giving">Giving</SelectItem>
+                    <SelectItem value="workout">Workout</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
