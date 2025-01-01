@@ -13,7 +13,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 
-export default function GivingForm() {
+interface GivingFormProps {
+  onClose?: () => void;
+}
+
+export default function GivingForm({ onClose }: GivingFormProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -59,6 +63,11 @@ export default function GivingForm() {
       setCategory("");
       setNotes("");
       setDate(new Date());
+      
+      // Close the dialog
+      if (onClose) {
+        onClose();
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",

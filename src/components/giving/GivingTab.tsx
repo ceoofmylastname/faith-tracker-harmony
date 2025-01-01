@@ -13,15 +13,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useState } from "react";
 
 export default function GivingTab() {
   const { data: analytics, isLoading } = useGivingAnalytics();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Tithes & Giving</h1>
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" /> Record Giving
@@ -31,7 +33,7 @@ export default function GivingTab() {
             <DialogHeader>
               <DialogTitle>Record Giving</DialogTitle>
             </DialogHeader>
-            <GivingForm />
+            <GivingForm onClose={() => setIsDialogOpen(false)} />
           </DialogContent>
         </Dialog>
       </div>
