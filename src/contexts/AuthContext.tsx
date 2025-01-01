@@ -5,7 +5,7 @@ import { useToast } from '@/components/ui/use-toast'
 
 interface AuthContextType {
   user: User | null
-  signUp: (email: string, password: string) => Promise<void>
+  signUp: (email: string, password: string, name: string) => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
   loading: boolean
@@ -33,16 +33,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, name: string) => {
     try {
-      const { error } = await supabase.auth.signUp({
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
       })
       
-      if (error) {
-        // Check if the error is due to existing user
-        if (error.message.includes('User already registered')) {
+      if (signUpError) {
+        if (signUpError.message.includes('User already registered')) {
           toast({
             variant: "destructive",
             title: "Account Already Exists",
@@ -52,10 +51,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           toast({
             variant: "destructive",
             title: "Error",
-            description: error.message,
+            description: signUpError.message,
           })
         }
-        throw error
+        throw signUpError
+      }
+
+      // Update the profile with the user's name
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ name })
+        .eq('email', email)
+
+      if (updateError) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to save user name",
+        })
+        throw updateError
       }
       
       toast({

@@ -3,11 +3,32 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { LogOut } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 export const Hero = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { toast } = useToast();
+  const [userName, setUserName] = useState<string>("");
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (user) {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('name')
+          .eq('id', user.id)
+          .single();
+
+        if (data?.name) {
+          setUserName(data.name);
+        }
+      }
+    };
+
+    fetchUserName();
+  }, [user]);
 
   const handleSignOut = async () => {
     try {
@@ -55,13 +76,20 @@ export const Hero = () => {
       </div>
 
       <div className="relative container mx-auto px-6 text-center">
+        {userName && (
+          <h1 className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-text bg-clip-text text-transparent">
+            Welcome to Your Faith Journey, {userName}
+          </h1>
+        )}
+        {!userName && (
+          <h1 className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-text bg-clip-text text-transparent">
+            Faith Isn't Just A Belief—It's A Bold Lifestyle. Take The First Step Into The Kingdom Today.
+          </h1>
+        )}
+        
         <p className="text-white text-xl mb-6">
           Discover: The Real You, The Real Purpose, The Real Truth.
         </p>
-        
-        <h1 className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-text bg-clip-text text-transparent">
-          Faith Isn't Just A Belief—It's A Bold Lifestyle. Take The First Step Into The Kingdom Today.
-        </h1>
         
         <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
           Strengthen your faith and track your spiritual journey with our all-in-one Faith Tracker. Connect with a community of believers committed to growing closer to Yahowah.
