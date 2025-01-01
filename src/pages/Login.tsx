@@ -80,7 +80,7 @@ export default function Login() {
           localization={{
             variables: {
               sign_in: {
-                email_input: savedEmail,
+                email_input_placeholder: savedEmail,
               },
             },
           }}
