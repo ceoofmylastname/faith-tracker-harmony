@@ -9,7 +9,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 import { Plus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useQuery } from "@tanstack/react-query";
 
 interface EventFormData {
   title: string;
@@ -17,34 +16,13 @@ interface EventFormData {
   startTime: string;
   endTime: string;
   repeat: string;
-  invitees: string[];
-}
-
-interface Profile {
-  id: string;
-  name: string | null;
-  email: string | null;
 }
 
 export default function EventForm() {
   const [open, setOpen] = useState(false);
-  const [selectedInvitees, setSelectedInvitees] = useState<string[]>([]);
   const { toast } = useToast();
   const { register, handleSubmit, reset } = useForm<EventFormData>();
   const { user } = useAuth();
-
-  // Fetch all users for the invitees dropdown
-  const { data: profiles = [] } = useQuery({
-    queryKey: ['profiles'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, name, email');
-      
-      if (error) throw error;
-      return data as Profile[];
-    },
-  });
 
   const onSubmit = async (data: EventFormData) => {
     if (!user) {
@@ -59,15 +37,11 @@ export default function EventForm() {
     try {
       const eventData = {
         title: data.title,
-        description: `Location: ${data.location}\nInvitees: ${selectedInvitees.map(id => {
-          const profile = profiles.find(p => p.id === id);
-          return profile?.name || profile?.email;
-        }).join(', ')}`,
+        description: `Location: ${data.location}`,
         start_time: new Date(data.startTime).toISOString(),
         end_time: new Date(data.endTime).toISOString(),
         event_type: data.repeat === 'none' ? 'event' : `repeat_${data.repeat}`,
         user_id: user.id,
-        invitees: selectedInvitees
       };
 
       const { error } = await supabase
@@ -83,7 +57,6 @@ export default function EventForm() {
       
       setOpen(false);
       reset();
-      setSelectedInvitees([]);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -91,15 +64,6 @@ export default function EventForm() {
         description: error.message,
       });
     }
-  };
-
-  const handleInviteeChange = (userId: string) => {
-    setSelectedInvitees(prev => {
-      if (prev.includes(userId)) {
-        return prev.filter(id => id !== userId);
-      }
-      return [...prev, userId];
-    });
   };
 
   return (
@@ -156,26 +120,6 @@ export default function EventForm() {
                 <SelectItem value="monthly">Monthly</SelectItem>
               </SelectContent>
             </Select>
-          </div>
-          
-          <div className="space-y-2">
-            <Label>Invitees</Label>
-            <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
-              {profiles.map((profile) => (
-                <label
-                  key={profile.id}
-                  className="flex items-center space-x-2 text-sm"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedInvitees.includes(profile.id)}
-                    onChange={() => handleInviteeChange(profile.id)}
-                    className="rounded border-gray-300"
-                  />
-                  <span>{profile.name || profile.email}</span>
-                </label>
-              ))}
-            </div>
           </div>
           
           <Button type="submit" className="w-full">
