@@ -18,7 +18,7 @@ export function AreaChartView({ data, chartConfig }: AreaChartViewProps) {
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
         data={data}
-        margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+        margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
       >
         <defs>
           <linearGradient id="tithesGradient" x1="0" y1="0" x2="0" y2="1">
@@ -34,20 +34,20 @@ export function AreaChartView({ data, chartConfig }: AreaChartViewProps) {
         <XAxis 
           dataKey="month" 
           stroke="currentColor" 
-          fontSize={12}
+          fontSize={10}
           tickLine={false}
           axisLine={false}
           interval={0}
-          padding={{ left: 10, right: 10 }}
+          padding={{ left: 5, right: 5 }}
         />
         <YAxis 
           stroke="currentColor" 
-          fontSize={12}
+          fontSize={10}
           tickLine={false}
           axisLine={false}
           tickFormatter={(value) => `$${value}`}
-          width={60}
-          padding={{ top: 20, bottom: 20 }}
+          width={45}
+          padding={{ top: 10, bottom: 10 }}
         />
         <Tooltip content={<GivingTooltip />} />
         <Area
@@ -56,8 +56,8 @@ export function AreaChartView({ data, chartConfig }: AreaChartViewProps) {
           stroke="var(--color-tithes)"
           fill="url(#tithesGradient)"
           strokeWidth={2}
-          dot={{ r: 3, strokeWidth: 1 }}
-          activeDot={{ r: 5, strokeWidth: 1 }}
+          dot={{ r: 2, strokeWidth: 1 }}
+          activeDot={{ r: 4, strokeWidth: 1 }}
         />
         <Area
           type="monotone"
@@ -65,8 +65,8 @@ export function AreaChartView({ data, chartConfig }: AreaChartViewProps) {
           stroke="var(--color-offerings)"
           fill="url(#offeringsGradient)"
           strokeWidth={2}
-          dot={{ r: 3, strokeWidth: 1 }}
-          activeDot={{ r: 5, strokeWidth: 1 }}
+          dot={{ r: 2, strokeWidth: 1 }}
+          activeDot={{ r: 4, strokeWidth: 1 }}
         />
       </AreaChart>
     </ResponsiveContainer>

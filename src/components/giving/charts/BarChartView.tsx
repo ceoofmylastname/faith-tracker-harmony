@@ -18,7 +18,7 @@ export function BarChartView({ data, chartConfig }: BarChartViewProps) {
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
         data={data}
-        margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+        margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
       >
         <defs>
           <linearGradient id="tithesBarGradient" x1="0" y1="0" x2="0" y2="1">
@@ -34,33 +34,33 @@ export function BarChartView({ data, chartConfig }: BarChartViewProps) {
         <XAxis 
           dataKey="month" 
           stroke="currentColor" 
-          fontSize={12}
+          fontSize={10}
           tickLine={false}
           axisLine={false}
           interval={0}
-          padding={{ left: 10, right: 10 }}
+          padding={{ left: 5, right: 5 }}
         />
         <YAxis 
           stroke="currentColor" 
-          fontSize={12}
+          fontSize={10}
           tickLine={false}
           axisLine={false}
           tickFormatter={(value) => `$${value}`}
-          width={60}
-          padding={{ top: 20, bottom: 20 }}
+          width={45}
+          padding={{ top: 10, bottom: 10 }}
         />
         <Tooltip content={<GivingTooltip />} />
         <Bar 
           dataKey="tithes" 
           fill="url(#tithesBarGradient)"
           radius={[4, 4, 0, 0]}
-          maxBarSize={25}
+          maxBarSize={20}
         />
         <Bar 
           dataKey="offerings" 
           fill="url(#offeringsBarGradient)"
           radius={[4, 4, 0, 0]}
-          maxBarSize={25}
+          maxBarSize={20}
         />
       </BarChart>
     </ResponsiveContainer>
