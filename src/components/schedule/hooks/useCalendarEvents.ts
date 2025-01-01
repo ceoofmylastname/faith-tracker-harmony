@@ -17,7 +17,10 @@ export function useCalendarEvents(selectedDate: Date | undefined) {
 
       const { data, error } = await supabase
         .from('calendar_events')
-        .select('*')
+        .select(`
+          *,
+          profiles:user_id (name, email)
+        `)
         .gte('start_time', startOfMonth.toISOString())
         .lte('start_time', endOfMonth.toISOString());
 
@@ -37,12 +40,12 @@ export function useCalendarEvents(selectedDate: Date | undefined) {
         title: event.title,
         start: new Date(event.start_time),
         end: event.end_time ? new Date(event.end_time) : undefined,
-        content: event.description,
+        content: `${event.description}\nCreated by: ${event.profiles?.name || event.profiles?.email || 'Unknown'}`,
       }));
     },
   });
 
-  // Subscribe to real-time updates from Supabase
+  // Subscribe to real-time updates
   useEffect(() => {
     const channel = supabase
       .channel('calendar-changes')
