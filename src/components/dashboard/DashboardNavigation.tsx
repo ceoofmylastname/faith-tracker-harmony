@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Home, Heart, BookOpen, Timer, Wallet, LogOut, PenLine, Users } from "lucide-react";
+import { Home, Heart, BookOpen, Timer, Wallet, LogOut, PenLine, Users, Calendar } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface DashboardNavigationProps {
@@ -70,6 +70,14 @@ export default function DashboardNavigation({ onNavigate, onSignOut }: Dashboard
           >
             <PenLine className="mr-2 h-5 w-5" />
             Notes
+          </Button>
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
+            onClick={() => onNavigate('/dashboard/schedule')}
+          >
+            <Calendar className="mr-2 h-5 w-5" />
+            Schedule
           </Button>
           <Button 
             variant="ghost" 

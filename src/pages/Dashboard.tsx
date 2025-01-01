@@ -12,6 +12,7 @@ import FastingTab from "@/components/fasting/FastingTab";
 import GivingTab from "@/components/giving/GivingTab";
 import NotesTab from "@/components/notes/NotesTab";
 import CommunityTab from "@/components/community/CommunityTab";
+import ScheduleTab from "@/components/schedule/ScheduleTab";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -71,6 +72,7 @@ export default function Dashboard() {
           <Route path="giving" element={<GivingTab />} />
           <Route path="notes" element={<NotesTab />} />
           <Route path="community" element={<CommunityTab />} />
+          <Route path="schedule" element={<ScheduleTab />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </div>
