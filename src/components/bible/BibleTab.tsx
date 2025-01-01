@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookMarked } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
-import BibleReader from "./BibleReader";
-import BibleProgress from "./BibleProgress";
-import BibleAnalytics from "./BibleAnalytics";
+import { BibleHeader } from "./header/BibleHeader";
+import { BibleTabs } from "./tabs/BibleTabs";
 import BibleStatsCards from "./BibleStatsCards";
 
 export default function BibleTab() {
@@ -151,15 +147,7 @@ export default function BibleTab() {
 
   return (
     <div className="p-4 sm:p-6 space-y-4 max-w-7xl mx-auto">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-        <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-red-700 via-red-600 to-red-500 bg-clip-text text-transparent">
-          Bible Reading Journey
-        </h1>
-        <Button variant="outline" className="gap-2 text-sm" onClick={handleSaveProgress}>
-          <BookMarked className="h-4 w-4" />
-          Save Progress
-        </Button>
-      </div>
+      <BibleHeader onSaveProgress={handleSaveProgress} />
 
       <BibleStatsCards
         dailyProgress={dailyProgress}
@@ -170,26 +158,15 @@ export default function BibleTab() {
         overallProgress={overallProgress}
       />
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
-          <TabsTrigger value="read">Read</TabsTrigger>
-          <TabsTrigger value="progress">Progress</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-        </TabsList>
-        <TabsContent value="read" className="mt-4">
-          <BibleReader 
-            onBookChange={setCurrentBook}
-            onChapterChange={setCurrentChapter}
-            onProgressUpdate={setDailyProgress}
-          />
-        </TabsContent>
-        <TabsContent value="progress" className="mt-4">
-          <BibleProgress />
-        </TabsContent>
-        <TabsContent value="analytics" className="mt-4">
-          <BibleAnalytics />
-        </TabsContent>
-      </Tabs>
+      <BibleTabs
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        currentBook={currentBook}
+        currentChapter={currentChapter}
+        onBookChange={setCurrentBook}
+        onChapterChange={setCurrentChapter}
+        onProgressUpdate={setDailyProgress}
+      />
     </div>
   );
 }
