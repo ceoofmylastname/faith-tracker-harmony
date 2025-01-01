@@ -33,7 +33,7 @@ export default function CommunityTab() {
         .from("community_profiles")
         .select("*")
         .eq("id", user?.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
 
