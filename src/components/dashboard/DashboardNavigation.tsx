@@ -1,8 +1,21 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Home, Heart, BookOpen, Timer, Wallet, LogOut, PenLine, Users, Calendar } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { 
+  Home, 
+  BookOpen, 
+  Timer, 
+  CalendarDays, 
+  PiggyBank, 
+  StickyNote, 
+  Users, 
+  Calendar,
+  Camera,
+  LogOut 
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import ProfileImageUpload from "@/components/profile/ProfileImageUpload";
 
 interface DashboardNavigationProps {
   onNavigate: (path: string) => void;
@@ -11,93 +24,69 @@ interface DashboardNavigationProps {
 
 export default function DashboardNavigation({ onNavigate, onSignOut }: DashboardNavigationProps) {
   const { user } = useAuth();
+  const [showImageUpload, setShowImageUpload] = useState(false);
+
+  const links = [
+    { name: "Home", path: "/dashboard", icon: Home },
+    { name: "Prayer", path: "/dashboard/prayer", icon: Timer },
+    { name: "Bible", path: "/dashboard/bible", icon: BookOpen },
+    { name: "Fasting", path: "/dashboard/fasting", icon: CalendarDays },
+    { name: "Giving", path: "/dashboard/giving", icon: PiggyBank },
+    { name: "Notes", path: "/dashboard/notes", icon: StickyNote },
+    { name: "Community", path: "/dashboard/community", icon: Users },
+    { name: "Schedule", path: "/dashboard/schedule", icon: Calendar },
+  ];
 
   return (
-    <>
-      <div className="flex items-center gap-3 mb-8">
-        <Avatar className="h-10 w-10 ring-2 ring-white/20">
-          <AvatarImage src={user?.user_metadata?.avatar_url} />
-          <AvatarFallback>{user?.email?.[0]?.toUpperCase()}</AvatarFallback>
-        </Avatar>
-        <h1 className="text-2xl font-bold">Faith Tracker</h1>
+    <div className="h-full flex flex-col">
+      <div className="space-y-2 flex-1">
+        {links.map((link) => {
+          const Icon = link.icon;
+          return (
+            <Link
+              key={link.path}
+              to={link.path}
+              onClick={() => onNavigate(link.path)}
+              className={cn(
+                "flex items-center space-x-2 w-full px-4 py-2",
+                "hover:bg-white/10 rounded-lg transition-colors duration-200",
+                "text-white/80 hover:text-white"
+              )}
+            >
+              <Icon className="h-5 w-5" />
+              <span>{link.name}</span>
+            </Link>
+          );
+        })}
       </div>
-      <nav className="flex flex-col h-[calc(100%-160px)] justify-between">
-        <div className="space-y-4">
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => onNavigate('/dashboard')}
-          >
-            <Home className="mr-2 h-5 w-5" />
-            Home
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => onNavigate('/dashboard/prayer')}
-          >
-            <Heart className="mr-2 h-5 w-5" />
-            Prayer
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => onNavigate('/dashboard/bible')}
-          >
-            <BookOpen className="mr-2 h-5 w-5" />
-            Bible
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => onNavigate('/dashboard/fasting')}
-          >
-            <Timer className="mr-2 h-5 w-5" />
-            Fasting
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => onNavigate('/dashboard/giving')}
-          >
-            <Wallet className="mr-2 h-5 w-5" />
-            Tithes & Giving
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => onNavigate('/dashboard/notes')}
-          >
-            <PenLine className="mr-2 h-5 w-5" />
-            Notes
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => onNavigate('/dashboard/schedule')}
-          >
-            <Calendar className="mr-2 h-5 w-5" />
-            Schedule
-          </Button>
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => onNavigate('/dashboard/community')}
-          >
-            <Users className="mr-2 h-5 w-5" />
-            Community
-          </Button>
-        </div>
+
+      <div className="space-y-2 pt-4 border-t border-white/20">
+        <Button
+          variant="ghost"
+          className="flex items-center space-x-2 w-full px-4 py-2 hover:bg-white/10 text-white/80 hover:text-white justify-start font-normal"
+          onClick={() => setShowImageUpload(true)}
+        >
+          <Camera className="h-5 w-5" />
+          <span>Update Profile Picture</span>
+        </Button>
         
         <Button
           variant="ghost"
-          className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1 mt-auto"
+          className="flex items-center space-x-2 w-full px-4 py-2 hover:bg-white/10 text-white/80 hover:text-white justify-start font-normal"
           onClick={onSignOut}
         >
-          <LogOut className="mr-2 h-5 w-5" />
-          Sign Out
+          <LogOut className="h-5 w-5" />
+          <span>Sign Out</span>
         </Button>
-      </nav>
-    </>
+      </div>
+
+      {user && (
+        <ProfileImageUpload
+          userId={user.id}
+          open={showImageUpload}
+          onClose={() => setShowImageUpload(false)}
+        />
+      )}
+    </div>
   );
 }
