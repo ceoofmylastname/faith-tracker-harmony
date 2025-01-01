@@ -16,9 +16,14 @@ export default function Login() {
   }, [user, navigate]);
 
   return (
-    <div className="min-h-screen bg-[#1A1A1A] flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-gray-900 p-8 rounded-lg shadow-xl">
-        <h2 className="text-2xl font-bold text-center mb-6 text-white">Welcome Back</h2>
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
+      <img 
+        src="https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/672aa6ff53c79865cd710429.png"
+        alt="FTTHLV Logo"
+        className="w-48 mb-8"
+      />
+      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-xl">
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-900">Welcome Back</h2>
         <Auth
           supabaseClient={supabase}
           appearance={{
@@ -26,13 +31,33 @@ export default function Login() {
             variables: {
               default: {
                 colors: {
-                  brand: '#9333ea',
-                  brandAccent: '#a855f7',
+                  brand: '#800000',
+                  brandAccent: '#4A0404',
+                  inputBackground: 'white',
+                  inputText: 'black',
+                  inputPlaceholder: 'darkgray',
                 }
               }
-            }
+            },
+            style: {
+              button: {
+                background: '#800000',
+                color: 'white',
+              },
+              anchor: {
+                color: '#800000',
+              },
+              input: {
+                background: 'white',
+                borderColor: '#e5e7eb',
+                color: 'black',
+              },
+              label: {
+                color: '#374151',
+              },
+            },
           }}
-          theme="dark"
+          theme="default"
           providers={[]}
         />
       </div>

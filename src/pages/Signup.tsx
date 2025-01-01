@@ -41,12 +41,17 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A1A1A] flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-gray-900 p-8 rounded-lg shadow-xl">
-        <h2 className="text-2xl font-bold text-center mb-6 text-white">Create Your Account</h2>
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
+      <img 
+        src="https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/672aa6ff53c79865cd710429.png"
+        alt="FTTHLV Logo"
+        className="w-48 mb-8"
+      />
+      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-xl">
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-900">Create Your Account</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-white">Name</Label>
+            <Label htmlFor="name" className="text-gray-700">Name</Label>
             <Input
               id="name"
               type="text"
@@ -54,11 +59,11 @@ export default function Signup() {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
-              className="bg-gray-800 text-white border-gray-700"
+              className="bg-white text-gray-900 border-gray-300"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-white">Email</Label>
+            <Label htmlFor="email" className="text-gray-700">Email</Label>
             <Input
               id="email"
               type="email"
@@ -66,11 +71,11 @@ export default function Signup() {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
-              className="bg-gray-800 text-white border-gray-700"
+              className="bg-white text-gray-900 border-gray-300"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-white">Password</Label>
+            <Label htmlFor="password" className="text-gray-700">Password</Label>
             <Input
               id="password"
               type="password"
@@ -78,12 +83,12 @@ export default function Signup() {
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               required
-              className="bg-gray-800 text-white border-gray-700"
+              className="bg-white text-gray-900 border-gray-300"
             />
           </div>
           <Button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+            className="w-full bg-primary hover:bg-primary-dark text-white"
             disabled={isLoading}
           >
             {isLoading ? "Creating account..." : "Sign Up"}
