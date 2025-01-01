@@ -208,6 +208,47 @@ export type Database = {
           },
         ]
       }
+      giving_notes: {
+        Row: {
+          category: Database["public"]["Enums"]["giving_note_category"]
+          content: string | null
+          created_at: string
+          id: string
+          scripture_reference: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["giving_note_category"]
+          content?: string | null
+          created_at?: string
+          id?: string
+          scripture_reference?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["giving_note_category"]
+          content?: string | null
+          created_at?: string
+          id?: string
+          scripture_reference?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "giving_notes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       giving_records: {
         Row: {
           amount: number
@@ -468,7 +509,10 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      giving_note_category:
+        | "Saturday Gathering"
+        | "Wednesday Night Roundtable"
+        | "Other"
     }
     CompositeTypes: {
       [_ in never]: never
