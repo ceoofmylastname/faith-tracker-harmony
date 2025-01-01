@@ -29,24 +29,8 @@ export default function DashboardNavigation({ onNavigate, onSignOut }: Dashboard
   const { user } = useAuth();
   const [showImageUpload, setShowImageUpload] = useState(false);
 
-  // Check if user has update access
-  const { data: hasUpdateAccess } = useQuery({
-    queryKey: ['update-access', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return false;
-      const { data, error } = await supabase
-        .from('update_access')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error) {
-        console.error('Error checking update access:', error);
-        return false;
-      }
-      return !!data;
-    },
-  });
+  // Check if user has the specific email address
+  const isAdmin = user?.email === 'jrmenterprisegroup@gmail.com';
 
   const links = [
     { name: "Home", path: "/dashboard", icon: Home },
@@ -59,8 +43,8 @@ export default function DashboardNavigation({ onNavigate, onSignOut }: Dashboard
     { name: "Schedule", path: "/dashboard/schedule", icon: Calendar },
   ];
 
-  // Add Updates link only if user has access
-  if (hasUpdateAccess) {
+  // Add Updates link only if user is admin
+  if (isAdmin) {
     links.push({ name: "Updates", path: "/dashboard/updates", icon: Bell });
   }
 

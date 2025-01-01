@@ -4,38 +4,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
 import AccessManagement from "./AccessManagement";
 import UpdatesCalendar from "./UpdatesCalendar";
+import { Navigate } from "react-router-dom";
 
 export default function UpdatesTab() {
   const { user } = useAuth();
 
-  // Check if current user has update access
-  const { data: hasAccess, isLoading: checkingAccess } = useQuery({
-    queryKey: ['update-access', user?.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('update_access')
-        .select('*')
-        .eq('user_id', user?.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error checking access:', error);
-        return false;
-      }
-      return !!data;
-    },
-  });
-
-  if (checkingAccess) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
-  if (!hasAccess) {
-    return null;
+  // Check if user has the specific email
+  if (!user || user.email !== 'jrmenterprisegroup@gmail.com') {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return (
