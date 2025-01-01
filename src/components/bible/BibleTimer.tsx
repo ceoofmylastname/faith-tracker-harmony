@@ -61,6 +61,11 @@ export default function BibleTimer({ selectedBook, selectedChapter, onProgressUp
       setIsReading(false);
       setTimer(0);
       setSessionId(null);
+      
+      toast({
+        title: "Success",
+        description: "Reading session recorded successfully!",
+      });
     }
   };
 
