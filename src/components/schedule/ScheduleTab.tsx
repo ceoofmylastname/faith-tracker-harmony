@@ -1,79 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { format } from "date-fns";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
-import { Event } from "./types";
 import CalendarView from "./CalendarView";
 import EventsList from "./EventsList";
 import EventDialog from "./EventDialog";
-import { useToast } from "@/components/ui/use-toast";
+import { Event } from "./types";
+import { useCalendarEvents } from "./hooks/useCalendarEvents";
 
 export default function ScheduleTab() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  const { data: events = [], isLoading } = useQuery({
-    queryKey: ['schedule-events', format(selectedDate || new Date(), 'yyyy-MM')],
-    queryFn: async () => {
-      const startOfMonth = new Date(selectedDate?.getFullYear() || new Date().getFullYear(), selectedDate?.getMonth() || new Date().getMonth(), 1);
-      const endOfMonth = new Date(selectedDate?.getFullYear() || new Date().getFullYear(), (selectedDate?.getMonth() || new Date().getMonth()) + 1, 0);
-
-      const { data, error } = await supabase
-        .from('calendar_events')
-        .select('*')
-        .gte('start_time', startOfMonth.toISOString())
-        .lte('start_time', endOfMonth.toISOString());
-
-      if (error) {
-        console.error('Error fetching events:', error);
-        toast({
-          title: "Error fetching events",
-          description: error.message,
-          variant: "destructive"
-        });
-        return [];
-      }
-
-      return data.map((event: any) => ({
-        id: event.id,
-        type: event.event_type || 'event',
-        title: event.title,
-        start: new Date(event.start_time),
-        end: event.end_time ? new Date(event.end_time) : undefined,
-        content: event.description,
-      }));
-    },
-  });
-
-  // Subscribe to real-time updates from Supabase
-  useEffect(() => {
-    const channel = supabase
-      .channel('calendar-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'calendar_events'
-        },
-        () => {
-          // Trigger a refetch of the events when any changes occur
-          queryClient.invalidateQueries({ queryKey: ['schedule-events'] });
-          toast({
-            title: "Calendar Updated",
-            description: "Calendar events have been updated"
-          });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient, toast]);
+  const { events, isLoading } = useCalendarEvents(selectedDate);
 
   if (isLoading) {
     return (
