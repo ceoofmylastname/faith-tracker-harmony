@@ -8,6 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { CalendarIcon } from "lucide-react";
 
 export default function GivingForm() {
   const { user } = useAuth();
@@ -16,6 +20,7 @@ export default function GivingForm() {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
+  const [date, setDate] = useState<Date>(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,7 +41,7 @@ export default function GivingForm() {
         amount: parseFloat(amount),
         category,
         notes,
-        date: format(new Date(), "yyyy-MM-dd"),
+        date: format(date, "yyyy-MM-dd"),
       });
 
       if (error) throw error;
@@ -53,6 +58,7 @@ export default function GivingForm() {
       setAmount("");
       setCategory("");
       setNotes("");
+      setDate(new Date());
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -90,6 +96,32 @@ export default function GivingForm() {
             <SelectItem value="total">Total Giving</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Date</Label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left font-normal",
+                !date && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {date ? format(date, "PPP") : <span>Pick a date</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={(newDate) => newDate && setDate(newDate)}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
       </div>
 
       <div className="space-y-2">
