@@ -22,13 +22,16 @@ function App() {
     },
   }));
 
+  // Get the base URL from the current window location
+  const baseUrl = window.location.hostname === 'localhost' ? '' : '/';
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
+          <BrowserRouter basename={baseUrl}>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
