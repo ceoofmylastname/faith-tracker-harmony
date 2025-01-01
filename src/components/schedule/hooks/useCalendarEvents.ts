@@ -14,49 +14,54 @@ export function useCalendarEvents(selectedDate: Date | undefined) {
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['schedule-events', format(selectedDate || new Date(), 'yyyy-MM')],
     queryFn: async () => {
-      if (!user) throw new Error("User not authenticated");
+      if (!user) {
+        console.error('User not authenticated');
+        return [];
+      }
 
       const startOfMonth = new Date(selectedDate?.getFullYear() || new Date().getFullYear(), selectedDate?.getMonth() || new Date().getMonth(), 1);
       const endOfMonth = new Date(selectedDate?.getFullYear() || new Date().getFullYear(), (selectedDate?.getMonth() || new Date().getMonth()) + 1, 0);
 
-      // First, check if the current user has update access
-      const { data: accessData } = await supabase
-        .from('update_access')
-        .select('user_id')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      try {
+        const { data, error } = await supabase
+          .from('calendar_events')
+          .select(`
+            *,
+            profiles:user_id (name, email)
+          `)
+          .gte('start_time', startOfMonth.toISOString())
+          .lte('start_time', endOfMonth.toISOString());
 
-      // Query for events
-      const { data, error } = await supabase
-        .from('calendar_events')
-        .select(`
-          *,
-          profiles:user_id (name, email)
-        `)
-        .gte('start_time', startOfMonth.toISOString())
-        .lte('start_time', endOfMonth.toISOString());
+        if (error) {
+          console.error('Error fetching events:', error);
+          toast({
+            title: "Error fetching events",
+            description: error.message,
+            variant: "destructive"
+          });
+          return [];
+        }
 
-      if (error) {
-        console.error('Error fetching events:', error);
+        if (!data) return [];
+
+        return data.map((event: any) => ({
+          id: event.id,
+          type: event.event_type || 'event',
+          title: event.title,
+          start: new Date(event.start_time),
+          end: event.end_time ? new Date(event.end_time) : undefined,
+          content: `${event.description || ''}\nCreated by: ${event.profiles?.name || event.profiles?.email || 'Unknown'}`,
+          completed: event.completed || false,
+        }));
+      } catch (error: any) {
+        console.error('Error in events query:', error);
         toast({
           title: "Error fetching events",
-          description: error.message,
+          description: "There was an error fetching the events. Please try again.",
           variant: "destructive"
         });
         return [];
       }
-
-      if (!data) return [];
-
-      return data.map((event: any) => ({
-        id: event.id,
-        type: event.event_type || 'event',
-        title: event.title,
-        start: new Date(event.start_time),
-        end: event.end_time ? new Date(event.end_time) : undefined,
-        content: `${event.description || ''}\nCreated by: ${event.profiles?.name || event.profiles?.email || 'Unknown'}`,
-        completed: event.completed || false,
-      }));
     },
   });
 
