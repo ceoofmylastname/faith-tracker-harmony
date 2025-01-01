@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,16 +7,80 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PrayerTimer } from "./PrayerTimer";
 import { PrayerGoals } from "./PrayerGoals";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/lib/supabase";
+import { format } from "date-fns";
 
 export default function PrayerTab() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
   const [reflection, setReflection] = useState("");
+  const [reflections, setReflections] = useState<Array<{ id: string; content: string; created_at: string }>>([]);
 
   const verseOfTheDay = {
     text: "Pray without ceasing.",
     reference: "1 Thessalonians 5:17",
+  };
+
+  useEffect(() => {
+    if (user) {
+      loadReflections();
+    }
+  }, [user]);
+
+  const loadReflections = async () => {
+    if (!user) return;
+    
+    const { data, error } = await supabase
+      .from('prayer_reflections')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error loading reflections:', error);
+      return;
+    }
+    
+    setReflections(data || []);
+  };
+
+  const saveReflection = async () => {
+    if (!user || !reflection.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a reflection before saving",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('prayer_reflections')
+        .insert([
+          {
+            user_id: user.id,
+            content: reflection.trim(),
+          }
+        ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Your reflection has been saved",
+      });
+      
+      setReflection("");
+      loadReflections();
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error saving reflection",
+        description: error.message,
+      });
+    }
   };
 
   return (
@@ -47,20 +111,46 @@ export default function PrayerTab() {
         <CardHeader>
           <CardTitle>Prayer Reflection</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <Textarea
             placeholder="Write your prayer reflections here..."
             value={reflection}
             onChange={(e) => setReflection(e.target.value)}
             className="min-h-[150px] bg-white/80 dark:bg-gray-800/80"
           />
-          <div className="flex justify-end mt-4">
-            <Button className="bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400">
+          <div className="flex justify-end">
+            <Button 
+              onClick={saveReflection}
+              className="bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400"
+            >
               Save Reflection
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Saved Reflections Section */}
+      {reflections.length > 0 && (
+        <Card className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle>Past Reflections</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {reflections.map((ref) => (
+                <Card key={ref.id} className="bg-white/80 dark:bg-gray-700/80">
+                  <CardContent className="p-4">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                      {format(new Date(ref.created_at), "MMMM d, yyyy 'at' h:mm a")}
+                    </p>
+                    <p className="whitespace-pre-wrap">{ref.content}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

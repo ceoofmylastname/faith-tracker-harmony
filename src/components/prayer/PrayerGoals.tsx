@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,11 +6,40 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import { Trash2 } from "lucide-react";
 
 export const PrayerGoals = () => {
   const [targetMinutes, setTargetMinutes] = useState("");
+  const [currentGoal, setCurrentGoal] = useState<number | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      loadCurrentGoal();
+    }
+  }, [user]);
+
+  const loadCurrentGoal = async () => {
+    if (!user) return;
+
+    const currentDate = new Date();
+    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    
+    const { data, error } = await supabase
+      .from('prayer_goals')
+      .select('target_minutes')
+      .eq('user_id', user.id)
+      .eq('month', firstDayOfMonth.toISOString())
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error loading prayer goal:', error);
+      return;
+    }
+
+    setCurrentGoal(data?.target_minutes || null);
+  };
 
   const handleSetGoal = async () => {
     if (!user) {
@@ -60,10 +89,43 @@ export const PrayerGoals = () => {
         title: "Prayer goal set",
         description: `Your goal for this month is ${targetMinutes} minutes`,
       });
-    } catch (error) {
+      
+      setCurrentGoal(parseInt(targetMinutes));
+      setTargetMinutes("");
+    } catch (error: any) {
       console.error('Error setting prayer goal:', error);
       toast({
         title: "Error setting goal",
+        description: "Please try again later",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteGoal = async () => {
+    if (!user) return;
+
+    const currentDate = new Date();
+    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+    try {
+      const { error } = await supabase
+        .from('prayer_goals')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('month', firstDayOfMonth.toISOString());
+
+      if (error) throw error;
+
+      toast({
+        title: "Goal deleted",
+        description: "Your prayer goal has been removed",
+      });
+      
+      setCurrentGoal(null);
+    } catch (error: any) {
+      toast({
+        title: "Error deleting goal",
         description: "Please try again later",
         variant: "destructive",
       });
@@ -85,12 +147,23 @@ export const PrayerGoals = () => {
           />
           <Button onClick={handleSetGoal}>Set Goal</Button>
         </div>
-        <Progress value={75} className="h-2">
-          <div 
-            className="h-full bg-gradient-to-r from-red-700 to-red-500 rounded-full" 
-            style={{ width: '75%' }} 
-          />
-        </Progress>
+        
+        {currentGoal !== null && (
+          <div className="mt-4 p-4 bg-white/80 dark:bg-gray-700/80 rounded-lg">
+            <div className="flex justify-between items-center">
+              <p className="text-sm font-medium">Current Goal: {currentGoal} minutes</p>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-red-500 hover:text-red-700"
+                onClick={handleDeleteGoal}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+            <Progress value={75} className="mt-2 h-2" />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
