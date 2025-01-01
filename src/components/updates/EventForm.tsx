@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 import { Plus } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface EventFormData {
   title: string;
@@ -22,8 +23,18 @@ export default function EventForm() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const { register, handleSubmit, reset } = useForm<EventFormData>();
+  const { user } = useAuth();
 
   const onSubmit = async (data: EventFormData) => {
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "You must be logged in to create events",
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('calendar_events')
@@ -33,6 +44,7 @@ export default function EventForm() {
           start_time: new Date(data.startTime).toISOString(),
           end_time: new Date(data.endTime).toISOString(),
           event_type: data.repeat === 'none' ? 'event' : `repeat_${data.repeat}`,
+          user_id: user.id // Add the user_id here
         });
 
       if (error) throw error;
