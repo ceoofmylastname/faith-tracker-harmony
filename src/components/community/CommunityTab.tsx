@@ -1,76 +1,59 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Prayer, Target, Trophy } from "lucide-react";
-import GroupSection from "./sections/GroupSection";
-import PrayerRequestsSection from "./sections/PrayerRequestsSection";
+import { Users, MessageCircle } from "lucide-react";
+import UserProfiles from "./UserProfiles";
+import MessagingSection from "./MessagingSection";
 import GroupChallengesSection from "./sections/GroupChallengesSection";
-import LeaderboardSection from "./sections/LeaderboardSection";
-import DataSharingPreferences from "./DataSharingPreferences";
 
 export default function CommunityTab() {
+  const [activeSection, setActiveSection] = useState<'profiles' | 'messages' | 'challenges'>('profiles');
+
   return (
     <div className="container mx-auto p-4 space-y-8">
       {/* Header Section */}
       <div className="text-center space-y-4 py-8">
         <h1 className="text-4xl font-bold bg-gradient-text bg-clip-text text-transparent">
-          Community & Accountability
+          Community Dashboard
         </h1>
         <p className="text-xl text-muted-foreground">
-          Grow Together. Stay Accountable. Achieve More.
+          Connect, Share, and Grow Together
         </p>
+      </div>
+
+      {/* Navigation */}
+      <div className="flex justify-center gap-4 pb-6">
         <Button 
-          size="lg" 
-          className="bg-primary hover:bg-primary/90 animate-fade-in"
+          variant={activeSection === 'profiles' ? 'default' : 'outline'}
+          onClick={() => setActiveSection('profiles')}
+          className="gap-2"
         >
-          <Users className="mr-2" />
-          Create Group
+          <Users className="h-4 w-4" />
+          Members
+        </Button>
+        <Button 
+          variant={activeSection === 'messages' ? 'default' : 'outline'}
+          onClick={() => setActiveSection('messages')}
+          className="gap-2"
+        >
+          <MessageCircle className="h-4 w-4" />
+          Messages
+        </Button>
+        <Button 
+          variant={activeSection === 'challenges' ? 'default' : 'outline'}
+          onClick={() => setActiveSection('challenges')}
+          className="gap-2"
+        >
+          <Users className="h-4 w-4" />
+          Challenges
         </Button>
       </div>
 
       {/* Main Content */}
-      <Tabs defaultValue="groups" className="w-full">
-        <TabsList className="w-full justify-start bg-white/50 backdrop-blur-sm border mb-6">
-          <TabsTrigger value="groups" className="data-[state=active]:bg-primary/10">
-            <Users className="mr-2 h-4 w-4" />
-            Groups
-          </TabsTrigger>
-          <TabsTrigger value="prayers" className="data-[state=active]:bg-primary/10">
-            <Prayer className="mr-2 h-4 w-4" />
-            Prayer Requests
-          </TabsTrigger>
-          <TabsTrigger value="challenges" className="data-[state=active]:bg-primary/10">
-            <Target className="mr-2 h-4 w-4" />
-            Challenges
-          </TabsTrigger>
-          <TabsTrigger value="leaderboard" className="data-[state=active]:bg-primary/10">
-            <Trophy className="mr-2 h-4 w-4" />
-            Leaderboard
-          </TabsTrigger>
-        </TabsList>
-
-        <div className="grid gap-6">
-          <TabsContent value="groups" className="m-0">
-            <GroupSection />
-          </TabsContent>
-
-          <TabsContent value="prayers" className="m-0">
-            <PrayerRequestsSection />
-          </TabsContent>
-
-          <TabsContent value="challenges" className="m-0">
-            <GroupChallengesSection />
-          </TabsContent>
-
-          <TabsContent value="leaderboard" className="m-0">
-            <LeaderboardSection />
-          </TabsContent>
-        </div>
-      </Tabs>
-
-      {/* Settings Card */}
-      <Card className="mt-8">
-        <DataSharingPreferences />
+      <Card className="p-6 bg-white/60 backdrop-blur-sm">
+        {activeSection === 'profiles' && <UserProfiles />}
+        {activeSection === 'messages' && <MessagingSection />}
+        {activeSection === 'challenges' && <GroupChallengesSection />}
       </Card>
     </div>
   );

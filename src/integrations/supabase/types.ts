@@ -215,10 +215,131 @@ export type Database = {
           },
         ]
       }
+      challenge_participants: {
+        Row: {
+          challenge_id: string | null
+          id: string
+          joined_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          id?: string
+          joined_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          challenge_id?: string | null
+          id?: string
+          joined_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_participants_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "community_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenge_progress: {
+        Row: {
+          challenge_id: string | null
+          completed_date: string
+          created_at: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          completed_date: string
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          challenge_id?: string | null
+          completed_date?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_progress_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "community_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_challenges: {
+        Row: {
+          category: string
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          end_date: string
+          id: string
+          name: string
+          start_date: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          end_date: string
+          id?: string
+          name: string
+          start_date?: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          end_date?: string
+          id?: string
+          name?: string
+          start_date?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_challenges_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_profiles: {
         Row: {
           created_at: string
           id: string
+          last_seen: string | null
+          online_status: boolean | null
           share_bible_data: boolean | null
           share_fasting_data: boolean | null
           share_giving_data: boolean | null
@@ -228,6 +349,8 @@ export type Database = {
         Insert: {
           created_at?: string
           id: string
+          last_seen?: string | null
+          online_status?: boolean | null
           share_bible_data?: boolean | null
           share_fasting_data?: boolean | null
           share_giving_data?: boolean | null
@@ -237,6 +360,8 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          last_seen?: string | null
+          online_status?: boolean | null
           share_bible_data?: boolean | null
           share_fasting_data?: boolean | null
           share_giving_data?: boolean | null
