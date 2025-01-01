@@ -43,6 +43,11 @@ export default function Dashboard() {
     }
   };
 
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    setIsMobileMenuOpen(false);
+  };
+
   const NavigationContent = () => (
     <>
       <div className="flex items-center gap-3 mb-8">
@@ -57,10 +62,7 @@ export default function Dashboard() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => {
-              navigate('/dashboard');
-              setIsMobileMenuOpen(false);
-            }}
+            onClick={() => handleNavigation('/dashboard')}
           >
             <Home className="mr-2 h-5 w-5" />
             Home
@@ -68,10 +70,7 @@ export default function Dashboard() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => {
-              navigate('/dashboard/prayer');
-              setIsMobileMenuOpen(false);
-            }}
+            onClick={() => handleNavigation('/dashboard/prayer')}
           >
             <Heart className="mr-2 h-5 w-5" />
             Prayer
@@ -79,10 +78,7 @@ export default function Dashboard() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => {
-              navigate('/dashboard/bible');
-              setIsMobileMenuOpen(false);
-            }}
+            onClick={() => handleNavigation('/dashboard/bible')}
           >
             <BookOpen className="mr-2 h-5 w-5" />
             Bible
@@ -90,10 +86,7 @@ export default function Dashboard() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => {
-              navigate('/dashboard/fasting');
-              setIsMobileMenuOpen(false);
-            }}
+            onClick={() => handleNavigation('/dashboard/fasting')}
           >
             <Timer className="mr-2 h-5 w-5" />
             Fasting
@@ -101,10 +94,7 @@ export default function Dashboard() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => {
-              navigate('/dashboard/giving');
-              setIsMobileMenuOpen(false);
-            }}
+            onClick={() => handleNavigation('/dashboard/giving')}
           >
             <Wallet className="mr-2 h-5 w-5" />
             Tithes & Giving
@@ -112,10 +102,7 @@ export default function Dashboard() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => {
-              navigate('/dashboard/notes');
-              setIsMobileMenuOpen(false);
-            }}
+            onClick={() => handleNavigation('/dashboard/notes')}
           >
             <PenLine className="mr-2 h-5 w-5" />
             Notes
@@ -123,10 +110,7 @@ export default function Dashboard() {
           <Button 
             variant="ghost" 
             className="w-full justify-start text-white hover:bg-white/10 transition-all duration-300 transform hover:translate-x-1"
-            onClick={() => {
-              navigate('/dashboard/community');
-              setIsMobileMenuOpen(false);
-            }}
+            onClick={() => handleNavigation('/dashboard/community')}
           >
             <Users className="mr-2 h-5 w-5" />
             Community
