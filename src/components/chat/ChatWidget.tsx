@@ -17,10 +17,15 @@ export const ChatWidget = () => {
     script.src = 'https://agentivehub.com/production.bundle.min.js';
     
     script.onload = () => {
-      if (!document.getElementById('root')) {
-        const root = document.createElement('div');
-        root.id = 'root';
-        document.body.appendChild(root);
+      // Create a specific container for the chat widget instead of using 'root'
+      if (!document.getElementById('chat-widget-container')) {
+        const container = document.createElement('div');
+        container.id = 'chat-widget-container';
+        container.style.position = 'fixed';
+        container.style.bottom = '20px';
+        container.style.right = '20px';
+        container.style.zIndex = '9999';
+        document.body.appendChild(container);
       }
       
       if (window.myChatWidget && typeof window.myChatWidget.load === 'function') {
@@ -38,10 +43,10 @@ export const ChatWidget = () => {
     return () => {
       // Remove the script when component unmounts
       script.remove();
-      // Remove the root div if it was created by our widget
-      const root = document.getElementById('root');
-      if (root) {
-        root.remove();
+      // Remove the container if it was created by our widget
+      const container = document.getElementById('chat-widget-container');
+      if (container) {
+        container.remove();
       }
     };
   }, []); // Empty dependency array means this runs once on mount
