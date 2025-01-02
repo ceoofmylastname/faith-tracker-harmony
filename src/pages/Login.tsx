@@ -65,6 +65,7 @@ export default function Login() {
           }}
           theme="default"
           providers={["google"]}
+          redirectTo={window.location.origin}
           localization={{
             variables: {
               sign_in: {
