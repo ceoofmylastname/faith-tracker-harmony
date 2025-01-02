@@ -15,12 +15,15 @@ export function useChatSession() {
 
   const initializeSession = async () => {
     try {
+      console.log('Fetching API key from secrets table...');
       const { data: secretData, error: secretError } = await supabase
         .from('secrets')
-        .select('value')
+        .select('*')
         .eq('name', 'AGENTIVE_HUB_API_KEY')
         .maybeSingle();
 
+      console.log('Secret data response:', secretData);
+      
       if (secretError) {
         console.error('Error fetching API key:', secretError);
         throw secretError;
@@ -36,6 +39,7 @@ export function useChatSession() {
         return;
       }
 
+      console.log('API key found, initializing chat session...');
       const response = await fetch('https://agentivehub.com/api/chat/session', {
         method: 'POST',
         headers: {
@@ -52,6 +56,7 @@ export function useChatSession() {
       }
 
       const { session_id } = await response.json();
+      console.log('Chat session initialized successfully');
       setSessionId(session_id);
     } catch (error) {
       console.error('Error initializing chat session:', error);
@@ -68,11 +73,14 @@ export function useChatSession() {
     setIsLoading(true);
 
     try {
+      console.log('Fetching API key for message sending...');
       const { data: secretData, error: secretError } = await supabase
         .from('secrets')
-        .select('value')
+        .select('*')
         .eq('name', 'AGENTIVE_HUB_API_KEY')
         .maybeSingle();
+
+      console.log('Secret data for message:', secretData);
 
       if (secretError) {
         console.error('Error fetching API key:', secretError);
@@ -90,6 +98,7 @@ export function useChatSession() {
 
       setMessages(prev => [...prev, { role: 'user', content: message }]);
 
+      console.log('Sending message to chat API...');
       const response = await fetch('https://agentivehub.com/api/chat', {
         method: 'POST',
         headers: {
@@ -109,6 +118,7 @@ export function useChatSession() {
       }
 
       const data = await response.json();
+      console.log('Received response from chat API:', data);
       
       if (data.messages && data.messages.length > 0) {
         setMessages(prev => [...prev, { 
