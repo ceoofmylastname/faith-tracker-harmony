@@ -25,7 +25,7 @@ export const useReadingProgress = () => {
       }
 
       if (cumulativeData) {
-        setTodayProgress(cumulativeData.current_month_minutes);
+        setTodayProgress(cumulativeData.current_month_minutes || 0);
       }
     };
 
@@ -42,8 +42,8 @@ export const useReadingProgress = () => {
           table: 'bible_reading_cumulative',
           filter: `user_id=eq.${user.id}`,
         },
-        (payload) => {
-          if (payload.new) {
+        (payload: { new: { current_month_minutes?: number } }) => {
+          if (payload.new && typeof payload.new.current_month_minutes === 'number') {
             setTodayProgress(payload.new.current_month_minutes);
           }
         }
