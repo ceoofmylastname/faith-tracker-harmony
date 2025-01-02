@@ -11,16 +11,19 @@ const cards = [
     title: "Instagram",
     description: "Follow our journey through inspiring images and stories",
     image: "https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/6774809bd515b1ec1c9d314c.png",
+    link: "https://www.instagram.com/f.t.faithwalkers/",
   },
   {
     title: "Slack",
     description: "Join our community and connect with fellow believers",
     image: "https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/677481a904db6d535eef8104.png",
+    link: "https://join.slack.com/t/ftthlvcom/shared_invite/zt-2x20aw3za-He5leODFagPG4tpFE9AZjQ",
   },
   {
     title: "YouTube",
     description: "Watch our sermons, testimonies, and spiritual content",
     image: "https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/6774816004db6d7be2ef80db.png",
+    link: "https://www.youtube.com/@f.t.faithwalkers/streams",
   },
 ];
 
