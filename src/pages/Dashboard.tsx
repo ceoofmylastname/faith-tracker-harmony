@@ -65,8 +65,8 @@ export default function Dashboard() {
         </div>
 
         {/* Desktop Sidebar */}
-        <div className="hidden md:block fixed left-0 top-0 h-full w-64 bg-gradient-to-br from-primary via-primary-light/90 to-transparent shadow-none transition-all duration-300 ease-in-out z-50">
-          <div className="relative h-full overflow-hidden rounded-r-[2.5rem] bg-gradient-to-br from-primary via-primary-light/90 to-transparent before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:to-white/5">
+        <div className="hidden md:block fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-primary via-primary-light to-primary-dark shadow-2xl transition-all duration-300 ease-in-out z-50">
+          <div className="relative h-full overflow-hidden rounded-r-2xl bg-gradient-to-b from-primary via-primary-light to-primary-dark before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:to-white/10">
             <DashboardNavigation 
               onNavigate={handleNavigation} 
               onSignOut={handleSignOut} 
