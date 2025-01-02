@@ -35,14 +35,9 @@ export function useChatSession() {
       }]);
     } catch (error: any) {
       console.error('Error initializing chat session:', error);
-      let errorMessage = "Failed to initialize chat session. Please try again later.";
       
-      if (error.message.includes('Failed to fetch')) {
-        errorMessage = "Unable to connect to chat service. Please check your internet connection.";
-      } else if (error.message.includes('No session ID received')) {
-        errorMessage = "Invalid response from chat service. Please try again.";
-      }
-
+      const errorMessage = error.message || "Failed to initialize chat session. Please try again later.";
+      
       toast({
         variant: "destructive",
         title: "Error",
@@ -84,14 +79,11 @@ export function useChatSession() {
       }
     } catch (error: any) {
       console.error('Error sending message:', error);
-      const errorMessage = error.message.includes('Failed to fetch')
-        ? "Unable to connect to chat service. Please check your internet connection."
-        : "Failed to send message. Please try again later.";
-        
+      
       toast({
         variant: "destructive",
         title: "Error",
-        description: errorMessage,
+        description: error.message || "Failed to send message. Please try again later.",
       });
     } finally {
       setIsLoading(false);
