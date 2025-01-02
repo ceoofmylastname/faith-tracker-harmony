@@ -4,35 +4,28 @@ import { BookOpen, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import { useBibleReading } from "@/hooks/useBibleReading";
 
 export function BibleCard() {
   const [currentBook, setCurrentBook] = useState("");
   const [currentChapter, setCurrentChapter] = useState(0);
-  const [dailyProgress, setDailyProgress] = useState(0);
-  const [streak, setStreak] = useState(0);
   const [goalMinutes, setGoalMinutes] = useState(30);
   const { user } = useAuth();
+  const { todayProgress: dailyProgress, streak } = useBibleReading();
 
   useEffect(() => {
     if (!user) return;
 
     const fetchBibleData = async () => {
-      const today = new Date().toISOString().split('T')[0];
-      
       // Fetch today's reading sessions
       const { data: sessions } = await supabase
         .from('bible_reading_sessions')
-        .select('duration_seconds, book, chapter')
+        .select('book, chapter')
         .eq('user_id', user.id)
-        .gte('started_at', today)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(1);
 
       if (sessions && sessions.length > 0) {
-        const totalMinutes = sessions.reduce(
-          (acc, session) => acc + Math.ceil(session.duration_seconds / 60),
-          0
-        );
-        setDailyProgress(totalMinutes);
         setCurrentBook(sessions[0].book);
         setCurrentChapter(sessions[0].chapter);
       }
@@ -51,7 +44,7 @@ export function BibleCard() {
 
     fetchBibleData();
 
-    // Subscribe to real-time updates
+    // Subscribe to real-time updates for reading sessions
     const channel = supabase
       .channel('bible-updates')
       .on(
