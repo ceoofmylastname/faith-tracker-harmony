@@ -51,6 +51,44 @@ export type Database = {
           },
         ]
       }
+      bible_reading_cumulative: {
+        Row: {
+          created_at: string
+          current_month_minutes: number
+          id: string
+          last_reset_date: string
+          total_minutes: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_month_minutes?: number
+          id?: string
+          last_reset_date?: string
+          total_minutes?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_month_minutes?: number
+          id?: string
+          last_reset_date?: string
+          total_minutes?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bible_reading_cumulative_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bible_reading_goals: {
         Row: {
           created_at: string
