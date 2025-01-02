@@ -19,10 +19,17 @@ export function useChatSession() {
         .from('secrets')
         .select('value')
         .eq('name', 'AGENTIVE_HUB_API_KEY')
-        .single();
+        .maybeSingle();
 
       if (secretError) throw secretError;
-      if (!secretData?.value) throw new Error('API key not found');
+      if (!secretData?.value) {
+        toast({
+          variant: "destructive",
+          title: "Configuration Error",
+          description: "AGENTIVE_HUB_API_KEY not found in secrets",
+        });
+        return;
+      }
 
       const { data: { session_id } } = await fetch('https://agentivehub.com/api/chat/session', {
         method: 'POST',
@@ -57,10 +64,17 @@ export function useChatSession() {
         .from('secrets')
         .select('value')
         .eq('name', 'AGENTIVE_HUB_API_KEY')
-        .single();
+        .maybeSingle();
 
       if (secretError) throw secretError;
-      if (!secretData?.value) throw new Error('API key not found');
+      if (!secretData?.value) {
+        toast({
+          variant: "destructive",
+          title: "Configuration Error",
+          description: "AGENTIVE_HUB_API_KEY not found in secrets",
+        });
+        return;
+      }
 
       const response = await fetch('https://agentivehub.com/api/chat', {
         method: 'POST',
