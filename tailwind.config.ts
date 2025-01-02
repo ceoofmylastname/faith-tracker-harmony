@@ -81,6 +81,28 @@ export default {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        flip: {
+          "0%": { transform: "rotateY(0deg)" },
+          "100%": { transform: "rotateY(360deg)" },
+        },
+        "gradient-xy": {
+          "0%, 100%": {
+            "background-size": "400% 400%",
+            "background-position": "0% 0%"
+          },
+          "25%": {
+            "background-size": "400% 400%",
+            "background-position": "100% 0%"
+          },
+          "50%": {
+            "background-size": "400% 400%",
+            "background-position": "100% 100%"
+          },
+          "75%": {
+            "background-size": "400% 400%",
+            "background-position": "0% 100%"
+          }
+        },
         shimmer: {
           "100%": {
             transform: "translateX(100%)",
@@ -91,18 +113,13 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         fadeIn: "fadeIn 0.5s ease-out",
+        flip: "flip 3s infinite linear",
+        "gradient-xy": "gradient-xy 15s ease infinite",
         shimmer: "shimmer 2s infinite",
       },
       fontFamily: {
         'raleway': ['Raleway', 'sans-serif'],
         'playfair': ['"Playfair Display"', 'serif'],
-      },
-      transitionTimingFunction: {
-        'hover-ease': 'cubic-bezier(0.23, 1, 0.32, 1)',
-        'return-ease': 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-      },
-      translate: {
-        'z-4': '4px',
       },
     },
   },
@@ -118,6 +135,9 @@ export default {
         },
         '.text-shadow-lg': {
           textShadow: '0 10px 10px rgba(0, 0, 0, 0.5)',
+        },
+        '.backface-visibility-hidden': {
+          'backface-visibility': 'hidden',
         },
       };
       addUtilities(newUtilities);
