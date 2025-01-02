@@ -47,6 +47,8 @@ export default {
         'gradient-text': 'linear-gradient(90deg, #2DFFF5 0%, #7C89FF 50%, #FF72E7 100%)',
         'maroon-gray': 'linear-gradient(135deg, #800000 0%, #555555 100%)',
         'neon-glow': 'linear-gradient(90deg, #FF1CF7 0%, #00FFE1 100%)',
+        'modern-gradient': 'linear-gradient(135deg, rgba(128, 0, 0, 0.95) 0%, rgba(85, 85, 85, 0.95) 100%)',
+        'card-gradient': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
       },
       keyframes: {
         "accordion-down": {
@@ -83,6 +85,14 @@ export default {
           "0%": { transform: "scale(1)" },
           "100%": { transform: "scale(1.05)" },
         },
+        slideIn: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        slideOut: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -92,6 +102,8 @@ export default {
         neonPulse: "neonPulse 2s infinite",
         borderFlow: "borderFlow 3s ease infinite",
         scaleUp: "scaleUp 0.2s ease-out forwards",
+        slideIn: "slideIn 0.3s ease-out",
+        slideOut: "slideOut 0.3s ease-out",
       },
       fontFamily: {
         'raleway': ['Raleway', 'sans-serif'],
@@ -102,6 +114,8 @@ export default {
         'neon-hover': '0 0 10px theme(colors.primary.light), 0 0 20px theme(colors.primary.light), 0 0 30px theme(colors.primary.light)',
         'subtle': '0 2px 10px rgba(0, 0, 0, 0.05)',
         '3d': '3px 3px 0 rgba(0, 0, 0, 0.1)',
+        'modern': '0 4px 20px rgba(0, 0, 0, 0.1)',
+        'card': '0 8px 32px rgba(0, 0, 0, 0.12)',
       },
     },
   },
@@ -122,6 +136,23 @@ export default {
           background: 'linear-gradient(90deg, #FF1CF7, #00FFE1, #FF1CF7)',
           backgroundSize: '200% 100%',
           animation: 'borderFlow 3s ease infinite',
+        },
+        '.glass': {
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+        },
+        '.modern-card': {
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          borderRadius: '1rem',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          transition: 'all 0.3s ease',
+        },
+        '.modern-card-hover': {
+          transform: 'translateY(-5px)',
+          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
         },
       };
       addUtilities(newUtilities);
