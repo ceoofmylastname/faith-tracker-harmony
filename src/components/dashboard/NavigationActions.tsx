@@ -14,9 +14,9 @@ export default function NavigationActions({ onUpdateProfile, onSignOut }: Naviga
 
   const handleSignOut = async () => {
     try {
-      // First attempt to sign out from Supabase
+      // First attempt to sign out
       await authSignOut();
-      // If successful, trigger the navigation callback
+      // If successful, trigger the navigation
       onSignOut();
     } catch (error: any) {
       console.error('Navigation sign out error:', error);
