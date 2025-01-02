@@ -39,7 +39,6 @@ export function useChatSession() {
         return null;
       }
 
-      console.log('API key found successfully');
       return secretData.value;
     } catch (error) {
       console.error('Error fetching API key:', error);
@@ -53,7 +52,9 @@ export function useChatSession() {
   };
 
   const initializeSession = async () => {
+    if (isLoading) return; // Prevent multiple initialization attempts
     setIsLoading(true);
+    
     try {
       const apiKey = await getApiKey();
       if (!apiKey) {
@@ -67,6 +68,7 @@ export function useChatSession() {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Origin': window.location.origin,
         },
         body: JSON.stringify({
           api_key: apiKey,
@@ -95,20 +97,27 @@ export function useChatSession() {
 
       console.log('Chat session initialized successfully:', data);
       setSessionId(data.session_id);
-      
-      // Add initial system message
       setMessages([{
         role: 'assistant',
         content: 'Hello! How can I help you today?'
       }]);
-      
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error initializing chat session:', error);
+      
+      // More specific error messages based on the error type
+      let errorMessage = "Failed to initialize chat session. Please try again later.";
+      if (error.message.includes('Failed to fetch')) {
+        errorMessage = "Unable to connect to chat service. Please check your internet connection.";
+      } else if (error.message.includes('Invalid response format')) {
+        errorMessage = "Received invalid response from chat service. Please try again.";
+      }
+      
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to initialize chat session. Please try again later.",
+        description: errorMessage,
       });
+      setSessionId(null);
     } finally {
       setIsLoading(false);
     }
@@ -140,6 +149,7 @@ export function useChatSession() {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Origin': window.location.origin,
         },
         body: JSON.stringify({
           api_key: apiKey,
@@ -165,20 +175,22 @@ export function useChatSession() {
         throw new Error('Invalid response format from server');
       }
 
-      console.log('Received response from chat API:', data);
-      
       if (data.messages && data.messages.length > 0) {
         setMessages(prev => [...prev, { 
           role: 'assistant', 
           content: data.messages[data.messages.length - 1].content 
         }]);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending message:', error);
+      let errorMessage = "Failed to send message. Please try again later.";
+      if (error.message.includes('Failed to fetch')) {
+        errorMessage = "Unable to connect to chat service. Please check your internet connection.";
+      }
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to send message. Please try again later.",
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
