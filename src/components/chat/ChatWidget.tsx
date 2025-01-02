@@ -35,13 +35,22 @@ export function ChatWidget() {
 
   const initializeSession = async () => {
     try {
+      const { data: secretData, error: secretError } = await supabase
+        .from('secrets')
+        .select('value')
+        .eq('name', 'AGENTIVE_HUB_API_KEY')
+        .single();
+
+      if (secretError) throw secretError;
+      if (!secretData?.value) throw new Error('API key not found');
+
       const { data: { session_id } } = await fetch('https://agentivehub.com/api/chat/session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          api_key: process.env.AGENTIVE_HUB_API_KEY,
+          api_key: secretData.value,
           assistant_id: "5adba391-71e1-4eec-9453-359e115b5688",
         }),
       }).then(res => res.json());
@@ -67,13 +76,22 @@ export function ChatWidget() {
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
 
     try {
+      const { data: secretData, error: secretError } = await supabase
+        .from('secrets')
+        .select('value')
+        .eq('name', 'AGENTIVE_HUB_API_KEY')
+        .single();
+
+      if (secretError) throw secretError;
+      if (!secretData?.value) throw new Error('API key not found');
+
       const response = await fetch('https://agentivehub.com/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          api_key: process.env.AGENTIVE_HUB_API_KEY,
+          api_key: secretData.value,
           session_id: sessionId,
           type: "custom_code",
           assistant_id: "5adba391-71e1-4eec-9453-359e115b5688",
