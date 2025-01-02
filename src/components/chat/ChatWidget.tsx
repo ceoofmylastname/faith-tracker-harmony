@@ -15,6 +15,7 @@ export const ChatWidget = () => {
     const script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = 'https://agentivehub.com/production.bundle.min.js';
+    script.crossOrigin = 'anonymous'; // Add CORS header
     
     script.onload = () => {
       // Create a specific container for the chat widget instead of using 'root'
@@ -28,11 +29,22 @@ export const ChatWidget = () => {
         document.body.appendChild(container);
       }
       
-      if (window.myChatWidget && typeof window.myChatWidget.load === 'function') {
-        window.myChatWidget.load({
-          id: 'c99ecb8f-1068-4e6d-b1a1-d5dc4432198d',
-        });
-      }
+      // Add a small delay to ensure the widget script is fully loaded
+      setTimeout(() => {
+        if (window.myChatWidget && typeof window.myChatWidget.load === 'function') {
+          try {
+            window.myChatWidget.load({
+              id: 'c99ecb8f-1068-4e6d-b1a1-d5dc4432198d',
+            });
+          } catch (error) {
+            console.error('Error loading chat widget:', error);
+          }
+        }
+      }, 100);
+    };
+
+    script.onerror = (error) => {
+      console.error('Error loading chat widget script:', error);
     };
 
     // Add the script to the document
