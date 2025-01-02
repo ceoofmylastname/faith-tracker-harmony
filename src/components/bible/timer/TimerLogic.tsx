@@ -82,6 +82,11 @@ export function TimerLogic({
       setTimer(0);
       onTimerChange(0);
       setSessionId(null);
+
+      toast({
+        title: "Reading Session Completed",
+        description: `You've read for ${finalMinutes} minutes. Great job!`,
+      });
     }
   };
 

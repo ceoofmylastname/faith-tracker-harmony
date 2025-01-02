@@ -51,6 +51,19 @@ export const useReadingSessions = () => {
 
       if (error) throw error;
 
+      // Also update the reading progress
+      const { error: progressError } = await supabase
+        .from("bible_reading_progress")
+        .insert({
+          user_id: user.id,
+          book: "Genesis", // This should be dynamic based on what they're reading
+          chapter: 1, // This should be dynamic based on what they're reading
+          completed: true,
+          completed_at: new Date().toISOString(),
+        });
+
+      if (progressError) throw progressError;
+
       toast({
         title: "Success",
         description: `Reading session completed: ${Math.ceil(durationSeconds / 60)} minutes`,

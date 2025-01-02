@@ -29,7 +29,7 @@ export function BibleCard() {
 
       if (sessions && sessions.length > 0) {
         const totalMinutes = sessions.reduce(
-          (acc, session) => acc + (session.duration_seconds / 60),
+          (acc, session) => acc + Math.ceil(session.duration_seconds / 60),
           0
         );
         setDailyProgress(totalMinutes);
