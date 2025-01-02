@@ -19,21 +19,5 @@
     <div id="root"></div>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- Chat Widget Script -->
-    <script type="text/javascript" src="https://agentivehub.com/production.bundle.min.js"></script>
-    <script type="text/javascript">
-      // Wait for both the DOM and the chat widget script to be fully loaded
-      window.addEventListener('load', function() {
-        // Small delay to ensure everything is properly initialized
-        setTimeout(function() {
-          if (window.myChatWidget && typeof window.myChatWidget.load === 'function') {
-            window.myChatWidget.load({
-              id: 'c99ecb8f-1068-4e6d-b1a1-d5dc4432198d',
-            });
-          }
-        }, 1000);
-      });
-    </script>
   </body>
 </html>
