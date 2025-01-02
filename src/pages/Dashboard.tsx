@@ -14,6 +14,7 @@ import NotesTab from "@/components/notes/NotesTab";
 import CommunityTab from "@/components/community/CommunityTab";
 import ScheduleTab from "@/components/schedule/ScheduleTab";
 import UpdatesTab from "@/components/updates/UpdatesTab";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -92,6 +93,9 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      
+      {/* Chat Widget */}
+      <ChatWidget />
     </div>
   );
 }
