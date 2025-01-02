@@ -24,7 +24,11 @@ export function useChatSession() {
       
       console.log('Secret data response:', secretData);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching API key:', error);
+        throw error;
+      }
+      
       if (!secretData?.value) {
         console.error('API key not found in secrets table');
         toast({
@@ -56,7 +60,10 @@ export function useChatSession() {
       console.log('Initializing chat session...');
       const response = await fetch('https://agentivehub.com/api/chat/session', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
         body: JSON.stringify({
           api_key: apiKey,
           assistant_id: "5adba391-71e1-4eec-9453-359e115b5688",
@@ -64,12 +71,17 @@ export function useChatSession() {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to initialize session: ${response.statusText}`);
+        const errorText = await response.text();
+        throw new Error(`Failed to initialize session: ${response.status} - ${errorText}`);
       }
 
-      const { session_id } = await response.json();
-      console.log('Chat session initialized successfully');
-      setSessionId(session_id);
+      const data = await response.json();
+      if (!data.session_id) {
+        throw new Error('No session ID received from server');
+      }
+
+      console.log('Chat session initialized successfully:', data);
+      setSessionId(data.session_id);
     } catch (error) {
       console.error('Error initializing chat session:', error);
       toast({
@@ -81,7 +93,15 @@ export function useChatSession() {
   };
 
   const sendMessage = async (message: string) => {
-    if (!sessionId) return;
+    if (!sessionId) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Chat session not initialized. Please try again.",
+      });
+      return;
+    }
+
     setIsLoading(true);
     setMessages(prev => [...prev, { role: 'user', content: message }]);
 
@@ -95,7 +115,10 @@ export function useChatSession() {
       console.log('Sending message to chat API...');
       const response = await fetch('https://agentivehub.com/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
         body: JSON.stringify({
           api_key: apiKey,
           session_id: sessionId,
@@ -106,7 +129,8 @@ export function useChatSession() {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to send message: ${response.statusText}`);
+        const errorText = await response.text();
+        throw new Error(`Failed to send message: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
