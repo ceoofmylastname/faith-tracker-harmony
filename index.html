@@ -13,8 +13,6 @@
     <link rel="icon" type="image/png" href="https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/672aa6ff53c79865cd710429.png" />
     <link rel="apple-touch-icon" href="https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/672aa6ff53c79865cd710429.png" />
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <!-- Chat Widget Script -->
-    <script type="text/javascript" src="https://agentivehub.com/production.bundle.min.js"></script>
   </head>
 
   <body>
@@ -22,14 +20,19 @@
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
     
-    <!-- Initialize Chat Widget -->
+    <!-- Chat Widget Script -->
+    <script type="text/javascript" src="https://agentivehub.com/production.bundle.min.js"></script>
     <script type="text/javascript">
+      // Wait for both the DOM and the chat widget script to be fully loaded
       window.addEventListener('load', function() {
-        if (window.myChatWidget && typeof window.myChatWidget.load === 'function') {
-          window.myChatWidget.load({
-            id: 'c99ecb8f-1068-4e6d-b1a1-d5dc4432198d',
-          });
-        }
+        // Small delay to ensure everything is properly initialized
+        setTimeout(function() {
+          if (window.myChatWidget && typeof window.myChatWidget.load === 'function') {
+            window.myChatWidget.load({
+              id: 'c99ecb8f-1068-4e6d-b1a1-d5dc4432198d',
+            });
+          }
+        }, 1000);
       });
     </script>
   </body>
