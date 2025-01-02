@@ -26,6 +26,11 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
     }
   }, [selectedChapter, onChapterChange]);
 
+  const handleProgressUpdate = (minutes: number) => {
+    console.log("Updating progress with minutes:", minutes);
+    onProgressUpdate(minutes);
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <Card className="lg:col-span-2">
@@ -41,7 +46,7 @@ export default function BibleReader({ onBookChange, onChapterChange, onProgressU
               <BibleTimer
                 selectedBook={selectedBook}
                 selectedChapter={selectedChapter}
-                onProgressUpdate={onProgressUpdate}
+                onProgressUpdate={handleProgressUpdate}
               />
             </div>
           </div>

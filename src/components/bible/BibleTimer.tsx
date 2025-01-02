@@ -17,6 +17,7 @@ export default function BibleTimer({ selectedBook, selectedChapter, onProgressUp
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [timer, setTimer] = useState(0);
   const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
+  const [lastSessionMinutes, setLastSessionMinutes] = useState<number | null>(null);
 
   const handleStartTimer = async () => {
     if (!selectedBook || !selectedChapter) {
@@ -38,7 +39,8 @@ export default function BibleTimer({ selectedBook, selectedChapter, onProgressUp
             const newValue = prev + 1;
             // Update progress every minute
             if (newValue % 60 === 0) {
-              onProgressUpdate(newValue / 60);
+              const minutes = newValue / 60;
+              onProgressUpdate(minutes);
             }
             return newValue;
           });
@@ -62,6 +64,7 @@ export default function BibleTimer({ selectedBook, selectedChapter, onProgressUp
       
       // Calculate final minutes and update progress
       const finalMinutes = Math.ceil(timer / 60);
+      setLastSessionMinutes(finalMinutes);
       onProgressUpdate(finalMinutes);
       
       await endReadingSession(sessionId, timer);
@@ -85,11 +88,18 @@ export default function BibleTimer({ selectedBook, selectedChapter, onProgressUp
   }, [timerInterval]);
 
   return (
-    <TimerDisplay
-      isReading={isReading}
-      timer={timer}
-      onStart={handleStartTimer}
-      onStop={handleStopTimer}
-    />
+    <div className="space-y-4">
+      <TimerDisplay
+        isReading={isReading}
+        timer={timer}
+        onStart={handleStartTimer}
+        onStop={handleStopTimer}
+      />
+      {lastSessionMinutes !== null && (
+        <div className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+          Last session: {lastSessionMinutes} minutes
+        </div>
+      )}
+    </div>
   );
 }
