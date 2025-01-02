@@ -13,46 +13,58 @@ export function useChatSession() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const initializeSession = async () => {
+  const getApiKey = async (): Promise<string | null> => {
     try {
       console.log('Fetching API key from secrets table...');
-      const { data: secretData, error: secretError } = await supabase
+      const { data: secretData, error } = await supabase
         .from('secrets')
-        .select('*')
+        .select('value')
         .eq('name', 'AGENTIVE_HUB_API_KEY')
         .maybeSingle();
-
-      console.log('Secret data response:', secretData);
       
-      if (secretError) {
-        console.error('Error fetching API key:', secretError);
-        throw secretError;
-      }
+      console.log('Secret data response:', secretData);
 
-      if (!secretData) {
+      if (error) throw error;
+      if (!secretData?.value) {
         console.error('API key not found in secrets table');
         toast({
           variant: "destructive",
           title: "Configuration Error",
           description: "AGENTIVE_HUB_API_KEY not found in secrets table. Please ensure it has been added.",
         });
-        return;
+        return null;
       }
 
-      console.log('API key found, initializing chat session...');
+      console.log('API key found successfully');
+      return secretData.value;
+    } catch (error) {
+      console.error('Error fetching API key:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to retrieve API key. Please check the configuration.",
+      });
+      return null;
+    }
+  };
+
+  const initializeSession = async () => {
+    try {
+      const apiKey = await getApiKey();
+      if (!apiKey) return;
+
+      console.log('Initializing chat session...');
       const response = await fetch('https://agentivehub.com/api/chat/session', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          api_key: secretData.value,
+          api_key: apiKey,
           assistant_id: "5adba391-71e1-4eec-9453-359e115b5688",
         }),
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to initialize chat session: ${response.statusText}`);
+        throw new Error(`Failed to initialize session: ${response.statusText}`);
       }
 
       const { session_id } = await response.json();
@@ -71,41 +83,21 @@ export function useChatSession() {
   const sendMessage = async (message: string) => {
     if (!sessionId) return;
     setIsLoading(true);
+    setMessages(prev => [...prev, { role: 'user', content: message }]);
 
     try {
-      console.log('Fetching API key for message sending...');
-      const { data: secretData, error: secretError } = await supabase
-        .from('secrets')
-        .select('*')
-        .eq('name', 'AGENTIVE_HUB_API_KEY')
-        .maybeSingle();
-
-      console.log('Secret data for message:', secretData);
-
-      if (secretError) {
-        console.error('Error fetching API key:', secretError);
-        throw secretError;
-      }
-
-      if (!secretData) {
-        toast({
-          variant: "destructive",
-          title: "Configuration Error",
-          description: "AGENTIVE_HUB_API_KEY not found in secrets table. Please ensure it has been added.",
-        });
+      const apiKey = await getApiKey();
+      if (!apiKey) {
+        setIsLoading(false);
         return;
       }
-
-      setMessages(prev => [...prev, { role: 'user', content: message }]);
 
       console.log('Sending message to chat API...');
       const response = await fetch('https://agentivehub.com/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          api_key: secretData.value,
+          api_key: apiKey,
           session_id: sessionId,
           type: "custom_code",
           assistant_id: "5adba391-71e1-4eec-9453-359e115b5688",
