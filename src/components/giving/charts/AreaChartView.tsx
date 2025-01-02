@@ -18,55 +18,74 @@ export function AreaChartView({ data, chartConfig }: AreaChartViewProps) {
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
         data={data}
-        margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+        margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
       >
         <defs>
           <linearGradient id="tithesGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--color-tithes)" stopOpacity={0.8}/>
-            <stop offset="95%" stopColor="var(--color-tithes)" stopOpacity={0.1}/>
+            <stop offset="5%" stopColor="var(--color-tithes)" stopOpacity={0.9}/>
+            <stop offset="95%" stopColor="var(--color-tithes)" stopOpacity={0.2}/>
           </linearGradient>
           <linearGradient id="offeringsGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--color-offerings)" stopOpacity={0.8}/>
-            <stop offset="95%" stopColor="var(--color-offerings)" stopOpacity={0.1}/>
+            <stop offset="5%" stopColor="var(--color-offerings)" stopOpacity={0.9}/>
+            <stop offset="95%" stopColor="var(--color-offerings)" stopOpacity={0.2}/>
           </linearGradient>
+          <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.3"/>
+          </filter>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" className="opacity-20" />
+        <CartesianGrid 
+          strokeDasharray="3 3" 
+          vertical={false}
+          stroke="rgba(255,255,255,0.2)"
+        />
         <XAxis 
           dataKey="month" 
           stroke="currentColor" 
-          fontSize={10}
+          fontSize={12}
           tickLine={false}
           axisLine={false}
           interval={0}
-          padding={{ left: 5, right: 5 }}
+          padding={{ left: 0, right: 0 }}
+          tick={{ fill: 'currentColor', fontWeight: 500 }}
         />
         <YAxis 
           stroke="currentColor" 
-          fontSize={10}
+          fontSize={12}
           tickLine={false}
           axisLine={false}
           tickFormatter={(value) => `$${value}`}
-          width={45}
-          padding={{ top: 10, bottom: 10 }}
+          width={60}
+          tick={{ fill: 'currentColor', fontWeight: 500 }}
         />
-        <Tooltip content={<GivingTooltip />} />
+        <Tooltip 
+          content={<GivingTooltip />}
+          cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 2 }}
+        />
         <Area
           type="monotone"
           dataKey="tithes"
           stroke="var(--color-tithes)"
+          strokeWidth={3}
           fill="url(#tithesGradient)"
-          strokeWidth={2}
-          dot={{ r: 2, strokeWidth: 1 }}
-          activeDot={{ r: 4, strokeWidth: 1 }}
+          dot={{ r: 4, strokeWidth: 2, fill: 'white' }}
+          activeDot={{ 
+            r: 6, 
+            strokeWidth: 2,
+            filter: 'url(#shadow)'
+          }}
         />
         <Area
           type="monotone"
           dataKey="offerings"
           stroke="var(--color-offerings)"
+          strokeWidth={3}
           fill="url(#offeringsGradient)"
-          strokeWidth={2}
-          dot={{ r: 2, strokeWidth: 1 }}
-          activeDot={{ r: 4, strokeWidth: 1 }}
+          dot={{ r: 4, strokeWidth: 2, fill: 'white' }}
+          activeDot={{ 
+            r: 6, 
+            strokeWidth: 2,
+            filter: 'url(#shadow)'
+          }}
         />
       </AreaChart>
     </ResponsiveContainer>
