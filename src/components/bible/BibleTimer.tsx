@@ -39,7 +39,8 @@ export default function BibleTimer({ selectedBook, selectedChapter, onProgressUp
             const newValue = prev + 1;
             // Update progress every minute
             if (newValue % 60 === 0) {
-              const minutes = newValue / 60;
+              const minutes = Math.ceil(newValue / 60);
+              console.log("Timer updating progress:", minutes);
               onProgressUpdate(minutes);
             }
             return newValue;
@@ -65,6 +66,7 @@ export default function BibleTimer({ selectedBook, selectedChapter, onProgressUp
       // Calculate final minutes and update progress
       const finalMinutes = Math.ceil(timer / 60);
       setLastSessionMinutes(finalMinutes);
+      console.log("Timer stopped, final minutes:", finalMinutes);
       onProgressUpdate(finalMinutes);
       
       await endReadingSession(sessionId, timer);

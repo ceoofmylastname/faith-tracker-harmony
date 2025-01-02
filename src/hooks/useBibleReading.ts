@@ -125,62 +125,9 @@ export const useBibleReading = () => {
     };
   }, [user, toast]);
 
-  const startReadingSession = async (book: string, chapter: number) => {
-    if (!user) return;
-
-    try {
-      const startedAt = new Date().toISOString();
-      const { data, error } = await supabase
-        .from("bible_reading_sessions")
-        .insert({
-          user_id: user.id,
-          book,
-          chapter,
-          started_at: startedAt,
-          duration_seconds: 0,
-          ended_at: startedAt,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      console.error("Error starting reading session:", error);
-      toast({
-        title: "Error",
-        description: "Failed to start reading session",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const endReadingSession = async (sessionId: string, durationSeconds: number) => {
-    if (!user) return;
-
-    try {
-      const { error } = await supabase
-        .from("bible_reading_sessions")
-        .update({
-          duration_seconds: durationSeconds,
-          ended_at: new Date().toISOString(),
-        })
-        .eq("id", sessionId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Reading session completed!",
-      });
-    } catch (error) {
-      console.error("Error ending reading session:", error);
-      toast({
-        title: "Error",
-        description: "Failed to end reading session",
-        variant: "destructive",
-      });
-    }
+  const updateTodayProgress = (minutes: number) => {
+    console.log("Updating today's progress:", minutes);
+    setTodayProgress(minutes);
   };
 
   return {
@@ -189,7 +136,6 @@ export const useBibleReading = () => {
     todayProgress,
     streak,
     bestStreak,
-    startReadingSession,
-    endReadingSession,
+    updateTodayProgress,
   };
 };

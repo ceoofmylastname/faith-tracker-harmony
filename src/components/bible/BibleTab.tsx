@@ -17,6 +17,7 @@ export default function BibleTab() {
     todayProgress: dailyProgress,
     streak,
     bestStreak,
+    updateTodayProgress,
   } = useBibleReading();
 
   const handleSaveProgress = async () => {
@@ -49,6 +50,11 @@ export default function BibleTab() {
     }
   };
 
+  const handleProgressUpdate = (minutes: number) => {
+    console.log("BibleTab received progress update:", minutes);
+    updateTodayProgress(minutes);
+  };
+
   return (
     <div className="p-4 sm:p-6 space-y-4 max-w-7xl mx-auto">
       <BibleHeader onSaveProgress={handleSaveProgress} />
@@ -69,10 +75,7 @@ export default function BibleTab() {
         currentChapter={currentChapter}
         onBookChange={setCurrentBook}
         onChapterChange={setCurrentChapter}
-        onProgressUpdate={(minutes) => {
-          // This is handled by the useBibleReading hook now
-          console.log("Progress update:", minutes);
-        }}
+        onProgressUpdate={handleProgressUpdate}
       />
     </div>
   );
