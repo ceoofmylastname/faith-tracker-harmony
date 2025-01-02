@@ -14,9 +14,9 @@ export default function NavigationActions({ onUpdateProfile, onSignOut }: Naviga
 
   const handleSignOut = async () => {
     try {
-      // First attempt to sign out
+      // First attempt to sign out from Supabase
       await authSignOut();
-      // If successful, trigger the navigation
+      // If successful, trigger the navigation callback
       onSignOut();
     } catch (error: any) {
       console.error('Navigation sign out error:', error);
@@ -33,7 +33,7 @@ export default function NavigationActions({ onUpdateProfile, onSignOut }: Naviga
       <Button
         variant="ghost"
         className="flex items-center space-x-2 w-full px-4 py-2 hover:bg-white/10 text-white/80 hover:text-white justify-start font-normal"
-        onClick={onUpdateProfile}
+        onClick={() => onUpdateProfile()}
       >
         <Camera className="h-5 w-5" />
         <span>Update Profile Picture</span>
