@@ -41,7 +41,7 @@ export default function NavigationLinks({ isAdmin, onNavigate }: NavigationLinks
   }
 
   return (
-    <div className="space-y-2 flex-1 p-4">
+    <div className="space-y-1 flex-1 p-4">
       {links.map((link) => {
         const Icon = link.icon;
         return (
@@ -54,15 +54,11 @@ export default function NavigationLinks({ isAdmin, onNavigate }: NavigationLinks
               "rounded-xl transition-all duration-300",
               "text-white/90 hover:text-white",
               "relative overflow-hidden group",
-              "bg-gradient-to-r from-primary/90 via-secondary/90 to-primary-dark/90",
-              "hover:bg-gradient-to-r hover:from-primary hover:via-secondary hover:to-primary-dark",
-              "before:absolute before:inset-0",
-              "before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent",
+              "bg-white/5 hover:bg-white/10",
+              "before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/5 before:to-transparent",
               "before:translate-x-[-100%] hover:before:translate-x-[100%]",
               "before:transition-transform before:duration-500",
-              "shadow-lg hover:shadow-xl",
-              "border border-white/5",
-              "backdrop-blur-sm"
+              "neon-border"
             )}
           >
             <Icon className="h-5 w-5 transition-transform group-hover:scale-110" />
