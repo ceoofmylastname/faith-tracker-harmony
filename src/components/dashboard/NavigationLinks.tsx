@@ -36,13 +36,12 @@ export default function NavigationLinks({ isAdmin, onNavigate }: NavigationLinks
     { name: "Schedule", path: "/dashboard/schedule", icon: Calendar },
   ];
 
-  // Add Updates link only if user is admin
   if (isAdmin) {
     links.push({ name: "Updates", path: "/dashboard/updates", icon: Bell });
   }
 
   return (
-    <div className="space-y-2 flex-1">
+    <div className="space-y-1 px-3">
       {links.map((link) => {
         const Icon = link.icon;
         return (
@@ -51,9 +50,11 @@ export default function NavigationLinks({ isAdmin, onNavigate }: NavigationLinks
             to={link.path}
             onClick={() => onNavigate(link.path)}
             className={cn(
-              "flex items-center space-x-2 w-full px-4 py-2",
-              "hover:bg-white/10 rounded-lg transition-colors duration-200",
-              "text-white/80 hover:text-white"
+              "flex items-center gap-3 px-4 py-3 text-sm rounded-lg transition-colors duration-200",
+              "text-gray-300 hover:text-white hover:bg-[#2A2A3C]",
+              "group relative overflow-hidden",
+              "before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/5 before:to-transparent",
+              "before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-500"
             )}
           >
             <Icon className="h-5 w-5" />
