@@ -5,6 +5,7 @@ const cards = [
     title: "Website",
     description: "Explore our digital presence and discover more about our mission",
     image: "https://storage.googleapis.com/msgsndr/TivPy8SDoCwta90bdzyN/media/67747ff4c7fbee58633e3eb3.png",
+    link: "https://www.ftthlv.com/",
   },
   {
     title: "Instagram",
@@ -37,6 +38,7 @@ export const Features = () => {
               title={card.title}
               description={card.description}
               image={card.image}
+              link={card.link}
             />
           ))}
         </div>

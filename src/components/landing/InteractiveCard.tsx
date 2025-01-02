@@ -4,9 +4,10 @@ interface InteractiveCardProps {
   title: string;
   description: string;
   image: string;
+  link?: string;
 }
 
-export const InteractiveCard = ({ title, description, image }: InteractiveCardProps) => {
+export const InteractiveCard = ({ title, description, image, link }: InteractiveCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -25,6 +26,12 @@ export const InteractiveCard = ({ title, description, image }: InteractiveCardPr
     }, 1000);
   };
 
+  const handleClick = () => {
+    if (link) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   const rX = (mousePosition.x / (cardRef.current?.offsetWidth ?? 1)) * 30;
   const rY = (mousePosition.y / (cardRef.current?.offsetHeight ?? 1)) * -30;
   const tX = (mousePosition.x / (cardRef.current?.offsetWidth ?? 1)) * -40;
@@ -33,9 +40,10 @@ export const InteractiveCard = ({ title, description, image }: InteractiveCardPr
   return (
     <div
       ref={cardRef}
-      className="relative w-60 h-80 cursor-pointer m-2.5 transform-gpu perspective-800"
+      className={`relative w-60 h-80 cursor-pointer m-2.5 transform-gpu perspective-800 ${link ? 'hover:scale-105' : ''}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
       style={{
         transformStyle: "preserve-3d",
       }}
