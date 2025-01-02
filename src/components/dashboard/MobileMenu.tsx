@@ -27,7 +27,7 @@ export default function MobileMenu({ isOpen, onOpenChange, onNavigate, onSignOut
           side="left" 
           className="w-64 p-0 bg-gradient-to-b from-primary via-secondary to-primary-dark text-white border-none shadow-2xl"
         >
-          <div className="relative h-full overflow-hidden rounded-r-2xl before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:to-black/10">
+          <div className="relative h-full overflow-hidden rounded-r-2xl before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:to-black/5">
             <DashboardNavigation onNavigate={onNavigate} onSignOut={onSignOut} />
           </div>
         </SheetContent>

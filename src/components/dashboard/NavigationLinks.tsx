@@ -54,14 +54,14 @@ export default function NavigationLinks({ isAdmin, onNavigate }: NavigationLinks
               "rounded-xl transition-all duration-300",
               "text-white/90 hover:text-white",
               "relative overflow-hidden group",
-              "bg-gradient-to-r from-primary/80 via-secondary/80 to-primary-dark/80",
+              "bg-gradient-to-r from-primary/90 via-secondary/90 to-primary-dark/90",
               "hover:bg-gradient-to-r hover:from-primary hover:via-secondary hover:to-primary-dark",
               "before:absolute before:inset-0",
-              "before:bg-gradient-to-r before:from-transparent before:via-white/5 before:to-transparent",
+              "before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent",
               "before:translate-x-[-100%] hover:before:translate-x-[100%]",
               "before:transition-transform before:duration-500",
               "shadow-lg hover:shadow-xl",
-              "border border-white/10",
+              "border border-white/5",
               "backdrop-blur-sm"
             )}
           >
