@@ -53,9 +53,13 @@ export function useChatSession() {
   };
 
   const initializeSession = async () => {
+    setIsLoading(true);
     try {
       const apiKey = await getApiKey();
-      if (!apiKey) return;
+      if (!apiKey) {
+        setIsLoading(false);
+        return;
+      }
 
       console.log('Initializing chat session...');
       const response = await fetch('https://agentivehub.com/api/chat/session', {
@@ -70,18 +74,34 @@ export function useChatSession() {
         }),
       });
 
+      const responseText = await response.text();
+      console.log('Session initialization response:', responseText);
+
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to initialize session: ${response.status} - ${errorText}`);
+        throw new Error(`Failed to initialize session: ${response.status} - ${responseText}`);
       }
 
-      const data = await response.json();
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Failed to parse session response:', e);
+        throw new Error('Invalid response format from server');
+      }
+
       if (!data.session_id) {
         throw new Error('No session ID received from server');
       }
 
       console.log('Chat session initialized successfully:', data);
       setSessionId(data.session_id);
+      
+      // Add initial system message
+      setMessages([{
+        role: 'assistant',
+        content: 'Hello! How can I help you today?'
+      }]);
+      
     } catch (error) {
       console.error('Error initializing chat session:', error);
       toast({
@@ -89,6 +109,8 @@ export function useChatSession() {
         title: "Error",
         description: "Failed to initialize chat session. Please try again later.",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -128,12 +150,21 @@ export function useChatSession() {
         }),
       });
 
+      const responseText = await response.text();
+      console.log('Message response:', responseText);
+
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to send message: ${response.status} - ${errorText}`);
+        throw new Error(`Failed to send message: ${response.status} - ${responseText}`);
       }
 
-      const data = await response.json();
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Failed to parse message response:', e);
+        throw new Error('Invalid response format from server');
+      }
+
       console.log('Received response from chat API:', data);
       
       if (data.messages && data.messages.length > 0) {
