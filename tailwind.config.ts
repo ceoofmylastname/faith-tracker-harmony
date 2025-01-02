@@ -25,15 +25,15 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#800000", // Maroon
-          light: "#A52A2A", // Lighter maroon
-          dark: "#4A0404", // Darker maroon
+          DEFAULT: "#800000",
+          light: "#A52A2A",
+          dark: "#4A0404",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "#555555", // Gray
-          light: "#888888", // Light gray
-          dark: "#333333", // Dark gray
+          DEFAULT: "#555555",
+          light: "#888888",
+          dark: "#333333",
           foreground: "hsl(var(--secondary-foreground))",
         },
         accent: {
@@ -42,31 +42,11 @@ export default {
           dark: "#F59E0B",
           foreground: "hsl(var(--accent-foreground))",
         },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
       },
       backgroundImage: {
         'gradient-text': 'linear-gradient(90deg, #2DFFF5 0%, #7C89FF 50%, #FF72E7 100%)',
         'maroon-gray': 'linear-gradient(135deg, #800000 0%, #555555 100%)',
-      },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        'neon-glow': 'linear-gradient(90deg, #FF1CF7 0%, #00FFE1 100%)',
       },
       keyframes: {
         "accordion-down": {
@@ -85,30 +65,49 @@ export default {
           "100%": {
             transform: "translateX(100%)",
           },
-        }
+        },
+        neonPulse: {
+          "0%, 100%": {
+            boxShadow: "0 0 5px #FF1CF7, 0 0 10px #FF1CF7, 0 0 15px #FF1CF7",
+          },
+          "50%": {
+            boxShadow: "0 0 10px #00FFE1, 0 0 20px #00FFE1, 0 0 30px #00FFE1",
+          },
+        },
+        borderFlow: {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
+        scaleUp: {
+          "0%": { transform: "scale(1)" },
+          "100%": { transform: "scale(1.05)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         fadeIn: "fadeIn 0.5s ease-out",
         shimmer: "shimmer 2s infinite",
+        neonPulse: "neonPulse 2s infinite",
+        borderFlow: "borderFlow 3s ease infinite",
+        scaleUp: "scaleUp 0.2s ease-out forwards",
       },
       fontFamily: {
         'raleway': ['Raleway', 'sans-serif'],
         'playfair': ['"Playfair Display"', 'serif'],
       },
-      transitionTimingFunction: {
-        'hover-ease': 'cubic-bezier(0.23, 1, 0.32, 1)',
-        'return-ease': 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-      },
-      translate: {
-        'z-4': '4px',
+      boxShadow: {
+        'neon': '0 0 5px theme(colors.primary.light), 0 0 10px theme(colors.primary.light)',
+        'neon-hover': '0 0 10px theme(colors.primary.light), 0 0 20px theme(colors.primary.light), 0 0 30px theme(colors.primary.light)',
+        'subtle': '0 2px 10px rgba(0, 0, 0, 0.05)',
+        '3d': '3px 3px 0 rgba(0, 0, 0, 0.1)',
       },
     },
   },
   plugins: [
     require("tailwindcss-animate"),
-    function({ addUtilities }: { addUtilities: Function }) {
+    function({ addUtilities }) {
       const newUtilities = {
         '.text-shadow-sm': {
           textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
@@ -118,6 +117,11 @@ export default {
         },
         '.text-shadow-lg': {
           textShadow: '0 10px 10px rgba(0, 0, 0, 0.5)',
+        },
+        '.neon-border': {
+          background: 'linear-gradient(90deg, #FF1CF7, #00FFE1, #FF1CF7)',
+          backgroundSize: '200% 100%',
+          animation: 'borderFlow 3s ease infinite',
         },
       };
       addUtilities(newUtilities);
