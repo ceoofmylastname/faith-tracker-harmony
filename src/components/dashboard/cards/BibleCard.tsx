@@ -17,7 +17,7 @@ export function BibleCard() {
     if (!user) return;
 
     const fetchBibleData = async () => {
-      // Fetch today's reading sessions
+      // Fetch latest reading session for current book/chapter
       const { data: sessions } = await supabase
         .from('bible_reading_sessions')
         .select('book, chapter')
