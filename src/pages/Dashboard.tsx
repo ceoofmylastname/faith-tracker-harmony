@@ -53,44 +53,30 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="flex">
-        {/* Mobile Menu */}
-        <div className="md:hidden">
-          <MobileMenu 
-            isOpen={isMobileMenuOpen}
-            onOpenChange={setIsMobileMenuOpen}
-            onNavigate={handleNavigation}
-            onSignOut={handleSignOut}
-          />
-        </div>
+      <MobileMenu 
+        isOpen={isMobileMenuOpen}
+        onOpenChange={setIsMobileMenuOpen}
+        onNavigate={handleNavigation}
+        onSignOut={handleSignOut}
+      />
 
-        {/* Desktop Sidebar */}
-        <div className="hidden md:block fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-primary via-primary-light to-primary-dark shadow-2xl transition-all duration-300 ease-in-out z-50">
-          <div className="relative h-full overflow-hidden rounded-r-2xl bg-gradient-to-b from-primary via-primary-light to-primary-dark before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:to-white/10">
-            <DashboardNavigation 
-              onNavigate={handleNavigation} 
-              onSignOut={handleSignOut} 
-            />
-          </div>
-        </div>
+      <div className="hidden md:block md:fixed md:left-0 md:top-0 md:h-full md:w-64 md:bg-gradient-to-b md:from-red-900 md:via-red-800 md:to-red-900 md:text-white md:p-6 md:shadow-2xl md:transition-all md:duration-300 md:ease-in-out md:z-50">
+        <DashboardNavigation onNavigate={handleNavigation} onSignOut={handleSignOut} />
+      </div>
 
-        {/* Main Content */}
-        <div className="flex-1 md:ml-64 min-h-screen transition-all duration-300">
-          <div className="container mx-auto p-4 sm:p-6">
-            <Routes>
-              <Route index element={<DashboardHome />} />
-              <Route path="prayer" element={<PrayerTab />} />
-              <Route path="bible" element={<BibleTab />} />
-              <Route path="fasting" element={<FastingTab />} />
-              <Route path="giving" element={<GivingTab />} />
-              <Route path="notes" element={<NotesTab />} />
-              <Route path="community" element={<CommunityTab />} />
-              <Route path="schedule" element={<ScheduleTab />} />
-              <Route path="updates" element={<UpdatesTab />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
-          </div>
-        </div>
+      <div className="md:ml-64 min-h-screen p-4">
+        <Routes>
+          <Route index element={<DashboardHome />} />
+          <Route path="prayer" element={<PrayerTab />} />
+          <Route path="bible" element={<BibleTab />} />
+          <Route path="fasting" element={<FastingTab />} />
+          <Route path="giving" element={<GivingTab />} />
+          <Route path="notes" element={<NotesTab />} />
+          <Route path="community" element={<CommunityTab />} />
+          <Route path="schedule" element={<ScheduleTab />} />
+          <Route path="updates" element={<UpdatesTab />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
       </div>
     </div>
   );
