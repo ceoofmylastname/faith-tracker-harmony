@@ -32,6 +32,7 @@ export default function Login() {
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-900">Welcome Back</h2>
         <Auth
           supabaseClient={supabase}
+          providers={[]}
           appearance={{
             theme: ThemeSupa,
             variables: {
