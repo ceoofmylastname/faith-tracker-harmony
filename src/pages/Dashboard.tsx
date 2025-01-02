@@ -14,7 +14,6 @@ import NotesTab from "@/components/notes/NotesTab";
 import CommunityTab from "@/components/community/CommunityTab";
 import ScheduleTab from "@/components/schedule/ScheduleTab";
 import UpdatesTab from "@/components/updates/UpdatesTab";
-import ChatBot from "@/components/chat/ChatBot";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -79,8 +78,6 @@ export default function Dashboard() {
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </div>
-
-      <ChatBot />
     </div>
   );
 }
