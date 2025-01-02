@@ -18,6 +18,26 @@
   <body>
     <div id="root"></div>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
+    <script src="/src/main.tsx"></script>
+    <script type="text/javascript">
+      (function(d, t) {
+        var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+        v.onload = function() {
+          if (!document.getElementById('root')) {
+            var root = d.createElement('div');
+            root.id = 'root';
+            d.body.appendChild(root);
+          }
+          if (window.myChatWidget && typeof window.myChatWidget.load === 'function') {
+            window.myChatWidget.load({
+              id: 'c99ecb8f-1068-4e6d-b1a1-d5dc4432198d',
+            });
+          }
+        };
+        v.src = "https://agentivehub.com/production.bundle.min.js";
+        v.type = "text/javascript";
+        s.parentNode.insertBefore(v, s);
+      })(document, 'script');
+    </script>
   </body>
 </html>
