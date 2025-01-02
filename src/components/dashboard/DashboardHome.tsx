@@ -105,90 +105,100 @@ export default function DashboardHome() {
         Welcome to Your Faith Journey{profile?.name ? `, ${profile.name}` : ''}
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 [perspective:1000px]">
-        <div className="transform-gpu transition-all duration-300 hover:translate-z-4 hover:-translate-y-2 hover:shadow-xl">
-          <PrayerCard />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="transform transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-2xl overflow-hidden shadow-lg border border-white/20 backdrop-blur-sm">
+            <PrayerCard />
+          </div>
         </div>
-        <div className="transform-gpu transition-all duration-300 hover:translate-z-4 hover:-translate-y-2 hover:shadow-xl">
-          <BibleCard />
+        <div className="transform transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 rounded-2xl overflow-hidden shadow-lg border border-white/20 backdrop-blur-sm">
+            <BibleCard />
+          </div>
         </div>
-        <div className="transform-gpu transition-all duration-300 hover:translate-z-4 hover:-translate-y-2 hover:shadow-xl">
-          <FastingCard />
+        <div className="transform transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30 rounded-2xl overflow-hidden shadow-lg border border-white/20 backdrop-blur-sm">
+            <FastingCard />
+          </div>
         </div>
-        <div className="transform-gpu transition-all duration-300 hover:translate-z-4 hover:-translate-y-2 hover:shadow-xl">
-          <GivingCard />
+        <div className="transform transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 rounded-2xl overflow-hidden shadow-lg border border-white/20 backdrop-blur-sm">
+            <GivingCard />
+          </div>
         </div>
       </div>
 
       <div className="mt-12 max-w-2xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-8">INVITE A GUEST</h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 rounded-2xl p-8 shadow-xl border border-white/20 backdrop-blur-sm">
+          <h2 className="text-3xl font-bold text-center mb-8">INVITE A GUEST</h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                  required
+                  className="bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 rounded-xl"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  required
+                  className="bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 rounded-xl"
+                />
+              </div>
+            </div>
             <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
+              <Label htmlFor="phone">Phone Number</Label>
               <Input
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
+                id="phone"
+                name="phone"
+                type="tel"
+                value={formData.phone}
                 onChange={handleInputChange}
                 required
-                className="bg-transparent border-gray-300"
+                className="bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 rounded-xl"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
                 onChange={handleInputChange}
                 required
-                className="bg-transparent border-gray-300"
+                className="bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 rounded-xl"
               />
             </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
-            <Input
-              id="phone"
-              name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleInputChange}
-              required
-              className="bg-transparent border-gray-300"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-              className="bg-transparent border-gray-300"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
-            <Textarea
-              id="notes"
-              name="notes"
-              value={formData.notes}
-              onChange={handleInputChange}
-              className="bg-transparent border-gray-300"
-              rows={4}
-            />
-          </div>
-          <Button 
-            type="submit"
-            className="w-full bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400 text-white"
-          >
-            Send Invitation
-          </Button>
-        </form>
+            <div className="space-y-2">
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea
+                id="notes"
+                name="notes"
+                value={formData.notes}
+                onChange={handleInputChange}
+                className="bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 rounded-xl resize-none"
+                rows={4}
+              />
+            </div>
+            <Button 
+              type="submit"
+              className="w-full bg-gradient-to-r from-red-700 to-gray-500 hover:from-red-600 hover:to-gray-400 text-white rounded-xl py-6 shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              Send Invitation
+            </Button>
+          </form>
+        </div>
       </div>
     </div>
   );
