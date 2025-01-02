@@ -12,24 +12,17 @@ interface DashboardNavigationProps {
 export default function DashboardNavigation({ onNavigate, onSignOut }: DashboardNavigationProps) {
   const { user } = useAuth();
   const [showImageUpload, setShowImageUpload] = useState(false);
+
+  // Check if user has the specific email address
   const isAdmin = user?.email === 'jrmenterprisegroup@gmail.com';
 
   return (
-    <div className="h-full flex flex-col bg-[#141419]">
-      <div className="px-4 py-6">
-        <h2 className="text-2xl font-bold text-white bg-gradient-to-r from-red-500 to-red-800 bg-clip-text text-transparent">
-          FTTH Members
-        </h2>
-      </div>
-
+    <div className="h-full flex flex-col">
       <NavigationLinks isAdmin={isAdmin} onNavigate={onNavigate} />
-      
-      <div className="mt-auto">
-        <NavigationActions 
-          onUpdateProfile={() => setShowImageUpload(true)}
-          onSignOut={onSignOut}
-        />
-      </div>
+      <NavigationActions 
+        onUpdateProfile={() => setShowImageUpload(true)}
+        onSignOut={onSignOut}
+      />
 
       {user && (
         <ProfileImageUpload

@@ -15,18 +15,11 @@ export default function MobileMenu({ isOpen, onOpenChange, onNavigate, onSignOut
     <div className="md:hidden fixed top-4 left-4 z-50">
       <Sheet open={isOpen} onOpenChange={onOpenChange}>
         <SheetTrigger asChild>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="bg-[#141419] text-white hover:bg-[#2A2A3C] border border-[#2A2A3C]"
-          >
+          <Button variant="ghost" size="icon" className="bg-red-900 text-white hover:bg-red-800">
             <Menu className="h-6 w-6" />
           </Button>
         </SheetTrigger>
-        <SheetContent 
-          side="left" 
-          className="w-64 p-0 bg-[#141419] border-r border-[#2A2A3C] text-white"
-        >
+        <SheetContent side="left" className="w-64 p-0 bg-gradient-to-b from-red-900 via-red-800 to-red-900 text-white border-none">
           <DashboardNavigation onNavigate={onNavigate} onSignOut={onSignOut} />
         </SheetContent>
       </Sheet>
