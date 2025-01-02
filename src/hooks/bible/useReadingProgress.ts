@@ -12,24 +12,20 @@ export const useReadingProgress = () => {
     if (!user) return;
 
     const fetchTodayProgress = async () => {
-      const today = new Date().toISOString().split('T')[0];
-      const { data: sessions, error } = await supabase
-        .from('bible_reading_sessions')
-        .select('duration_seconds')
+      // Get cumulative progress for the current month
+      const { data: cumulativeData, error: cumulativeError } = await supabase
+        .from('bible_reading_cumulative')
+        .select('current_month_minutes')
         .eq('user_id', user.id)
-        .gte('started_at', today);
+        .maybeSingle();
 
-      if (error) {
-        console.error('Error fetching today\'s progress:', error);
+      if (cumulativeError) {
+        console.error('Error fetching cumulative progress:', cumulativeError);
         return;
       }
 
-      if (sessions) {
-        const totalMinutes = sessions.reduce(
-          (acc, session) => acc + Math.ceil(session.duration_seconds / 60),
-          0
-        );
-        setTodayProgress(totalMinutes);
+      if (cumulativeData) {
+        setTodayProgress(cumulativeData.current_month_minutes);
       }
     };
 
@@ -43,10 +39,14 @@ export const useReadingProgress = () => {
         {
           event: '*',
           schema: 'public',
-          table: 'bible_reading_sessions',
+          table: 'bible_reading_cumulative',
           filter: `user_id=eq.${user.id}`,
         },
-        () => fetchTodayProgress()
+        (payload) => {
+          if (payload.new) {
+            setTodayProgress(payload.new.current_month_minutes);
+          }
+        }
       )
       .subscribe();
 

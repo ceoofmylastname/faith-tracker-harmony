@@ -72,6 +72,8 @@ export function TimerLogic({
         if (error) throw error;
       }
 
+      // Update the local state through the callback
+      onProgressUpdate(minutes);
       console.log('Updated cumulative progress:', { minutes });
     } catch (error) {
       console.error('Error updating cumulative progress:', error);
@@ -132,7 +134,6 @@ export function TimerLogic({
       const finalMinutes = Math.ceil(timer / 60);
       onLastSessionMinutesChange(finalMinutes);
       console.log("Timer stopped, final minutes:", finalMinutes);
-      onProgressUpdate(finalMinutes);
       
       await Promise.all([
         endReadingSession(sessionId, timer),
