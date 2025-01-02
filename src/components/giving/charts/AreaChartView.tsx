@@ -18,7 +18,7 @@ export function AreaChartView({ data, chartConfig }: AreaChartViewProps) {
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
         data={data}
-        margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
+        margin={{ top: 20, right: 5, left: 0, bottom: 0 }}
       >
         <defs>
           <linearGradient id="tithesGradient" x1="0" y1="0" x2="0" y2="1">
@@ -41,20 +41,20 @@ export function AreaChartView({ data, chartConfig }: AreaChartViewProps) {
         <XAxis 
           dataKey="month" 
           stroke="currentColor" 
-          fontSize={12}
+          fontSize={10}
           tickLine={false}
           axisLine={false}
           interval={0}
-          padding={{ left: 0, right: 0 }}
           tick={{ fill: 'currentColor', fontWeight: 500 }}
+          height={30}
         />
         <YAxis 
           stroke="currentColor" 
-          fontSize={12}
+          fontSize={10}
           tickLine={false}
           axisLine={false}
           tickFormatter={(value) => `$${value}`}
-          width={60}
+          width={45}
           tick={{ fill: 'currentColor', fontWeight: 500 }}
         />
         <Tooltip 
@@ -65,11 +65,11 @@ export function AreaChartView({ data, chartConfig }: AreaChartViewProps) {
           type="monotone"
           dataKey="tithes"
           stroke="var(--color-tithes)"
-          strokeWidth={3}
+          strokeWidth={2}
           fill="url(#tithesGradient)"
-          dot={{ r: 4, strokeWidth: 2, fill: 'white' }}
+          dot={{ r: 3, strokeWidth: 2, fill: 'white' }}
           activeDot={{ 
-            r: 6, 
+            r: 5, 
             strokeWidth: 2,
             filter: 'url(#shadow)'
           }}
@@ -78,11 +78,11 @@ export function AreaChartView({ data, chartConfig }: AreaChartViewProps) {
           type="monotone"
           dataKey="offerings"
           stroke="var(--color-offerings)"
-          strokeWidth={3}
+          strokeWidth={2}
           fill="url(#offeringsGradient)"
-          dot={{ r: 4, strokeWidth: 2, fill: 'white' }}
+          dot={{ r: 3, strokeWidth: 2, fill: 'white' }}
           activeDot={{ 
-            r: 6, 
+            r: 5, 
             strokeWidth: 2,
             filter: 'url(#shadow)'
           }}

@@ -12,7 +12,7 @@ export function ChartTypeSelector({ chartType, setChartType }: ChartTypeSelector
         variant={chartType === 'area' ? 'default' : 'outline'}
         onClick={() => setChartType('area')}
         size="sm"
-        className="transition-all duration-300 hover:scale-105 text-xs sm:text-sm px-3"
+        className="transition-all duration-300 hover:scale-105 text-[10px] sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
       >
         Area
       </Button>
@@ -20,7 +20,7 @@ export function ChartTypeSelector({ chartType, setChartType }: ChartTypeSelector
         variant={chartType === 'bar' ? 'default' : 'outline'}
         onClick={() => setChartType('bar')}
         size="sm"
-        className="transition-all duration-300 hover:scale-105 text-xs sm:text-sm px-3"
+        className="transition-all duration-300 hover:scale-105 text-[10px] sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
       >
         Bar
       </Button>
