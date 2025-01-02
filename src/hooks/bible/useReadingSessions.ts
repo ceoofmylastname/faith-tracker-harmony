@@ -41,6 +41,7 @@ export const useReadingSessions = () => {
     if (!user) return;
 
     try {
+      // Update the session with final duration
       const { error } = await supabase
         .from("bible_reading_sessions")
         .update({
@@ -51,22 +52,32 @@ export const useReadingSessions = () => {
 
       if (error) throw error;
 
-      // Also update the reading progress
-      const { error: progressError } = await supabase
-        .from("bible_reading_progress")
-        .insert({
-          user_id: user.id,
-          book: "Genesis", // This should be dynamic based on what they're reading
-          chapter: 1, // This should be dynamic based on what they're reading
-          completed: true,
-          completed_at: new Date().toISOString(),
-        });
+      // Get the session details to update progress
+      const { data: session } = await supabase
+        .from("bible_reading_sessions")
+        .select("book, chapter")
+        .eq("id", sessionId)
+        .single();
 
-      if (progressError) throw progressError;
+      if (session) {
+        // Update reading progress
+        const { error: progressError } = await supabase
+          .from("bible_reading_progress")
+          .insert({
+            user_id: user.id,
+            book: session.book,
+            chapter: session.chapter,
+            completed: true,
+            completed_at: new Date().toISOString(),
+          });
 
+        if (progressError) throw progressError;
+      }
+
+      const finalMinutes = Math.ceil(durationSeconds / 60);
       toast({
-        title: "Success",
-        description: `Reading session completed: ${Math.ceil(durationSeconds / 60)} minutes`,
+        title: "Reading Session Completed",
+        description: `You've read for ${finalMinutes} minutes. Great job!`,
       });
     } catch (error) {
       console.error("Error ending reading session:", error);

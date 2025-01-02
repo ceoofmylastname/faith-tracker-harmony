@@ -26,10 +26,10 @@ export const useReadingProgress = () => {
 
       if (sessions) {
         const totalMinutes = sessions.reduce(
-          (acc, session) => acc + (session.duration_seconds / 60),
+          (acc, session) => acc + Math.ceil(session.duration_seconds / 60),
           0
         );
-        setTodayProgress(Math.ceil(totalMinutes));
+        setTodayProgress(totalMinutes);
       }
     };
 
