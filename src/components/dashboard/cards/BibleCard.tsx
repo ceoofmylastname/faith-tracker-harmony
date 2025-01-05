@@ -6,6 +6,11 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBibleReading } from "@/hooks/useBibleReading";
 
+interface BibleReadingUpdate {
+  current_month_minutes: number;
+  last_reset_date: string;
+}
+
 export function BibleCard() {
   const [currentBook, setCurrentBook] = useState("");
   const [currentChapter, setCurrentChapter] = useState(0);
@@ -84,8 +89,9 @@ export function BibleCard() {
         },
         (payload) => {
           console.log('Received update:', payload);
-          if (payload.new) {
-            setMonthlyProgress(payload.new.current_month_minutes);
+          const newData = payload.new as BibleReadingUpdate;
+          if (newData && typeof newData.current_month_minutes === 'number') {
+            setMonthlyProgress(newData.current_month_minutes);
           }
         }
       )
