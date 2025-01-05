@@ -2,15 +2,52 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, Clock } from "lucide-react";
 import { usePrayerTimer } from "@/hooks/usePrayerTimer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const PrayerTimer = () => {
   const { isRunning, time, startTimer, stopTimer } = usePrayerTimer();
   const [totalTime, setTotalTime] = useState(0);
+  const { user } = useAuth();
 
   const handleStopTimer = async () => {
+    const minutes = Math.ceil(time / 60);
     await stopTimer();
     setTotalTime(prev => prev + time);
+
+    if (user) {
+      const currentDate = new Date();
+      const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      
+      // First, try to get existing cumulative record
+      const { data: existingData } = await supabase
+        .from('bible_reading_cumulative')
+        .select('current_month_minutes')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (existingData) {
+        // Update existing record
+        await supabase
+          .from('bible_reading_cumulative')
+          .update({
+            current_month_minutes: existingData.current_month_minutes + minutes,
+            last_reset_date: firstDayOfMonth.toISOString()
+          })
+          .eq('user_id', user.id);
+      } else {
+        // Create new record
+        await supabase
+          .from('bible_reading_cumulative')
+          .insert({
+            user_id: user.id,
+            current_month_minutes: minutes,
+            total_minutes: minutes,
+            last_reset_date: firstDayOfMonth.toISOString()
+          });
+      }
+    }
   };
 
   return (

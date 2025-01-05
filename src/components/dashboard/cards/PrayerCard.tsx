@@ -8,40 +8,38 @@ import { useAuth } from "@/contexts/AuthContext";
 export function PrayerCard() {
   const [dailyProgress, setDailyProgress] = useState(0);
   const [streak, setStreak] = useState(0);
-  const [goalMinutes, setGoalMinutes] = useState(30);
+  const [goalMinutes] = useState(10000); // Fixed goal as per requirement
   const { user } = useAuth();
 
   useEffect(() => {
     if (!user) return;
 
     const fetchPrayerData = async () => {
-      const today = new Date().toISOString().split('T')[0];
-      
-      // Fetch today's prayer sessions
-      const { data: sessions } = await supabase
-        .from('prayer_sessions')
-        .select('duration_seconds')
+      // Check if it's a new month and reset if needed
+      const { data: cumulativeData } = await supabase
+        .from('bible_reading_cumulative')
+        .select('current_month_minutes, last_reset_date')
         .eq('user_id', user.id)
-        .gte('started_at', today);
-
-      if (sessions) {
-        const totalMinutes = sessions.reduce(
-          (acc, session) => acc + (session.duration_seconds / 60),
-          0
-        );
-        setDailyProgress(totalMinutes);
-      }
-
-      // Fetch prayer goal
-      const { data: goalData } = await supabase
-        .from('prayer_goals')
-        .select('target_minutes')
-        .eq('user_id', user.id)
-        .eq('month', new Date().toISOString().slice(0, 7) + '-01')
         .maybeSingle();
 
-      if (goalData) {
-        setGoalMinutes(goalData.target_minutes);
+      if (cumulativeData) {
+        const lastResetDate = new Date(cumulativeData.last_reset_date);
+        const currentDate = new Date();
+        
+        // If it's a new month, reset the progress
+        if (lastResetDate.getMonth() !== currentDate.getMonth() || 
+            lastResetDate.getFullYear() !== currentDate.getFullYear()) {
+          await supabase
+            .from('bible_reading_cumulative')
+            .update({
+              current_month_minutes: 0,
+              last_reset_date: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString()
+            })
+            .eq('user_id', user.id);
+          setDailyProgress(0);
+        } else {
+          setDailyProgress(cumulativeData.current_month_minutes);
+        }
       }
     };
 
@@ -55,7 +53,7 @@ export function PrayerCard() {
         {
           event: '*',
           schema: 'public',
-          table: 'prayer_sessions',
+          table: 'bible_reading_cumulative',
           filter: `user_id=eq.${user.id}`,
         },
         () => fetchPrayerData()
