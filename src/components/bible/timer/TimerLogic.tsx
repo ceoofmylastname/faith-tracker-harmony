@@ -69,23 +69,23 @@ export function TimerLogic({
       clearInterval(timerInterval);
       setTimerInterval(null);
       
-      // Calculate exact minutes without rounding up
+      // Calculate minutes directly
       const finalMinutes = Math.floor(timer / 60);
       onLastSessionMinutesChange(finalMinutes);
-      console.log("Timer stopped, final minutes:", finalMinutes, "total seconds:", timer);
+      console.log("Timer stopped, final minutes:", finalMinutes);
       
       try {
-        // Update the reading session with the final duration
+        // Update the reading session with the final duration in minutes
         const { error: sessionError } = await supabase
           .from('bible_reading_sessions')
           .update({
-            duration_seconds: timer,
+            duration_minutes: finalMinutes,
             ended_at: new Date().toISOString()
           })
           .eq('id', sessionId);
 
         if (sessionError) throw sessionError;
-        console.log("Updated session duration:", timer, "seconds");
+        console.log("Updated session duration:", finalMinutes, "minutes");
 
         // Update the reading progress with minutes spent
         const { error: progressError } = await supabase
@@ -142,7 +142,7 @@ export function TimerLogic({
         }
         
         onProgressUpdate(finalMinutes);
-        await endReadingSession(sessionId, timer);
+        await endReadingSession(sessionId, finalMinutes);
         
         toast({
           title: "Reading Session Completed",

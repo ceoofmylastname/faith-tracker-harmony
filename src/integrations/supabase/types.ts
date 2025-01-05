@@ -173,7 +173,7 @@ export type Database = {
           book: string
           chapter: number
           created_at: string
-          duration_seconds: number
+          duration_minutes: number | null
           ended_at: string
           id: string
           started_at: string
@@ -184,7 +184,7 @@ export type Database = {
           book: string
           chapter: number
           created_at?: string
-          duration_seconds: number
+          duration_minutes?: number | null
           ended_at: string
           id?: string
           started_at: string
@@ -195,7 +195,7 @@ export type Database = {
           book?: string
           chapter?: number
           created_at?: string
-          duration_seconds?: number
+          duration_minutes?: number | null
           ended_at?: string
           id?: string
           started_at?: string

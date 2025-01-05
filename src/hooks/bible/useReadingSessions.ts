@@ -18,7 +18,7 @@ export const useReadingSessions = () => {
           book,
           chapter,
           started_at: startedAt,
-          duration_seconds: 0,
+          duration_minutes: 0,
           ended_at: startedAt,
         })
         .select()
@@ -37,7 +37,7 @@ export const useReadingSessions = () => {
     }
   };
 
-  const endReadingSession = async (sessionId: string, durationSeconds: number) => {
+  const endReadingSession = async (sessionId: string, durationMinutes: number) => {
     if (!user) return;
 
     try {
@@ -45,7 +45,7 @@ export const useReadingSessions = () => {
       const { error } = await supabase
         .from("bible_reading_sessions")
         .update({
-          duration_seconds: durationSeconds,
+          duration_minutes: durationMinutes,
           ended_at: new Date().toISOString(),
         })
         .eq("id", sessionId);
@@ -74,10 +74,9 @@ export const useReadingSessions = () => {
         if (progressError) throw progressError;
       }
 
-      const finalMinutes = Math.ceil(durationSeconds / 60);
       toast({
         title: "Reading Session Completed",
-        description: `You've read for ${finalMinutes} minutes. Great job!`,
+        description: `You've read for ${durationMinutes} minutes. Great job!`,
       });
     } catch (error) {
       console.error("Error ending reading session:", error);
