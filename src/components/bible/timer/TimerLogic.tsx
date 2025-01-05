@@ -68,56 +68,75 @@ export function TimerLogic({
       clearInterval(timerInterval);
       setTimerInterval(null);
       
-      const finalMinutes = Math.ceil(timer / 60);
+      // Calculate exact minutes without rounding up
+      const finalMinutes = Math.floor(timer / 60);
       onLastSessionMinutesChange(finalMinutes);
       console.log("Timer stopped, final minutes:", finalMinutes);
       
-      // Update the cumulative reading progress
-      if (user) {
-        const firstDayOfMonth = new Date();
-        firstDayOfMonth.setDate(1);
-        firstDayOfMonth.setHours(0, 0, 0, 0);
+      try {
+        // Update the cumulative reading progress
+        if (user) {
+          const firstDayOfMonth = new Date();
+          firstDayOfMonth.setDate(1);
+          firstDayOfMonth.setHours(0, 0, 0, 0);
 
-        // Get existing cumulative data
-        const { data: existingData } = await supabase
-          .from('bible_reading_cumulative')
-          .select('current_month_minutes')
-          .eq('user_id', user.id)
-          .maybeSingle();
+          // Get existing cumulative data
+          const { data: existingData, error: fetchError } = await supabase
+            .from('bible_reading_cumulative')
+            .select('current_month_minutes')
+            .eq('user_id', user.id)
+            .maybeSingle();
 
-        if (existingData) {
-          // Update existing record
-          await supabase
-            .from('bible_reading_cumulative')
-            .update({
-              current_month_minutes: existingData.current_month_minutes + finalMinutes,
-              last_reset_date: firstDayOfMonth.toISOString()
-            })
-            .eq('user_id', user.id);
-        } else {
-          // Create new record
-          await supabase
-            .from('bible_reading_cumulative')
-            .insert({
-              user_id: user.id,
-              current_month_minutes: finalMinutes,
-              total_minutes: finalMinutes,
-              last_reset_date: firstDayOfMonth.toISOString()
-            });
+          if (fetchError) throw fetchError;
+
+          if (existingData) {
+            // Update existing record
+            const { error: updateError } = await supabase
+              .from('bible_reading_cumulative')
+              .update({
+                current_month_minutes: existingData.current_month_minutes + finalMinutes,
+                last_reset_date: firstDayOfMonth.toISOString(),
+                updated_at: new Date().toISOString()
+              })
+              .eq('user_id', user.id);
+
+            if (updateError) throw updateError;
+          } else {
+            // Create new record
+            const { error: insertError } = await supabase
+              .from('bible_reading_cumulative')
+              .insert({
+                user_id: user.id,
+                current_month_minutes: finalMinutes,
+                total_minutes: finalMinutes,
+                last_reset_date: firstDayOfMonth.toISOString()
+              });
+
+            if (insertError) throw insertError;
+          }
         }
+        
+        // Update progress in parent components
+        onProgressUpdate(finalMinutes);
+        await endReadingSession(sessionId, timer);
+        
+        toast({
+          title: "Reading Session Completed",
+          description: `You've read for ${finalMinutes} minutes. Great job!`,
+        });
+      } catch (error) {
+        console.error('Error updating reading progress:', error);
+        toast({
+          title: "Error",
+          description: "Failed to update reading progress",
+          variant: "destructive",
+        });
+      } finally {
+        onIsReadingChange(false);
+        setTimer(0);
+        onTimerChange(0);
+        setSessionId(null);
       }
-      
-      onProgressUpdate(finalMinutes);
-      await endReadingSession(sessionId, timer);
-      onIsReadingChange(false);
-      setTimer(0);
-      onTimerChange(0);
-      setSessionId(null);
-
-      toast({
-        title: "Reading Session Completed",
-        description: `You've read for ${finalMinutes} minutes. Great job!`,
-      });
     }
   };
 
