@@ -129,6 +129,7 @@ export type Database = {
           completed_at: string | null
           created_at: string
           id: string
+          minutes_spent: number | null
           updated_at: string
           user_id: string
         }
@@ -139,6 +140,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           id?: string
+          minutes_spent?: number | null
           updated_at?: string
           user_id: string
         }
@@ -149,6 +151,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           id?: string
+          minutes_spent?: number | null
           updated_at?: string
           user_id?: string
         }

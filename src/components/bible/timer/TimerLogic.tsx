@@ -87,6 +87,21 @@ export function TimerLogic({
         if (sessionError) throw sessionError;
         console.log("Updated session duration:", timer, "seconds");
 
+        // Update the reading progress with minutes spent
+        const { error: progressError } = await supabase
+          .from('bible_reading_progress')
+          .upsert({
+            user_id: user?.id,
+            book: selectedBook,
+            chapter: parseInt(selectedChapter),
+            minutes_spent: finalMinutes,
+            completed: true,
+            completed_at: new Date().toISOString()
+          });
+
+        if (progressError) throw progressError;
+        console.log("Updated reading progress with minutes:", finalMinutes);
+
         // Update the cumulative reading progress
         if (user) {
           const firstDayOfMonth = new Date();
