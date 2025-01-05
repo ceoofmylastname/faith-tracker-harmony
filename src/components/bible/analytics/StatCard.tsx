@@ -12,7 +12,7 @@ interface StatCardProps {
 
 export function StatCard({ title, value, subtitle, icon: Icon, gradientFrom, gradientTo }: StatCardProps) {
   return (
-    <Card className="transform hover:scale-[1.02] transition-all duration-300">
+    <Card className="elegant-card">
       <CardHeader className={`bg-gradient-to-br from-${gradientFrom} to-${gradientTo} rounded-t-lg`}>
         <CardTitle className="flex items-center gap-2">
           <Icon className="h-5 w-5" />

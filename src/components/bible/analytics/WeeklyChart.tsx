@@ -7,7 +7,7 @@ interface WeeklyChartProps {
 
 export function WeeklyChart({ data }: WeeklyChartProps) {
   return (
-    <Card>
+    <Card className="elegant-card">
       <CardHeader>
         <CardTitle>Weekly Reading Pattern</CardTitle>
       </CardHeader>
@@ -18,7 +18,7 @@ export function WeeklyChart({ data }: WeeklyChartProps) {
               <XAxis dataKey="day" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="minutes" fill="#ef4444" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="minutes" fill="#800000" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

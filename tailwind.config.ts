@@ -68,6 +68,11 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        'elegant': '0 8px 30px rgba(0, 0, 0, 0.12)',
+        'elegant-hover': '0 8px 30px rgba(128, 0, 0, 0.2)',
+        'card-3d': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -117,30 +122,7 @@ export default {
         "gradient-xy": "gradient-xy 15s ease infinite",
         shimmer: "shimmer 2s infinite",
       },
-      fontFamily: {
-        'raleway': ['Raleway', 'sans-serif'],
-        'playfair': ['"Playfair Display"', 'serif'],
-      },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"),
-    function({ addUtilities }: { addUtilities: Function }) {
-      const newUtilities = {
-        '.text-shadow-sm': {
-          textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
-        },
-        '.text-shadow-md': {
-          textShadow: '0 2px 3px rgba(0, 0, 0, 1)',
-        },
-        '.text-shadow-lg': {
-          textShadow: '0 10px 10px rgba(0, 0, 0, 0.5)',
-        },
-        '.backface-visibility-hidden': {
-          'backface-visibility': 'hidden',
-        },
-      };
-      addUtilities(newUtilities);
-    },
-  ],
+  plugins: [require("tailwindcss-animate")],
 } satisfies Config;
