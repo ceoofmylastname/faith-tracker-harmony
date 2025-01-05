@@ -42,6 +42,7 @@ export function TimerLogic({
     try {
       const session = await startReadingSession(selectedBook, parseInt(selectedChapter));
       if (session) {
+        console.log("Started new reading session:", session);
         setSessionId(session.id);
         onIsReadingChange(true);
         const interval = setInterval(() => {
@@ -71,16 +72,27 @@ export function TimerLogic({
       // Calculate exact minutes without rounding up
       const finalMinutes = Math.floor(timer / 60);
       onLastSessionMinutesChange(finalMinutes);
-      console.log("Timer stopped, final minutes:", finalMinutes);
+      console.log("Timer stopped, final minutes:", finalMinutes, "total seconds:", timer);
       
       try {
+        // Update the reading session with the final duration
+        const { error: sessionError } = await supabase
+          .from('bible_reading_sessions')
+          .update({
+            duration_seconds: timer,
+            ended_at: new Date().toISOString()
+          })
+          .eq('id', sessionId);
+
+        if (sessionError) throw sessionError;
+        console.log("Updated session duration:", timer, "seconds");
+
         // Update the cumulative reading progress
         if (user) {
           const firstDayOfMonth = new Date();
           firstDayOfMonth.setDate(1);
           firstDayOfMonth.setHours(0, 0, 0, 0);
 
-          // Get existing cumulative data
           const { data: existingData, error: fetchError } = await supabase
             .from('bible_reading_cumulative')
             .select('current_month_minutes')
@@ -90,7 +102,6 @@ export function TimerLogic({
           if (fetchError) throw fetchError;
 
           if (existingData) {
-            // Update existing record
             const { error: updateError } = await supabase
               .from('bible_reading_cumulative')
               .update({
@@ -102,7 +113,6 @@ export function TimerLogic({
 
             if (updateError) throw updateError;
           } else {
-            // Create new record
             const { error: insertError } = await supabase
               .from('bible_reading_cumulative')
               .insert({
@@ -116,7 +126,6 @@ export function TimerLogic({
           }
         }
         
-        // Update progress in parent components
         onProgressUpdate(finalMinutes);
         await endReadingSession(sessionId, timer);
         
