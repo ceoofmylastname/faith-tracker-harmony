@@ -62,7 +62,8 @@ export function TimerLogic({
 
   const handleStopTimer = async () => {
     if (sessionId) {
-      const finalMinutes = stopTimer();
+      const finalSeconds = stopTimer();
+      const finalMinutes = Math.floor(finalSeconds / 60);
       onLastSessionMinutesChange(finalMinutes);
       
       try {

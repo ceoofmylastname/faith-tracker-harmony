@@ -16,9 +16,9 @@ export const useTimer = () => {
       clearInterval(timerInterval);
       setTimerInterval(null);
     }
-    const finalMinutes = Math.floor(timer / 60);
+    const finalSeconds = timer;
     setTimer(0);
-    return finalMinutes;
+    return finalSeconds;
   };
 
   useEffect(() => {
