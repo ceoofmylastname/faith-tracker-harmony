@@ -1,8 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useBibleReading } from "@/hooks/useBibleReading";
-import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTimer } from "@/hooks/bible/useTimer";
+import { 
+  updateReadingSession, 
+  updateReadingProgress, 
+  updateCumulativeProgress 
+} from "@/lib/bible/sessionUtils";
 
 interface TimerLogicProps {
   selectedBook: string;
@@ -24,10 +29,8 @@ export function TimerLogic({
   const { toast } = useToast();
   const { startReadingSession, endReadingSession } = useBibleReading();
   const { user } = useAuth();
-  
+  const { timer, startTimer, stopTimer } = useTimer();
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [timer, setTimer] = useState(0);
-  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
 
   const handleStartTimer = async () => {
     if (!selectedBook || !selectedChapter) {
@@ -45,14 +48,7 @@ export function TimerLogic({
         console.log("Started new reading session:", session);
         setSessionId(session.id);
         onIsReadingChange(true);
-        const interval = setInterval(() => {
-          setTimer(prev => {
-            const newValue = prev + 1;
-            onTimerChange(newValue);
-            return newValue;
-          });
-        }, 1000);
-        setTimerInterval(interval);
+        startTimer();
       }
     } catch (error) {
       console.error("Error starting session:", error);
@@ -65,81 +61,14 @@ export function TimerLogic({
   };
 
   const handleStopTimer = async () => {
-    if (sessionId && timerInterval) {
-      clearInterval(timerInterval);
-      setTimerInterval(null);
-      
-      // Calculate minutes directly
-      const finalMinutes = Math.floor(timer / 60);
+    if (sessionId) {
+      const finalMinutes = stopTimer();
       onLastSessionMinutesChange(finalMinutes);
-      console.log("Timer stopped, final minutes:", finalMinutes);
       
       try {
-        // Update the reading session with the final duration in minutes
-        const { error: sessionError } = await supabase
-          .from('bible_reading_sessions')
-          .update({
-            duration_minutes: finalMinutes,
-            ended_at: new Date().toISOString()
-          })
-          .eq('id', sessionId);
-
-        if (sessionError) throw sessionError;
-        console.log("Updated session duration:", finalMinutes, "minutes");
-
-        // Update the reading progress with minutes spent
-        const { error: progressError } = await supabase
-          .from('bible_reading_progress')
-          .upsert({
-            user_id: user?.id,
-            book: selectedBook,
-            chapter: parseInt(selectedChapter),
-            minutes_spent: finalMinutes,
-            completed: true,
-            completed_at: new Date().toISOString()
-          });
-
-        if (progressError) throw progressError;
-        console.log("Updated reading progress with minutes:", finalMinutes);
-
-        // Update the cumulative reading progress
-        if (user) {
-          const firstDayOfMonth = new Date();
-          firstDayOfMonth.setDate(1);
-          firstDayOfMonth.setHours(0, 0, 0, 0);
-
-          const { data: existingData, error: fetchError } = await supabase
-            .from('bible_reading_cumulative')
-            .select('current_month_minutes')
-            .eq('user_id', user.id)
-            .maybeSingle();
-
-          if (fetchError) throw fetchError;
-
-          if (existingData) {
-            const { error: updateError } = await supabase
-              .from('bible_reading_cumulative')
-              .update({
-                current_month_minutes: existingData.current_month_minutes + finalMinutes,
-                last_reset_date: firstDayOfMonth.toISOString(),
-                updated_at: new Date().toISOString()
-              })
-              .eq('user_id', user.id);
-
-            if (updateError) throw updateError;
-          } else {
-            const { error: insertError } = await supabase
-              .from('bible_reading_cumulative')
-              .insert({
-                user_id: user.id,
-                current_month_minutes: finalMinutes,
-                total_minutes: finalMinutes,
-                last_reset_date: firstDayOfMonth.toISOString()
-              });
-
-            if (insertError) throw insertError;
-          }
-        }
+        await updateReadingSession(sessionId, finalMinutes);
+        await updateReadingProgress(user?.id, selectedBook, parseInt(selectedChapter), finalMinutes);
+        await updateCumulativeProgress(user?.id, finalMinutes);
         
         onProgressUpdate(finalMinutes);
         await endReadingSession(sessionId, finalMinutes);
@@ -157,20 +86,16 @@ export function TimerLogic({
         });
       } finally {
         onIsReadingChange(false);
-        setTimer(0);
         onTimerChange(0);
         setSessionId(null);
       }
     }
   };
 
-  useEffect(() => {
-    return () => {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-      }
-    };
-  }, [timerInterval]);
+  // Update parent timer state whenever our local timer changes
+  useState(() => {
+    onTimerChange(timer);
+  });
 
   return { handleStartTimer, handleStopTimer };
 }
