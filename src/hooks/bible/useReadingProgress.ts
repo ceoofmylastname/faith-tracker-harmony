@@ -15,7 +15,7 @@ export const useReadingProgress = () => {
       const today = new Date().toISOString().split('T')[0];
       const { data: sessions, error } = await supabase
         .from('bible_reading_sessions')
-        .select('duration_seconds')
+        .select('duration_minutes')
         .eq('user_id', user.id)
         .gte('started_at', today);
 
@@ -26,7 +26,7 @@ export const useReadingProgress = () => {
 
       if (sessions) {
         const totalMinutes = sessions.reduce(
-          (acc, session) => acc + Math.ceil(session.duration_seconds / 60),
+          (acc, session) => acc + (session.duration_minutes || 0),
           0
         );
         setTodayProgress(totalMinutes);

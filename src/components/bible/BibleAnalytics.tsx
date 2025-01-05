@@ -24,15 +24,15 @@ export default function BibleAnalytics() {
 
         const { data: sessions } = await supabase
           .from('bible_reading_sessions')
-          .select('duration_seconds, started_at')
+          .select('duration_minutes, started_at')
           .eq('user_id', user.id)
           .gte('started_at', sevenDaysAgo.toISOString())
           .order('started_at', { ascending: true });
 
         if (sessions) {
-          // Calculate average reading time
+          // Calculate average reading time (already in minutes now)
           const totalMinutes = sessions.reduce(
-            (acc, session) => acc + (session.duration_seconds / 60),
+            (acc, session) => acc + (session.duration_minutes || 0),
             0
           );
           setAverageTime(Math.round(totalMinutes / (sessions.length || 1)));
@@ -44,7 +44,7 @@ export default function BibleAnalytics() {
 
           sessions.forEach(session => {
             const day = format(new Date(session.started_at), 'EEEE');
-            const minutes = session.duration_seconds / 60;
+            const minutes = session.duration_minutes || 0;
             dailyData[day] = (dailyData[day] || 0) + minutes;
 
             if (dailyData[day] > maxMinutes) {
@@ -69,14 +69,14 @@ export default function BibleAnalytics() {
           
           const { data: lastMonthSessions } = await supabase
             .from('bible_reading_sessions')
-            .select('duration_seconds')
+            .select('duration_minutes')
             .eq('user_id', user.id)
             .gte('started_at', previousMonth.toISOString())
             .lt('started_at', sevenDaysAgo.toISOString());
 
           if (lastMonthSessions) {
             const lastMonthAvg = lastMonthSessions.reduce(
-              (acc, session) => acc + (session.duration_seconds / 60),
+              (acc, session) => acc + (session.duration_minutes || 0),
               0
             ) / (lastMonthSessions.length || 1);
 
