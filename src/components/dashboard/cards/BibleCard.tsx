@@ -9,9 +9,10 @@ import { useBibleReading } from "@/hooks/useBibleReading";
 export function BibleCard() {
   const [currentBook, setCurrentBook] = useState("");
   const [currentChapter, setCurrentChapter] = useState(0);
-  const [goalMinutes, setGoalMinutes] = useState(30);
+  const [goalMinutes] = useState(30);
   const { user } = useAuth();
   const { todayProgress: dailyProgress, streak } = useBibleReading();
+  const [monthlyProgress, setMonthlyProgress] = useState(0);
 
   useEffect(() => {
     if (!user) return;
@@ -30,21 +31,37 @@ export function BibleCard() {
         setCurrentChapter(sessions[0].chapter);
       }
 
-      // Fetch reading goal
-      const { data: goalData } = await supabase
-        .from('bible_reading_goals')
-        .select('daily_minutes')
+      // Fetch monthly progress
+      const { data: cumulativeData } = await supabase
+        .from('bible_reading_cumulative')
+        .select('current_month_minutes, last_reset_date')
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (goalData) {
-        setGoalMinutes(goalData.daily_minutes);
+      if (cumulativeData) {
+        const lastResetDate = new Date(cumulativeData.last_reset_date);
+        const currentDate = new Date();
+        
+        // If it's a new month, reset the progress
+        if (lastResetDate.getMonth() !== currentDate.getMonth() || 
+            lastResetDate.getFullYear() !== currentDate.getFullYear()) {
+          await supabase
+            .from('bible_reading_cumulative')
+            .update({
+              current_month_minutes: 0,
+              last_reset_date: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString()
+            })
+            .eq('user_id', user.id);
+          setMonthlyProgress(0);
+        } else {
+          setMonthlyProgress(cumulativeData.current_month_minutes);
+        }
       }
     };
 
     fetchBibleData();
 
-    // Subscribe to real-time updates for reading sessions
+    // Subscribe to real-time updates
     const channel = supabase
       .channel('bible-updates')
       .on(
@@ -52,7 +69,7 @@ export function BibleCard() {
         {
           event: '*',
           schema: 'public',
-          table: 'bible_reading_sessions',
+          table: 'bible_reading_cumulative',
           filter: `user_id=eq.${user.id}`,
         },
         () => fetchBibleData()
@@ -65,6 +82,7 @@ export function BibleCard() {
   }, [user]);
 
   const progressPercentage = Math.min((dailyProgress / goalMinutes) * 100, 100);
+  const monthlyProgressPercentage = Math.min((monthlyProgress / goalMinutes) * 100, 100);
 
   return (
     <Card className="relative overflow-hidden transform-gpu transition-all duration-300 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm hover:shadow-[0_8px_30px_rgba(34,197,94,0.12)] hover:border-green-600/20">
@@ -77,13 +95,13 @@ export function BibleCard() {
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex justify-between items-center text-sm">
-          <span>{Math.round(dailyProgress)} / {goalMinutes} minutes</span>
+          <span>{monthlyProgress} / {goalMinutes} minutes</span>
           <span className="flex items-center gap-1">
             <Trophy className="h-4 w-4 text-yellow-500" />
             {streak} day streak
           </span>
         </div>
-        <Progress value={progressPercentage} className="h-2 bg-gray-200/50 dark:bg-gray-700/50" />
+        <Progress value={monthlyProgressPercentage} className="h-2 bg-gray-200/50 dark:bg-gray-700/50" />
         <div className="text-sm text-center">
           {currentBook && currentChapter ? (
             <span>Currently reading: {currentBook} {currentChapter}</span>
