@@ -42,7 +42,9 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
           book: selectedBook,
           chapter: parseInt(selectedChapter),
           study_notes: notes.trim(),
-          minutes_spent: 0, // Default value for minutes_spent
+          minutes_spent: 0,
+          completed: false,
+          completed_at: new Date().toISOString(),
         });
 
       if (error) {
