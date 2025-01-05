@@ -66,6 +66,7 @@ export function BibleCard() {
             if (updateError) throw updateError;
             setMonthlyProgress(0);
           } else {
+            console.log('Setting monthly progress:', cumulativeData.current_month_minutes);
             setMonthlyProgress(cumulativeData.current_month_minutes);
           }
         }
@@ -88,16 +89,17 @@ export function BibleCard() {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          console.log('Received update:', payload);
+          console.log('Received bible reading update:', payload);
           const newData = payload.new as BibleReadingUpdate;
           if (newData && typeof newData.current_month_minutes === 'number') {
+            console.log('Updating monthly progress to:', newData.current_month_minutes);
             setMonthlyProgress(newData.current_month_minutes);
           }
         }
       )
       .subscribe();
 
-    // Also subscribe to bible_reading_sessions for current book/chapter updates
+    // Subscribe to bible_reading_sessions for current book/chapter updates
     const sessionsChannel = supabase
       .channel('reading-sessions')
       .on(
@@ -109,6 +111,7 @@ export function BibleCard() {
           filter: `user_id=eq.${user.id}`,
         },
         (payload: any) => {
+          console.log('Received reading session update:', payload);
           if (payload.new) {
             setCurrentBook(payload.new.book);
             setCurrentChapter(payload.new.chapter);
