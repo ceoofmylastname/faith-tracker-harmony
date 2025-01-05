@@ -17,7 +17,7 @@ export function TimerDisplay({ isReading, timer, onStart, onStop }: TimerDisplay
       onClick={isReading ? onStop : onStart}
     >
       <Clock className="h-4 w-4" />
-      {isReading ? `Stop (${formatTime(timer)})` : "Start Timer"}
+      {isReading ? `Stop (${formatTime(timer)})` : `Start Timer ${timer > 0 ? `(${formatTime(timer)})` : ''}`}
     </Button>
   );
 }
