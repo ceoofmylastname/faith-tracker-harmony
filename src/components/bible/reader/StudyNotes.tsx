@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { format } from "date-fns";
 
 interface StudyNotesProps {
   selectedBook: string;
@@ -14,8 +15,10 @@ interface StudyNotesProps {
 }
 
 interface SavedNote {
-  notes: string;
-  timestamp: string;
+  study_notes: string;
+  created_at: string;
+  book: string;
+  chapter: number;
 }
 
 export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
@@ -33,16 +36,13 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
     try {
       console.log("Saving notes:", { selectedBook, selectedChapter, notes });
       const { error } = await supabase
-        .from('saved_inputs')
+        .from('bible_reading_progress')
         .insert({
           user_id: user.id,
-          input_type: 'bible_notes',
-          input_value: JSON.stringify({
-            book: selectedBook,
-            chapter: selectedChapter,
-            notes: notes.trim(),
-            timestamp: new Date().toISOString(),
-          }),
+          book: selectedBook,
+          chapter: parseInt(selectedChapter),
+          study_notes: notes.trim(),
+          minutes_spent: 0, // Default value for minutes_spent
         });
 
       if (error) {
@@ -71,18 +71,22 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
   };
 
   const loadNotes = async () => {
-    if (!user || !selectedBook || !selectedChapter) {
-      console.log("Missing data for loading notes:", { user, selectedBook, selectedChapter });
+    if (!user) {
+      console.log("No user found for loading notes");
       return;
     }
 
     try {
-      console.log("Loading notes for:", { selectedBook, selectedChapter });
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      console.log("Loading notes for the past 30 days");
       const { data, error } = await supabase
-        .from('saved_inputs')
-        .select('input_value')
+        .from('bible_reading_progress')
+        .select('study_notes, created_at, book, chapter')
         .eq('user_id', user.id)
-        .eq('input_type', 'bible_notes')
+        .not('study_notes', 'is', null)
+        .gte('created_at', thirtyDaysAgo.toISOString())
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -91,18 +95,8 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
       }
 
       if (data) {
-        console.log("Retrieved data:", data);
-        const filteredNotes = data
-          .map(item => {
-            const parsed = JSON.parse(item.input_value);
-            return parsed.book === selectedBook && parsed.chapter === selectedChapter
-              ? { notes: parsed.notes, timestamp: parsed.timestamp }
-              : null;
-          })
-          .filter((note): note is SavedNote => note !== null);
-
-        console.log("Filtered notes:", filteredNotes);
-        setSavedNotes(filteredNotes);
+        console.log("Retrieved notes:", data);
+        setSavedNotes(data as SavedNote[]);
       }
     } catch (error) {
       console.error("Error loading notes:", error);
@@ -131,17 +125,22 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
 
         {savedNotes.length > 0 && (
           <div className="mt-6">
-            <h4 className="text-sm font-semibold mb-2">Previous Notes</h4>
-            <ScrollArea className="h-[200px] rounded-md border p-2">
+            <h4 className="text-sm font-semibold mb-2">Previous Notes (Last 30 Days)</h4>
+            <ScrollArea className="h-[300px] rounded-md border p-2">
               {savedNotes.map((note, index) => (
                 <div
                   key={index}
                   className="mb-4 p-3 bg-muted/50 rounded-md last:mb-0"
                 >
-                  <p className="text-sm whitespace-pre-wrap">{note.notes}</p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {new Date(note.timestamp).toLocaleDateString()} {new Date(note.timestamp).toLocaleTimeString()}
-                  </p>
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-xs font-medium">
+                      {note.book} {note.chapter}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {format(new Date(note.created_at), "MMM d, yyyy")}
+                    </span>
+                  </div>
+                  <p className="text-sm whitespace-pre-wrap">{note.study_notes}</p>
                 </div>
               ))}
             </ScrollArea>

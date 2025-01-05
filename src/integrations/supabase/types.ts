@@ -130,6 +130,7 @@ export type Database = {
           created_at: string
           id: string
           minutes_spent: number | null
+          study_notes: string | null
           updated_at: string
           user_id: string
         }
@@ -141,6 +142,7 @@ export type Database = {
           created_at?: string
           id?: string
           minutes_spent?: number | null
+          study_notes?: string | null
           updated_at?: string
           user_id: string
         }
@@ -152,6 +154,7 @@ export type Database = {
           created_at?: string
           id?: string
           minutes_spent?: number | null
+          study_notes?: string | null
           updated_at?: string
           user_id?: string
         }
