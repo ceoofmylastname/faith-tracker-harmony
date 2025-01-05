@@ -25,9 +25,13 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
   const [savedNotes, setSavedNotes] = useState<SavedNote[]>([]);
 
   const handleSaveNotes = async () => {
-    if (!user || !selectedBook || !selectedChapter || !notes.trim()) return;
+    if (!user || !selectedBook || !selectedChapter || !notes.trim()) {
+      console.log("Missing required data:", { user, selectedBook, selectedChapter, notes });
+      return;
+    }
 
     try {
+      console.log("Saving notes:", { selectedBook, selectedChapter, notes });
       const { error } = await supabase
         .from('saved_inputs')
         .insert({
@@ -41,13 +45,19 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
           }),
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error saving notes:", error);
+        throw error;
+      }
 
       toast({
         title: "Success",
         description: "Notes saved successfully",
       });
 
+      // Clear the input after successful save
+      setNotes("");
+      
       // Refresh the saved notes list
       loadNotes();
     } catch (error) {
@@ -61,9 +71,13 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
   };
 
   const loadNotes = async () => {
-    if (!user || !selectedBook || !selectedChapter) return;
+    if (!user || !selectedBook || !selectedChapter) {
+      console.log("Missing data for loading notes:", { user, selectedBook, selectedChapter });
+      return;
+    }
 
     try {
+      console.log("Loading notes for:", { selectedBook, selectedChapter });
       const { data, error } = await supabase
         .from('saved_inputs')
         .select('input_value')
@@ -71,9 +85,13 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
         .eq('input_type', 'bible_notes')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error loading notes:", error);
+        throw error;
+      }
 
       if (data) {
+        console.log("Retrieved data:", data);
         const filteredNotes = data
           .map(item => {
             const parsed = JSON.parse(item.input_value);
@@ -83,6 +101,7 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
           })
           .filter((note): note is SavedNote => note !== null);
 
+        console.log("Filtered notes:", filteredNotes);
         setSavedNotes(filteredNotes);
       }
     } catch (error) {
@@ -91,6 +110,7 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
   };
 
   useEffect(() => {
+    console.log("Effect triggered with:", { selectedBook, selectedChapter });
     loadNotes();
   }, [user, selectedBook, selectedChapter]);
 
