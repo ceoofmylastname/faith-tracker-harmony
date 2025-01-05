@@ -22,7 +22,7 @@ export const PrayerTimer = () => {
       
       // First, try to get existing cumulative record
       const { data: existingData } = await supabase
-        .from('bible_reading_cumulative')
+        .from('prayer_sessions')
         .select('current_month_minutes')
         .eq('user_id', user.id)
         .maybeSingle();
@@ -30,7 +30,7 @@ export const PrayerTimer = () => {
       if (existingData) {
         // Update existing record
         await supabase
-          .from('bible_reading_cumulative')
+          .from('prayer_sessions')
           .update({
             current_month_minutes: existingData.current_month_minutes + minutes,
             last_reset_date: firstDayOfMonth.toISOString()
@@ -39,12 +39,12 @@ export const PrayerTimer = () => {
       } else {
         // Create new record
         await supabase
-          .from('bible_reading_cumulative')
+          .from('prayer_sessions')
           .insert({
             user_id: user.id,
-            current_month_minutes: minutes,
-            total_minutes: minutes,
-            last_reset_date: firstDayOfMonth.toISOString()
+            duration_seconds: time,
+            started_at: new Date(Date.now() - time * 1000).toISOString(),
+            ended_at: new Date().toISOString()
           });
       }
     }

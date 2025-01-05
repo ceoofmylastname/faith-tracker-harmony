@@ -15,31 +15,24 @@ export function PrayerCard() {
     if (!user) return;
 
     const fetchPrayerData = async () => {
-      // Check if it's a new month and reset if needed
-      const { data: cumulativeData } = await supabase
-        .from('bible_reading_cumulative')
-        .select('current_month_minutes, last_reset_date')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      const currentDate = new Date();
+      const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
 
-      if (cumulativeData) {
-        const lastResetDate = new Date(cumulativeData.last_reset_date);
-        const currentDate = new Date();
-        
-        // If it's a new month, reset the progress
-        if (lastResetDate.getMonth() !== currentDate.getMonth() || 
-            lastResetDate.getFullYear() !== currentDate.getFullYear()) {
-          await supabase
-            .from('bible_reading_cumulative')
-            .update({
-              current_month_minutes: 0,
-              last_reset_date: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString()
-            })
-            .eq('user_id', user.id);
-          setDailyProgress(0);
-        } else {
-          setDailyProgress(cumulativeData.current_month_minutes);
-        }
+      // Get all prayer sessions for the current month
+      const { data: sessions } = await supabase
+        .from('prayer_sessions')
+        .select('duration_seconds')
+        .eq('user_id', user.id)
+        .gte('started_at', startOfMonth.toISOString())
+        .lte('ended_at', endOfMonth.toISOString());
+
+      if (sessions) {
+        const totalMinutes = sessions.reduce(
+          (acc, session) => acc + Math.ceil(session.duration_seconds / 60),
+          0
+        );
+        setDailyProgress(totalMinutes);
       }
     };
 
@@ -53,7 +46,7 @@ export function PrayerCard() {
         {
           event: '*',
           schema: 'public',
-          table: 'bible_reading_cumulative',
+          table: 'prayer_sessions',
           filter: `user_id=eq.${user.id}`,
         },
         () => fetchPrayerData()
