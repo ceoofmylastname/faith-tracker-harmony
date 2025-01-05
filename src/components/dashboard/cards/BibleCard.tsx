@@ -18,6 +18,7 @@ export function BibleCard() {
   const { user } = useAuth();
   const { todayProgress: dailyProgress, streak } = useBibleReading();
   const [monthlyProgress, setMonthlyProgress] = useState(0);
+  const [totalMinutesSpent, setTotalMinutesSpent] = useState(0);
 
   useEffect(() => {
     if (!user) return;
@@ -39,6 +40,20 @@ export function BibleCard() {
           setCurrentChapter(sessions[0].chapter);
         }
 
+        // Calculate total minutes spent from bible_reading_progress
+        const { data: progressData, error: progressError } = await supabase
+          .from('bible_reading_progress')
+          .select('minutes_spent')
+          .eq('user_id', user.id);
+
+        if (progressError) throw progressError;
+
+        if (progressData) {
+          const total = progressData.reduce((sum, record) => sum + (record.minutes_spent || 0), 0);
+          console.log('Total minutes spent:', total);
+          setTotalMinutesSpent(total);
+        }
+
         // Fetch monthly progress
         const { data: cumulativeData, error: cumulativeError } = await supabase
           .from('bible_reading_cumulative')
@@ -52,7 +67,6 @@ export function BibleCard() {
           const lastResetDate = new Date(cumulativeData.last_reset_date);
           const currentDate = new Date();
           
-          // If it's a new month, reset the progress
           if (lastResetDate.getMonth() !== currentDate.getMonth() || 
               lastResetDate.getFullYear() !== currentDate.getFullYear()) {
             const { error: updateError } = await supabase
@@ -77,29 +91,34 @@ export function BibleCard() {
 
     fetchBibleData();
 
-    // Subscribe to real-time updates for bible_reading_cumulative
-    const channel = supabase
-      .channel('bible-updates')
+    // Subscribe to real-time updates for bible_reading_progress
+    const progressChannel = supabase
+      .channel('bible-progress-updates')
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'bible_reading_cumulative',
+          table: 'bible_reading_progress',
           filter: `user_id=eq.${user.id}`,
         },
-        (payload) => {
-          console.log('Received bible reading update:', payload);
-          const newData = payload.new as BibleReadingUpdate;
-          if (newData && typeof newData.current_month_minutes === 'number') {
-            console.log('Updating monthly progress to:', newData.current_month_minutes);
-            setMonthlyProgress(newData.current_month_minutes);
+        async () => {
+          // Recalculate total minutes spent
+          const { data: progressData } = await supabase
+            .from('bible_reading_progress')
+            .select('minutes_spent')
+            .eq('user_id', user.id);
+
+          if (progressData) {
+            const total = progressData.reduce((sum, record) => sum + (record.minutes_spent || 0), 0);
+            console.log('Updated total minutes spent:', total);
+            setTotalMinutesSpent(total);
           }
         }
       )
       .subscribe();
 
-    // Subscribe to bible_reading_sessions for current book/chapter updates
+    // Subscribe to other subscriptions
     const sessionsChannel = supabase
       .channel('reading-sessions')
       .on(
@@ -121,7 +140,7 @@ export function BibleCard() {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(progressChannel);
       supabase.removeChannel(sessionsChannel);
     };
   }, [user]);
@@ -139,7 +158,7 @@ export function BibleCard() {
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex justify-between items-center text-sm">
-          <span>{monthlyProgress} / {goalMinutes} minutes</span>
+          <span>{totalMinutesSpent} / {goalMinutes} minutes</span>
           <span className="flex items-center gap-1">
             <Trophy className="h-4 w-4 text-yellow-500" />
             {streak} day streak
