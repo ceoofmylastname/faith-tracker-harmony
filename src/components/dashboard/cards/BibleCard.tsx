@@ -18,50 +18,60 @@ export function BibleCard() {
     if (!user) return;
 
     const fetchBibleData = async () => {
-      // Fetch latest reading session for current book/chapter
-      const { data: sessions } = await supabase
-        .from('bible_reading_sessions')
-        .select('book, chapter')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1);
+      try {
+        // Fetch latest reading session for current book/chapter
+        const { data: sessions, error: sessionsError } = await supabase
+          .from('bible_reading_sessions')
+          .select('book, chapter')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1);
 
-      if (sessions && sessions.length > 0) {
-        setCurrentBook(sessions[0].book);
-        setCurrentChapter(sessions[0].chapter);
-      }
+        if (sessionsError) throw sessionsError;
 
-      // Fetch monthly progress
-      const { data: cumulativeData } = await supabase
-        .from('bible_reading_cumulative')
-        .select('current_month_minutes, last_reset_date')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (cumulativeData) {
-        const lastResetDate = new Date(cumulativeData.last_reset_date);
-        const currentDate = new Date();
-        
-        // If it's a new month, reset the progress
-        if (lastResetDate.getMonth() !== currentDate.getMonth() || 
-            lastResetDate.getFullYear() !== currentDate.getFullYear()) {
-          await supabase
-            .from('bible_reading_cumulative')
-            .update({
-              current_month_minutes: 0,
-              last_reset_date: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString()
-            })
-            .eq('user_id', user.id);
-          setMonthlyProgress(0);
-        } else {
-          setMonthlyProgress(cumulativeData.current_month_minutes);
+        if (sessions && sessions.length > 0) {
+          setCurrentBook(sessions[0].book);
+          setCurrentChapter(sessions[0].chapter);
         }
+
+        // Fetch monthly progress
+        const { data: cumulativeData, error: cumulativeError } = await supabase
+          .from('bible_reading_cumulative')
+          .select('current_month_minutes, last_reset_date')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (cumulativeError) throw cumulativeError;
+
+        if (cumulativeData) {
+          const lastResetDate = new Date(cumulativeData.last_reset_date);
+          const currentDate = new Date();
+          
+          // If it's a new month, reset the progress
+          if (lastResetDate.getMonth() !== currentDate.getMonth() || 
+              lastResetDate.getFullYear() !== currentDate.getFullYear()) {
+            const { error: updateError } = await supabase
+              .from('bible_reading_cumulative')
+              .update({
+                current_month_minutes: 0,
+                last_reset_date: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString()
+              })
+              .eq('user_id', user.id);
+
+            if (updateError) throw updateError;
+            setMonthlyProgress(0);
+          } else {
+            setMonthlyProgress(cumulativeData.current_month_minutes);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching Bible data:', error);
       }
     };
 
     fetchBibleData();
 
-    // Subscribe to real-time updates
+    // Subscribe to real-time updates for bible_reading_cumulative
     const channel = supabase
       .channel('bible-updates')
       .on(
@@ -72,7 +82,12 @@ export function BibleCard() {
           table: 'bible_reading_cumulative',
           filter: `user_id=eq.${user.id}`,
         },
-        () => fetchBibleData()
+        (payload) => {
+          console.log('Received update:', payload);
+          if (payload.new) {
+            setMonthlyProgress(payload.new.current_month_minutes);
+          }
+        }
       )
       .subscribe();
 
@@ -81,7 +96,6 @@ export function BibleCard() {
     };
   }, [user]);
 
-  const progressPercentage = Math.min((dailyProgress / goalMinutes) * 100, 100);
   const monthlyProgressPercentage = Math.min((monthlyProgress / goalMinutes) * 100, 100);
 
   return (
