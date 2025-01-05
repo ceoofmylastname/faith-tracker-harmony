@@ -16,6 +16,7 @@ interface EventFormData {
   startTime: string;
   endTime: string;
   repeat: string;
+  assignedTo: string;
 }
 
 export default function EventForm() {
@@ -37,7 +38,7 @@ export default function EventForm() {
     try {
       const eventData = {
         title: data.title,
-        description: `Location: ${data.location}`,
+        description: `Location: ${data.location}\nAssigned To: ${data.assignedTo}`,
         start_time: new Date(data.startTime).toISOString(),
         end_time: new Date(data.endTime).toISOString(),
         event_type: data.repeat === 'none' ? 'event' : `repeat_${data.repeat}`,
@@ -87,6 +88,11 @@ export default function EventForm() {
           <div className="space-y-2">
             <Label htmlFor="location">Location</Label>
             <Input id="location" {...register("location", { required: true })} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="assignedTo">Assigned To</Label>
+            <Input id="assignedTo" {...register("assignedTo", { required: true })} />
           </div>
           
           <div className="space-y-2">
