@@ -28,8 +28,9 @@ export function PrayerCard() {
         .lte('ended_at', endOfMonth.toISOString());
 
       if (sessions) {
+        // Convert seconds to minutes, rounding down to ensure accuracy
         const totalMinutes = sessions.reduce(
-          (acc, session) => acc + Math.ceil(session.duration_seconds / 60),
+          (acc, session) => acc + Math.floor(session.duration_seconds / 60),
           0
         );
         setDailyProgress(totalMinutes);
