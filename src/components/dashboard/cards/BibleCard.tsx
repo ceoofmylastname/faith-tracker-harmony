@@ -97,8 +97,29 @@ export function BibleCard() {
       )
       .subscribe();
 
+    // Also subscribe to bible_reading_sessions for current book/chapter updates
+    const sessionsChannel = supabase
+      .channel('reading-sessions')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'bible_reading_sessions',
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload: any) => {
+          if (payload.new) {
+            setCurrentBook(payload.new.book);
+            setCurrentChapter(payload.new.chapter);
+          }
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(channel);
+      supabase.removeChannel(sessionsChannel);
     };
   }, [user]);
 
