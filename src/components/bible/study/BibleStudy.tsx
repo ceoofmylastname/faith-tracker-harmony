@@ -96,10 +96,20 @@ export function BibleStudy() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type");
+      let data;
+      
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        // Handle text response
+        const textData = await response.text();
+        data = { message: textData };
+      }
+
       console.log("Received response:", data);
       
-      setResponse(data.message || "Search completed successfully");
+      setResponse(data.message || data.toString());
       setShowResults(true);
       
       triggerConfetti();
@@ -135,6 +145,11 @@ export function BibleStudy() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="flex-1"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearch();
+                    }
+                  }}
                 />
                 <Button 
                   onClick={handleSearch} 
@@ -155,12 +170,18 @@ export function BibleStudy() {
       </Card>
 
       <Dialog open={showResults} onOpenChange={setShowResults}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Search Results</DialogTitle>
           </DialogHeader>
           <div className="mt-4">
-            <p className="whitespace-pre-wrap">{response}</p>
+            {response ? (
+              <div className="prose dark:prose-invert max-w-none">
+                <p className="whitespace-pre-wrap">{response}</p>
+              </div>
+            ) : (
+              <p className="text-muted-foreground">No results found.</p>
+            )}
           </div>
         </DialogContent>
       </Dialog>
