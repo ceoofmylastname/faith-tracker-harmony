@@ -42,18 +42,17 @@ export function BibleStudy() {
       
       if (contentType && contentType.includes("application/json")) {
         data = await response.json();
+        console.log("Received JSON response:", data);
+        // For JSON responses, extract the actual message content
+        setResponse(data.response || data.message || JSON.stringify(data));
       } else {
         // Handle text response
         const textData = await response.text();
-        data = { message: textData };
+        console.log("Received text response:", textData);
+        setResponse(textData);
       }
-
-      console.log("Received response:", data);
       
-      // Set the actual response message, not just "Accepted"
-      setResponse(data.message || data.toString());
       setShowResults(true);
-      
       triggerConfetti();
       
       toast({
