@@ -76,6 +76,7 @@ export function BibleStudy() {
 
     setIsLoading(true);
     try {
+      console.log("Sending search request for:", searchTerm);
       const response = await fetch("https://hook.us2.make.com/nwtcflihewbzevsqu4paadhqktizcse3", {
         method: "POST",
         headers: {
@@ -84,14 +85,25 @@ export function BibleStudy() {
         body: JSON.stringify({ searchTerm }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+      console.log("Received response:", data);
+      
+      // Set the response message from the webhook
       setResponse(data.message || "Search completed successfully");
+      
+      // Trigger confetti only on successful response
       triggerConfetti();
+      
       toast({
         title: "Success",
         description: "Search completed successfully",
       });
     } catch (error) {
+      console.error("Search error:", error);
       toast({
         title: "Error",
         description: "Failed to perform search. Please try again.",
@@ -134,7 +146,10 @@ export function BibleStudy() {
         </div>
         <div className="min-h-[200px] flex items-center justify-center text-muted-foreground">
           {response ? (
-            <div className="p-4 rounded-lg bg-secondary/10">{response}</div>
+            <div className="p-4 rounded-lg bg-secondary/10 w-full">
+              <h3 className="font-semibold mb-2">Search Results:</h3>
+              <p className="whitespace-pre-wrap">{response}</p>
+            </div>
           ) : (
             "Enter a search term to begin studying"
           )}
