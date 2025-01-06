@@ -50,6 +50,7 @@ export function BibleStudy() {
 
       console.log("Received response:", data);
       
+      // Set the actual response message, not just "Accepted"
       setResponse(data.message || data.toString());
       setShowResults(true);
       
