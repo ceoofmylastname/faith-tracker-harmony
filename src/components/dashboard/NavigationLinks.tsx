@@ -10,6 +10,7 @@ import {
   Users, 
   Calendar,
   Bell,
+  Search,
   LucideIcon
 } from "lucide-react";
 
@@ -29,6 +30,7 @@ export default function NavigationLinks({ isAdmin, onNavigate }: NavigationLinks
     { name: "Home", path: "/dashboard", icon: Home },
     { name: "Prayer", path: "/dashboard/prayer", icon: Timer },
     { name: "Bible", path: "/dashboard/bible", icon: BookOpen },
+    { name: "Bible Study", path: "/dashboard/bible?tab=study", icon: Search },
     { name: "Fasting", path: "/dashboard/fasting", icon: CalendarDays },
     { name: "Giving", path: "/dashboard/giving", icon: PiggyBank },
     { name: "Notes", path: "/dashboard/notes", icon: StickyNote },
