@@ -33,36 +33,22 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
     try {
       console.log("Saving notes:", { selectedBook, selectedChapter, notes });
       
-      const { data: existingRecord, error: fetchError } = await supabase
-        .from('bible_reading_progress')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('book', selectedBook)
-        .eq('chapter', parseInt(selectedChapter))
-        .maybeSingle();
-
-      if (fetchError) throw fetchError;
-
-      const updateData = {
-        study_notes: notes.trim(),
-        updated_at: new Date().toISOString()
-      };
-
-      const insertData = {
-        user_id: user.id,
-        book: selectedBook,
-        chapter: parseInt(selectedChapter),
-        study_notes: notes.trim(),
-        minutes_spent: 0,
-        completed: false,
-        completed_at: new Date().toISOString()
-      };
-
       const { error: saveError } = await supabase
         .from('bible_reading_progress')
-        .upsert(existingRecord 
-          ? { ...existingRecord, ...updateData }
-          : insertData
+        .upsert(
+          {
+            user_id: user.id,
+            book: selectedBook,
+            chapter: parseInt(selectedChapter),
+            study_notes: notes.trim(),
+            minutes_spent: 0,
+            completed: false,
+            completed_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            onConflict: 'user_id,book,chapter'
+          }
         );
 
       if (saveError) throw saveError;
