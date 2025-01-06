@@ -33,10 +33,9 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
     try {
       console.log("Saving notes:", { selectedBook, selectedChapter, notes });
       
-      // First, check if a record exists
       const { data: existingRecord, error: fetchError } = await supabase
         .from('bible_reading_progress')
-        .select('id')
+        .select('*')
         .eq('user_id', user.id)
         .eq('book', selectedBook)
         .eq('chapter', parseInt(selectedChapter))
@@ -44,35 +43,27 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
 
       if (fetchError) throw fetchError;
 
-      let saveError;
-      
-      if (existingRecord) {
-        // Update existing record
-        const { error } = await supabase
-          .from('bible_reading_progress')
-          .update({
-            study_notes: notes.trim(),
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', existingRecord.id);
-        
-        saveError = error;
-      } else {
-        // Insert new record
-        const { error } = await supabase
-          .from('bible_reading_progress')
-          .insert({
-            user_id: user.id,
-            book: selectedBook,
-            chapter: parseInt(selectedChapter),
-            study_notes: notes.trim(),
-            minutes_spent: 0,
-            completed: false,
-            completed_at: new Date().toISOString()
-          });
-        
-        saveError = error;
-      }
+      const updateData = {
+        study_notes: notes.trim(),
+        updated_at: new Date().toISOString()
+      };
+
+      const insertData = {
+        user_id: user.id,
+        book: selectedBook,
+        chapter: parseInt(selectedChapter),
+        study_notes: notes.trim(),
+        minutes_spent: 0,
+        completed: false,
+        completed_at: new Date().toISOString()
+      };
+
+      const { error: saveError } = await supabase
+        .from('bible_reading_progress')
+        .upsert(existingRecord 
+          ? { ...existingRecord, ...updateData }
+          : insertData
+        );
 
       if (saveError) throw saveError;
 
