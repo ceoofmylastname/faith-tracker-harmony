@@ -112,6 +112,22 @@ export default {
           "100%": {
             transform: "translateX(100%)",
           },
+        },
+        span1: {
+          "0%": { left: "-100%" },
+          "100%": { left: "100%" },
+        },
+        span2: {
+          "0%": { top: "-100%" },
+          "100%": { top: "100%" },
+        },
+        span3: {
+          "0%": { right: "-100%" },
+          "100%": { right: "100%" },
+        },
+        span4: {
+          "0%": { bottom: "-100%" },
+          "100%": { bottom: "100%" },
         }
       },
       animation: {
@@ -121,6 +137,10 @@ export default {
         flip: "flip 3s infinite linear",
         "gradient-xy": "gradient-xy 15s ease infinite",
         shimmer: "shimmer 2s infinite",
+        span1: "span1 2s linear infinite",
+        span2: "span2 2s linear infinite",
+        span3: "span3 2s linear infinite",
+        span4: "span4 2s linear infinite",
       },
     },
   },

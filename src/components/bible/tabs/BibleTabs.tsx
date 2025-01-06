@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BibleReader from "../BibleReader";
+import { BibleStudy } from "../study/BibleStudy";
 
 interface BibleTabsProps {
   activeTab: string;
@@ -22,8 +23,9 @@ export function BibleTabs({
 }: BibleTabsProps) {
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-      <TabsList className="grid w-full grid-cols-1 lg:w-[400px]">
+      <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
         <TabsTrigger value="read">Read</TabsTrigger>
+        <TabsTrigger value="study">Bible Study</TabsTrigger>
       </TabsList>
       <TabsContent value="read" className="mt-4">
         <BibleReader 
@@ -31,6 +33,9 @@ export function BibleTabs({
           onChapterChange={onChapterChange}
           onProgressUpdate={onProgressUpdate}
         />
+      </TabsContent>
+      <TabsContent value="study" className="mt-4">
+        <BibleStudy />
       </TabsContent>
     </Tabs>
   );
