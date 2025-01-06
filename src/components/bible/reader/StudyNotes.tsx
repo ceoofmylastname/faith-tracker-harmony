@@ -37,7 +37,7 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
       console.log("Saving notes:", { selectedBook, selectedChapter, notes });
       const { error } = await supabase
         .from('bible_reading_progress')
-        .insert({
+        .upsert({
           user_id: user.id,
           book: selectedBook,
           chapter: parseInt(selectedChapter),
@@ -45,6 +45,9 @@ export function StudyNotes({ selectedBook, selectedChapter }: StudyNotesProps) {
           minutes_spent: 0,
           completed: false,
           completed_at: new Date().toISOString(),
+        }, {
+          onConflict: 'user_id,book,chapter',
+          ignoreDuplicates: false
         });
 
       if (error) {
