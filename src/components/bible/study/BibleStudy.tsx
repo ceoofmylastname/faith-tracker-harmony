@@ -5,11 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import confetti from "canvas-confetti";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export function BibleStudy() {
   const [searchTerm, setSearchTerm] = useState("");
   const [response, setResponse] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showResults, setShowResults] = useState(false);
   const { toast } = useToast();
 
   const triggerConfetti = () => {
@@ -92,10 +99,9 @@ export function BibleStudy() {
       const data = await response.json();
       console.log("Received response:", data);
       
-      // Set the response message from the webhook
       setResponse(data.message || "Search completed successfully");
+      setShowResults(true);
       
-      // Trigger confetti only on successful response
       triggerConfetti();
       
       toast({
@@ -115,46 +121,49 @@ export function BibleStudy() {
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Bible Study Search</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="p-4 border border-transparent bg-gradient-to-r from-primary via-secondary to-white rounded-lg">
-          <div className="bg-background p-4 rounded-md">
-            <div className="flex gap-2">
-              <Input
-                placeholder="Enter word, Strong's number, or scripture..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1"
-              />
-              <Button 
-                onClick={handleSearch} 
-                className="relative overflow-hidden"
-                disabled={isLoading}
-              >
-                <Search className="h-4 w-4 mr-2" />
-                {isLoading ? "Searching..." : "Search"}
-                <span className="absolute h-[2px] w-full top-0 left-[-100%] bg-gradient-to-r from-transparent to-white/50 animate-[span1_2s_linear_infinite]"></span>
-                <span className="absolute w-[2px] h-full top-[-100%] right-0 bg-gradient-to-b from-transparent to-white/50 animate-[span2_2s_linear_infinite]"></span>
-                <span className="absolute h-[2px] w-full bottom-0 right-[-100%] bg-gradient-to-l from-transparent to-white/50 animate-[span3_2s_linear_infinite]"></span>
-                <span className="absolute w-[2px] h-full bottom-[-100%] left-0 bg-gradient-to-t from-transparent to-white/50 animate-[span4_2s_linear_infinite]"></span>
-              </Button>
+    <>
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Bible Study Search</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="p-4 border border-transparent bg-gradient-to-r from-primary via-secondary to-white rounded-lg">
+            <div className="bg-background p-4 rounded-md">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Enter word, Strong's number, or scripture..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="flex-1"
+                />
+                <Button 
+                  onClick={handleSearch} 
+                  className="relative overflow-hidden"
+                  disabled={isLoading}
+                >
+                  <Search className="h-4 w-4 mr-2" />
+                  {isLoading ? "Searching..." : "Search"}
+                  <span className="absolute h-[2px] w-full top-0 left-[-100%] bg-gradient-to-r from-transparent to-white/50 animate-[span1_2s_linear_infinite]"></span>
+                  <span className="absolute w-[2px] h-full top-[-100%] right-0 bg-gradient-to-b from-transparent to-white/50 animate-[span2_2s_linear_infinite]"></span>
+                  <span className="absolute h-[2px] w-full bottom-0 right-[-100%] bg-gradient-to-l from-transparent to-white/50 animate-[span3_2s_linear_infinite]"></span>
+                  <span className="absolute w-[2px] h-full bottom-[-100%] left-0 bg-gradient-to-t from-transparent to-white/50 animate-[span4_2s_linear_infinite]"></span>
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="min-h-[200px] flex items-center justify-center text-muted-foreground">
-          {response ? (
-            <div className="p-4 rounded-lg bg-secondary/10 w-full">
-              <h3 className="font-semibold mb-2">Search Results:</h3>
-              <p className="whitespace-pre-wrap">{response}</p>
-            </div>
-          ) : (
-            "Enter a search term to begin studying"
-          )}
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      <Dialog open={showResults} onOpenChange={setShowResults}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Search Results</DialogTitle>
+          </DialogHeader>
+          <div className="mt-4">
+            <p className="whitespace-pre-wrap">{response}</p>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
